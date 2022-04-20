@@ -85,7 +85,8 @@ public class ApiStructure
         return node;
     }
     
-    public static ApiStructure FromType(Type type, BindingFlags flags = BindingFlags.Public | BindingFlags.DeclaredOnly)
+    public static ApiStructure FromType(Type type, 
+        BindingFlags flags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
     {
         var root = new ApiTypeNode
         {
@@ -105,7 +106,8 @@ public class ApiStructure
         return new ApiStructure(root);
     }
 
-    public static ApiStructure FromObject(object o, BindingFlags flags = BindingFlags.Public | BindingFlags.DeclaredOnly)
+    public static ApiStructure FromObject(object o, 
+        BindingFlags flags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
     {
         var type = o.GetType();
         var root = new ApiTypeNode
@@ -113,8 +115,8 @@ public class ApiStructure
             Name = type.Name
         };
 
-        foreach (var method in type.GetMethods(flags))
-        {
+        foreach (var method in type.GetMethods(flags).Where(m => !m.IsSpecialName))
+        { // Where clause ignores property get/set methods
             root.MethodNodes.Add(CreateMethodNode(method, o));
         }
 
@@ -131,26 +133,27 @@ public class ApiStructure
         return new ApiMethodNode
         {
             Name = methodInfo.Name,
-            Action = methodInfo.CreateDelegate(typeof(Action), target)
+            Method = methodInfo
         };
     }
 
     private static ApiPropertyNode CreatePropertyNode(PropertyInfo propertyInfo, object? target, BindingFlags flags)
     {
-        var propertyValue = propertyInfo.GetValue(target);
-        
         var node = new ApiPropertyNode
         {
             Name = propertyInfo.Name,
-            Value = 
-            {
-                Value = propertyValue
-            }
         };
+
+        if (propertyInfo.GetIndexParameters().Length > 0)
+            return node;
+        
+        var propertyValue = propertyInfo.GetValue(target);
+
+        node.Value.Value = propertyValue;
 
         if (propertyValue != null)
         {
-            foreach (var method in propertyInfo.PropertyType.GetMethods(flags))
+            foreach (var method in propertyInfo.PropertyType.GetMethods(flags).Where(m => !m.IsSpecialName))
             {
                 node.Value.MethodNodes.Add(CreateMethodNode(method, propertyValue));
             }
