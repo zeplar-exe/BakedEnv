@@ -1,4 +1,4 @@
-namespace BakedEnv;
+namespace BakedEnv.Interpreter.Sources;
 
 /// <summary>
 /// Source used by the interpreter.
