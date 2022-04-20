@@ -1,0 +1,5 @@
+<root name="MyApi">
+    <property name="MyProperty">
+        <property name="MyNestedProperty" default_value="Hello world!"/>
+    </property>
+</root>

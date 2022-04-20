@@ -14,4 +14,14 @@
         <PackageReference Include="coverlet.collector" Version="3.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BakedEnv\BakedEnv.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="ApiStructureXmlTest1.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
