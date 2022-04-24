@@ -1,6 +1,9 @@
 ﻿using BakedEnv.ExternalApi;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Sources;
+using Jammo.ParserTools;
+using Jammo.ParserTools.Lexing;
+using Jammo.ParserTools.Tokenization;
 
 namespace BakedEnv;
 
@@ -12,7 +15,7 @@ public class BakedEnvironment
     /// <summary>
     /// Global methods accessible anywhere within an executed script.
     /// </summary>
-    public List<ExternalMethod> GlobalMethods { get; }
+    public List<BakedMethod> GlobalMethods { get; }
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
@@ -34,7 +37,7 @@ public class BakedEnvironment
     /// </summary>
     public BakedEnvironment()
     {
-        GlobalMethods = new List<ExternalMethod>();
+        GlobalMethods = new List<BakedMethod>();
         GlobalVariables = new List<BakedVariable>();
         ApiStructures = new List<ApiStructure>();
         DefaultBakeType = BakeType.Script;
@@ -45,9 +48,18 @@ public class BakedEnvironment
     /// </summary>
     /// <param name="source">Implementation of an IBakedSource to interpret.</param>
     /// <returns>An enumeration of each instruction interpreted. Can be used for debugging purposes.</returns>
-    /// <exception cref="NotImplementedException">This method is not implemented.</exception>
     public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source)
     {
-        throw new NotImplementedException();
+        var interpreter = new BakedInterpreter();
+        interpreter.InitWith(source);
+        
+        interpreter.Context.BakeType = DefaultBakeType;
+        interpreter.Context.Variables.AddRange(GlobalVariables);
+        interpreter.Context.Methods.AddRange(GlobalMethods);
+        
+        // TODO: Global method to get api structure
+
+        while (interpreter.TryGetNextInstruction(out var instruction))
+            yield return instruction;
     }
 }

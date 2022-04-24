@@ -14,4 +14,8 @@
       <DocumentationFile>bin\Release\BakedEnv.xml</DocumentationFile>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Jammo.ParserTools" Version="1.8.0" />
+    </ItemGroup>
+
 </Project>
