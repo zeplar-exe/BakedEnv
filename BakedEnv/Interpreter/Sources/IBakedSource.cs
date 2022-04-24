@@ -5,6 +5,6 @@ namespace BakedEnv.Interpreter.Sources;
 /// </summary>
 public interface IBakedSource
 {
-    /// <returns>A "stream" of characters to be interpreted.</returns>
+    /// <returns>Characters to be interpreted.</returns>
     public IEnumerable<char> EnumerateCharacters();
 }

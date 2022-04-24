@@ -1,6 +1,8 @@
 namespace BakedEnv.Interpreter.Sources;
 
-/// <inheritdoc />
+/// <summary>
+/// A baked source which enumerates a raw string.
+/// </summary>
 public class RawStringSource : IBakedSource
 {
     private string String { get; }

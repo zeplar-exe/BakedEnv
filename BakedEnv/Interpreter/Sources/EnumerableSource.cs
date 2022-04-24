@@ -1,6 +1,8 @@
 namespace BakedEnv.Interpreter.Sources;
 
-/// <inheritdoc />
+/// <summary>
+/// A baked source which uses a raw character <see cref="IEnumerable"/> .
+/// </summary>
 public class EnumerableSource : IBakedSource
 {
     private IEnumerable<char> Characters { get; }
