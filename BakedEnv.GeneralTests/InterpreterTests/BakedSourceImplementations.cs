@@ -29,7 +29,7 @@ public class BakedSourceImplementations
         if (values.Length == 0)
             return true;
         
-        return values.All(v => v.Equals(values[0]));    
+        return values.All(v => v?.Equals(values[0]) ?? false);    
     }
     
     private static Stream CreateStream(string s)

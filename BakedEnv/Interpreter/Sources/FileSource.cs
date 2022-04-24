@@ -2,6 +2,7 @@ using System.Text;
 
 namespace BakedEnv.Interpreter.Sources;
 
+/// <inheritdoc />
 public class FileSource : IBakedSource
 {
     public FileInfo File { get; }
@@ -18,7 +19,8 @@ public class FileSource : IBakedSource
         File = file;
         Encoding = encoding;
     }
-    
+
+    /// <inheritdoc />
     public IEnumerable<char> EnumerateCharacters()
     {
         var stream = File.OpenRead();

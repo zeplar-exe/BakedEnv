@@ -2,6 +2,7 @@ using System.Text;
 
 namespace BakedEnv.Interpreter.Sources;
 
+/// <inheritdoc />
 public class StreamSource : IBakedSource
 {
     public Stream Stream { get; }
@@ -16,6 +17,7 @@ public class StreamSource : IBakedSource
         Encoding = encoding;
     }
 
+    /// <inheritdoc />
     public IEnumerable<char> EnumerateCharacters()
     {
         while (Stream.Position != Stream.Length)
