@@ -1,0 +1,17 @@
+[BakeType: "Module"] # Tells the interpreter that this script returns a single table     
+
+core_api = api("my_app.core")
+module_result = { }
+
+method module_result.Echo(args)
+{
+    if core_api.Output.Enabled == false
+    {
+        return
+    }
+
+    text = safe_null(args[0], "") # Equivalent to args[0] ?? "" with no bounds checks
+    core_api.Output.WriteLine(text)
+}
+
+return module_result
