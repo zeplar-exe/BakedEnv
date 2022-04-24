@@ -96,6 +96,7 @@ public class BakedInterpreter
     /// <param name="instruction">Interpreted instruction information.</param>
     /// <returns>Whether an instruction could be parsed. Should only return false upon reaching the
     /// end of an IBakedSource's content.</returns>
+    /// <exception cref="InvalidOperationException">The interpreter has not been initalized.</exception>
     public bool TryGetNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
         if (!IsReady)

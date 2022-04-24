@@ -15,7 +15,8 @@ public class StreamSource : IBakedSource
     /// 
     /// </summary>
     public Encoding Encoding { get; }
-
+    
+    /// <exception cref="ArgumentException">The provided stream is write-only is otherwise inaccessible for reading.</exception>
     public StreamSource(Stream stream, Encoding encoding)
     {
         if (!stream.CanRead)
