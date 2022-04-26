@@ -1,9 +1,11 @@
+using System.Reflection;
+
 namespace BakedEnv.ExternalApi;
 
 /// <summary>
 /// Outline of an API proeprty.
 /// </summary>
-public class ApiPropertyNode
+public class ApiPropertyNode : IAccessible
 {
     /// <summary>
     /// Name of this API property.
@@ -21,5 +23,15 @@ public class ApiPropertyNode
     public ApiPropertyNode()
     {
         Value = new ApiPropertyValue();
+    }
+    
+    object? IAccessible.GetPropertyValue(string name)
+    {
+        return Value.GetProperty(name)?.Value.Value;
+    }
+    
+    MethodInfo? IAccessible.GetMethod(string name)
+    {
+        return Value.GetMethod(name)?.Method;
     }
 }
