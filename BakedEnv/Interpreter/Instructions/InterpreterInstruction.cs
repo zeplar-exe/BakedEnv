@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter;
+namespace BakedEnv.Interpreter.Instructions;
 
 /// <summary>
 /// A single instruction executed by the interpreter. Can be used during script debugging.
@@ -19,9 +19,7 @@ public abstract class InterpreterInstruction
     /// <summary>
     /// Execute this instruction inside of the provided scope.
     /// </summary>
+    /// <param name="interpreter">The target interpreter.</param>
     /// <param name="scope">The contextual scope.</param>
-    public abstract void Execute(IBakedScope scope);
-
-    /// <inheritdoc/>
-    public abstract override string ToString();
+    public abstract void Execute(BakedInterpreter interpreter, IBakedScope scope);
 }
