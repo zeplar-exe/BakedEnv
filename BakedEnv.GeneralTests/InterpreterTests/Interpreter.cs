@@ -14,7 +14,7 @@ public class Interpreter
         var interpreter = new BakedInterpreter();
         var source = new RawStringSource("Hello world!");
         
-        interpreter.UseSource(source);
+        interpreter.WithSource(source);
         interpreter.Init();
         
         Assert.True(interpreter.TryGetNextInstruction(out _));

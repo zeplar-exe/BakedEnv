@@ -1,7 +1,7 @@
 namespace BakedEnv.Interpreter.Instructions;
 
 /// <summary>
-/// A single instruction executed by the interpreter. Can be used during script debugging.
+/// A single instruction executed by the interpreter.
 /// </summary>
 public abstract class InterpreterInstruction
 {
@@ -11,7 +11,7 @@ public abstract class InterpreterInstruction
     public int SourceIndex { get; }
 
     /// <param name="sourceIndex">The source index of this instruction.</param>
-    protected InterpreterInstruction(int sourceIndex = 0)
+    protected InterpreterInstruction(int sourceIndex)
     {
         SourceIndex = sourceIndex;
     }

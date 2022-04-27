@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Instructions;
 
 namespace BakedEnv;
 
@@ -15,5 +16,10 @@ public class BakedMethod
     public BakedMethod()
     {
         Instructions = new List<InterpreterInstruction>();
+    }
+    
+    public BakedMethod(IEnumerable<InterpreterInstruction> instructions)
+    {
+        Instructions = new List<InterpreterInstruction>(instructions);
     }
 }
