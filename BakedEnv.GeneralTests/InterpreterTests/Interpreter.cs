@@ -1,5 +1,6 @@
 using System;
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
 using NUnit.Framework;
 
@@ -11,10 +12,10 @@ public class Interpreter
     [Test]
     public void TestPreparation()
     {
-        var interpreter = new BakedInterpreter();
         var source = new RawStringSource("Hello world!");
+        var interpreter = new BakedInterpreter()
+            .WithSource(source);
         
-        interpreter.WithSource(source);
         interpreter.Init();
         
         Assert.True(interpreter.TryGetNextInstruction(out _));

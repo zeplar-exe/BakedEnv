@@ -20,6 +20,15 @@ public abstract class InterpreterInstruction
     /// Execute this instruction inside of the provided scope.
     /// </summary>
     /// <param name="interpreter">The target interpreter.</param>
+    public virtual void Execute(BakedInterpreter interpreter)
+    {
+        Execute(interpreter, interpreter.Context);
+    }
+
+    /// <summary>
+    /// Execute this instruction inside of the provided scope.
+    /// </summary>
+    /// <param name="interpreter">The target interpreter.</param>
     /// <param name="scope">The contextual scope.</param>
     public abstract void Execute(BakedInterpreter interpreter, IBakedScope scope);
 }
