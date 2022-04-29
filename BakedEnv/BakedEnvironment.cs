@@ -29,12 +29,6 @@ public class BakedEnvironment
     public BakeType DefaultBakeType { get; set; }
     
     /// <summary>
-    /// <see cref="BakeErrorHandler"/> to assume when it is not specified during exeuction.
-    /// Default value (during construction) is <see cref="BakeErrorHandler.Continue">BakeErrorHandler.Continue</see>.
-    /// </summary>
-    public BakeErrorHandler DefaultErrorHandler { get; set; }
-    
-    /// <summary>
     /// <see cref="ApiStructure">ApiStructures</see> accessible during execution.
     /// </summary>
     public List<ApiStructure> ApiStructures { get; }
@@ -48,9 +42,12 @@ public class BakedEnvironment
         GlobalVariables = new Dictionary<string, BakedVariable>();
         ApiStructures = new List<ApiStructure>();
         DefaultBakeType = BakeType.Script;
-        DefaultErrorHandler = BakeErrorHandler.Continue;
     }
 
+    /// <summary>
+    /// Assign true and false to their respective variables.
+    /// </summary>
+    /// <returns></returns>
     public BakedEnvironment WithBooleanVariables()
     {
         GlobalVariables["true"] = new BakedVariable { Value = true };

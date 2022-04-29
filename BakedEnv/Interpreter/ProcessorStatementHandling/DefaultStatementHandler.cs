@@ -5,7 +5,7 @@ namespace BakedEnv.Interpreter.ProcessorStatementHandling;
 
 /// <summary>
 /// Default implementation of <see cref="IProcessorStatementHandler"/>.
-/// Handles <see cref="BakeType"/> and <see cref="BakeErrorHandler"/>.
+/// Handles <see cref="BakeType"/> and <see cref="InterpreterContext.NullReferenceErrorEnabled"/>.
 /// <br></br>
 /// Allows for disabling of said items via <see cref="DefaultStatementHandler.DisableStatement"/>.
 /// </summary>
@@ -48,7 +48,7 @@ public class DefaultStatementHandler : IProcessorStatementHandler
 
                 if (!Enum.TryParse<BakeType>(stringValue, out var bakeType))
                 {
-                    interpreter.ReportError(ProcessorHandleHelper.CreateInvalidEnumValueError<BakeErrorHandler>(instruction));
+                    interpreter.ReportError(ProcessorHandleHelper.CreateInvalidEnumValueError<BakeType>(instruction));
                     
                     return false;
                 }

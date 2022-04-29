@@ -257,6 +257,7 @@ public class BakedInterpreter
                 break;
             }
             case LexerTokenId.Alphabetic:
+            case LexerTokenId.AlphaNumeric:
             {
                 switch (first.ToString())
                 {
@@ -276,13 +277,20 @@ public class BakedInterpreter
                 
                 break;
             }
-            case LexerTokenId.AlphaNumeric:
-            {
-                break;
-            }
         }
         
         return instruction != null;
+    }
+    
+    /// <summary>
+    /// Assert whether the BakedInterpreter has been initialized,
+    /// following with an <see cref="InvalidOperationException"/> if it is not.
+    /// </summary>
+    public void AssertReady()
+    {
+        if (!IsReady)
+            throw new InvalidOperationException(
+                $"The interpreter has not been initialized. Try calling '{nameof(Init)}' or '{nameof(WithSource)}' first.");
     }
     
     private bool TryParseValue([NotNullWhen(true)] out object? value)
@@ -548,13 +556,6 @@ public class BakedInterpreter
             null,
             "Cannot access members of a null reference.",
             token.Span.Start);
-    }
-
-    private void AssertReady()
-    {
-        if (!IsReady)
-            throw new InvalidOperationException(
-                $"The interpreter has not been initialized. Try calling '{nameof(Init)}' or '{nameof(WithSource)}' first.");
     }
 
     private enum ParserState

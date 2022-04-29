@@ -20,6 +20,8 @@ public abstract class InterpreterInstruction
     /// Execute this instruction inside of the provided scope.
     /// </summary>
     /// <param name="interpreter">The target interpreter.</param>
+    /// <remarks>This overload implicitly passes the interpreter's context to
+    /// <see cref="Execute(BakedEnv.Interpreter.BakedInterpreter, BakedEnv.Interpreter.IBakedScope)"/></remarks>
     public virtual void Execute(BakedInterpreter interpreter)
     {
         Execute(interpreter, interpreter.Context);
