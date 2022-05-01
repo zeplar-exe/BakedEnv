@@ -1,5 +1,4 @@
 [BakeType: "Module"] # Tells the interpreter that this script returns a single table   
-[BakeErrorHandler: "Terminate"] # Terminate upon reaching an error instead of attempting to continue execution
 
 core_api = api("my_app.core")
 module_result = { }

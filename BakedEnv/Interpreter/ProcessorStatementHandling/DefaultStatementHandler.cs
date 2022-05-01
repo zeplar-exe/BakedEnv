@@ -59,19 +59,6 @@ public class DefaultStatementHandler : IProcessorStatementHandler
                 
                 break;
             }
-            case "NullReferenceError":
-            {
-                if (instruction.Value is not IBakedInteger bakedInteger)
-                {
-                    interpreter.ReportError(ProcessorHandleHelper.CreateIncorrectValueTypeError(instruction, "integer"));
-
-                    return false;
-                }
-
-                interpreter.Context.NullReferenceErrorEnabled = bakedInteger.GreaterThan(new BakedInteger(0));
-                
-                break;
-            }
         }
 
         return false;
