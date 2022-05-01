@@ -12,11 +12,7 @@ public class Interpreter
     [Test]
     public void TestPreparation()
     {
-        var source = new RawStringSource("Hello world!");
-        var interpreter = new BakedInterpreter()
-            .WithSource(source);
-        
-        interpreter.Init();
+        var interpreter = InitInterpreter(new RawStringSource("Hello world!"));
         
         Assert.True(interpreter.TryGetNextInstruction(out _));
     }
@@ -35,11 +31,7 @@ public class Interpreter
     [Test]
     public void TestVariableAssignment()
     {
-        var source = new RawStringSource("pizza = 1");
-        var interpreter = new BakedInterpreter()
-            .WithSource(source);
-        
-        interpreter.Init();
+        var interpreter = InitInterpreter(new RawStringSource("pizza = 1"));
         
         if (!interpreter.TryGetNextInstruction(out var instruction))
             Assert.Fail();
@@ -52,15 +44,34 @@ public class Interpreter
     [Test]
     public void TestMultipleVariableAssignment()
     {
-        var source = new RawStringSource("foo = 1 \n bar=2");
-        var interpreter = new BakedInterpreter()
-            .WithSource(source);
+        var interpreter = InitInterpreter(new RawStringSource("foo = 1 \n bar=2"));
+        
+        while (interpreter.TryGetNextInstruction(out var instruction))
+            instruction.Execute(interpreter);
+        
+        Assert.True(interpreter.Context.Variables["bar"].Equals(2));
+    }
+
+    [Test]
+    public void TestMultiAssignment()
+    {
+        var interpreter = InitInterpreter(new RawStringSource("foo = 1 \n foo=2"));
         
         interpreter.Init();
         
         while (interpreter.TryGetNextInstruction(out var instruction))
             instruction.Execute(interpreter);
         
-        Assert.True(interpreter.Context.Variables["bar"].Equals(2));
+        Assert.True(interpreter.Context.Variables["foo"].Equals(2));
+    }
+
+    private BakedInterpreter InitInterpreter(IBakedSource source)
+    {
+        var interpreter = new BakedInterpreter()
+            .WithSource(source);
+        
+        interpreter.Init();
+
+        return interpreter;
     }
 }
