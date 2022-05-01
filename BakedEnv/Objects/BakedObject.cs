@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace BakedEnv.Objects;
 
 /// <summary>
@@ -22,29 +20,30 @@ public abstract class BakedObject : IEquatable<BakedObject>
     public abstract bool TryInvoke(BakedObject[] parameters, out BakedObject? returnValue);
 
     /// <inheritdoc />
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as BakedObject);
-    }
+    public abstract override bool Equals(object? obj);
     
     /// <inheritdoc />
     public virtual bool Equals(BakedObject? other)
     {
         if (ReferenceEquals(null, other))
             return false;
-        
-        return ReferenceEquals(this, other) || (other.GetType() == GetType() && Equals(other));
+
+        return ReferenceEquals(this, other) ||
+               GetValue() == other.GetValue();
     }
 
     /// <inheritdoc />
     public abstract override int GetHashCode();
+
+    public abstract bool TryGetContainedObject(string name, out BakedObject? bakedObject);
+    public abstract bool TrySetContainedObject(string name, BakedObject? bakedObject);
 
     /// <summary>
     /// Attempt negation of this object.
     /// </summary>
     /// <param name="result">The negated form of this object.</param>
     /// <returns>Whether the object could be negated.</returns>
-    public virtual bool TryNegate([NotNullWhen(true)] out BakedObject? result) 
+    public virtual bool TryNegate(out BakedObject? result) 
     { 
         result = null;
         return false;
@@ -56,7 +55,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to add.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryAdd(BakedObject bakedObject, [NotNullWhen(true)] out BakedObject? result)
+    public virtual bool TryAdd(BakedObject bakedObject, out BakedObject? result)
     { 
         result = null;
         return false;
@@ -68,7 +67,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to subtract.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TrySubtract(BakedObject bakedObject, [NotNullWhen(true)] out BakedObject? result)
+    public virtual bool TrySubtract(BakedObject bakedObject, out BakedObject? result)
     { 
         result = null;
         return false;
@@ -80,7 +79,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to multiply with.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryMultiply(BakedObject bakedObject, [NotNullWhen(true)] out BakedObject? result)
+    public virtual bool TryMultiply(BakedObject bakedObject, out BakedObject? result)
     { 
         result = null;
         return false;
@@ -92,7 +91,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to exponentiate.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryExponent(BakedObject bakedObject, [NotNullWhen(true)] out BakedObject? result)
+    public virtual bool TryExponent(BakedObject bakedObject, out BakedObject? result)
     { 
         result = null;
         return false;
@@ -104,7 +103,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to divide from.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryDivide(BakedObject bakedObject, [NotNullWhen(true)] out BakedObject? result)
+    public virtual bool TryDivide(BakedObject bakedObject, out BakedObject? result)
     { 
         result = null;
         return false;
@@ -116,7 +115,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to perform module with.</param>
     /// <param name="result">The modulo result.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryModulus(BakedObject bakedObject, [NotNullWhen(true)] out BakedObject? result)
+    public virtual bool TryModulus(BakedObject bakedObject, out BakedObject? result)
     { 
         result = null;
         return false;
@@ -169,4 +168,7 @@ public abstract class BakedObject : IEquatable<BakedObject>
         result = false;
         return false;
     }
+
+    /// <inheritdoc />
+    public abstract override string ToString();
 }

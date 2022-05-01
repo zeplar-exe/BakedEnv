@@ -2,6 +2,7 @@
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
+using BakedEnv.Objects;
 using Jammo.ParserTools;
 using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tokenization;
@@ -20,7 +21,7 @@ public class BakedEnvironment
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
-    public Dictionary<string, BakedVariable> GlobalVariables { get; }
+    public Dictionary<string, BakedObject> GlobalVariables { get; }
     
     /// <summary>
     /// <see cref="BakeType"/> to assume when it is not specified during execution.
@@ -39,7 +40,7 @@ public class BakedEnvironment
     public BakedEnvironment()
     {
         GlobalMethods = new Dictionary<string, BakedMethod>();
-        GlobalVariables = new Dictionary<string, BakedVariable>();
+        GlobalVariables = new Dictionary<string, BakedObject>();
         ApiStructures = new List<ApiStructure>();
         DefaultBakeType = BakeType.Script;
     }
@@ -50,8 +51,8 @@ public class BakedEnvironment
     /// <returns></returns>
     public BakedEnvironment WithBooleanVariables()
     {
-        GlobalVariables["true"] = new BakedVariable { Value = true };
-        GlobalVariables["false"] = new BakedVariable { Value = false };
+        GlobalVariables["true"] = new BakedBoolean(true);
+        GlobalVariables["false"] = new BakedBoolean(false);
 
         return this;
     }

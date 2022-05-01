@@ -1,9 +1,11 @@
+using BakedEnv.Objects;
+
 namespace BakedEnv.Interpreter.Instructions;
 
 public class ProcessorStatementInstruction : InterpreterInstruction
 {
     public string Name { get; set; }
-    public object Value { get; set; }
+    public BakedObject Value { get; set; }
     
     public ProcessorStatementInstruction(int sourceIndex) : base(sourceIndex)
     {

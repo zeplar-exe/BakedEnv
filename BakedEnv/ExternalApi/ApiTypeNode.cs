@@ -5,7 +5,7 @@ namespace BakedEnv.ExternalApi;
 /// <summary>
 /// Root node for <see cref="ApiStructure">ApiStructures</see>.
 /// </summary>
-public class ApiTypeNode : IAccessible
+public class ApiTypeNode
 {
     /// <summary>
     /// Name of this ApiTypeNode.
@@ -32,16 +32,6 @@ public class ApiTypeNode : IAccessible
     /// <param name="name">Name of the method to get.</param>
     /// <returns>An <see cref="ApiMethodNode"/> with the given name, or null.</returns>
     public ApiMethodNode? GetMethod(string name) => MethodNodes.FirstOrDefault(p => p.Name == name);
-
-    object? IAccessible.GetPropertyValue(string name)
-    {
-        return GetProperty(name)?.Value.Value;
-    }
-    
-    MethodInfo? IAccessible.GetMethod(string name)
-    {
-        return GetMethod(name)?.Method;
-    }
 
     /// <summary>
     /// Instantiate an ApiTypeNode.

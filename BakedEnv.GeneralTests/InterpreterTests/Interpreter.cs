@@ -31,4 +31,36 @@ public class Interpreter
             interpreter.Init();
         });
     }
+
+    [Test]
+    public void TestVariableAssignment()
+    {
+        var source = new RawStringSource("pizza = 1");
+        var interpreter = new BakedInterpreter()
+            .WithSource(source);
+        
+        interpreter.Init();
+        
+        if (!interpreter.TryGetNextInstruction(out var instruction))
+            Assert.Fail();
+        
+        instruction.Execute(interpreter);
+        
+        Assert.True(interpreter.Context.Variables["pizza"].Equals(1));
+    }
+
+    [Test]
+    public void TestMultipleVariableAssignment()
+    {
+        var source = new RawStringSource("foo = 1 \n bar=2");
+        var interpreter = new BakedInterpreter()
+            .WithSource(source);
+        
+        interpreter.Init();
+        
+        while (interpreter.TryGetNextInstruction(out var instruction))
+            instruction.Execute(interpreter);
+        
+        Assert.True(interpreter.Context.Variables["bar"].Equals(2));
+    }
 }

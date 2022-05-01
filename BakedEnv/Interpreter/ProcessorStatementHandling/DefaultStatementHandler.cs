@@ -1,5 +1,7 @@
 using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Objects;
+using BakedEnv.Objects.Interfaces;
 
 namespace BakedEnv.Interpreter.ProcessorStatementHandling;
 
@@ -39,14 +41,14 @@ public class DefaultStatementHandler : IProcessorStatementHandler
         {
             case "BakeType":
             {
-                if (!instruction.Value.TryGetAs<string>(out var stringValue))
+                if (instruction.Value is not IBakedString stringValue)
                 {
                     interpreter.ReportError(ProcessorHandleHelper.CreateIncorrectValueTypeError<string>(instruction));
                     
                     return false;
                 }
 
-                if (!Enum.TryParse<BakeType>(stringValue, out var bakeType))
+                if (!Enum.TryParse<BakeType>(stringValue.ToString(), out var bakeType))
                 {
                     interpreter.ReportError(ProcessorHandleHelper.CreateInvalidEnumValueError<BakeType>(instruction));
                     
@@ -59,14 +61,14 @@ public class DefaultStatementHandler : IProcessorStatementHandler
             }
             case "NullReferenceError":
             {
-                if (!instruction.Value.IsWhole())
+                if (instruction.Value is not IBakedInteger bakedInteger)
                 {
                     interpreter.ReportError(ProcessorHandleHelper.CreateIncorrectValueTypeError(instruction, "integer"));
 
                     return false;
                 }
 
-                interpreter.Context.NullReferenceErrorEnabled = (int)instruction.Value > 0;
+                interpreter.Context.NullReferenceErrorEnabled = bakedInteger.GreaterThan(new BakedInteger(0));
                 
                 break;
             }

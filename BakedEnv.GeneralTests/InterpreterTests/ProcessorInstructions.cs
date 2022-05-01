@@ -24,7 +24,7 @@ public class ProcessorInstructions
         var processorInstruction = TestHelper.AssertIsType<ProcessorStatementInstruction>(instruction);
         processorInstruction.Execute(interpreter);
 
-        Assert.True((string)processorInstruction.Value == "SomeBakeType");
+        Assert.True(processorInstruction.Value.Equals("SomeBakeType"));
     }
     
     [Test]
@@ -43,8 +43,6 @@ public class ProcessorInstructions
         var processorInstruction = TestHelper.AssertIsType<ProcessorStatementInstruction>(instruction);
         processorInstruction.Execute(interpreter);
         
-        processorInstruction.Execute(interpreter);
-
         Assert.True(interpreter.Context.BakeType == BakeType.Module);
     }
 
