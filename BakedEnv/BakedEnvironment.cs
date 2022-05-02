@@ -15,10 +15,6 @@ namespace BakedEnv;
 public class BakedEnvironment
 {
     /// <summary>
-    /// Global methods accessible anywhere within an executed script.
-    /// </summary>
-    public Dictionary<string, BakedMethod> GlobalMethods { get; }
-    /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
     public Dictionary<string, BakedObject> GlobalVariables { get; }
@@ -39,7 +35,6 @@ public class BakedEnvironment
     /// </summary>
     public BakedEnvironment()
     {
-        GlobalMethods = new Dictionary<string, BakedMethod>();
         GlobalVariables = new Dictionary<string, BakedObject>();
         ApiStructures = new List<ApiStructure>();
         DefaultBakeType = BakeType.Script;
@@ -62,10 +57,13 @@ public class BakedEnvironment
     /// </summary>
     /// <param name="source">Implementation of an IBakedSource to interpret.</param>
     /// <returns>An enumeration of each instruction interpreted. Can be used for debugging purposes.</returns>
+    /// <remarks><see cref="BakedInterpreter.WithEnvironment"/> and
+    /// <see cref="BakedInterpreter.WithDefaultStatementHandler()"/> are used during initiation.</remarks>
     public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source)
     {
         var interpreter = new BakedInterpreter()
             .WithSource(source)
+            .WithEnvironment(this)
             .WithDefaultStatementHandler();
 
         interpreter.Init();
