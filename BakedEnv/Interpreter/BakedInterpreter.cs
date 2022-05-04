@@ -52,7 +52,7 @@ public class BakedInterpreter
     public bool SourceLocked { get; private set; }
     
     /// <summary>
-    /// Event invoked via <see cref="ReportError"/>. Retrieves error information during parsing or execution.
+    /// Event invoked via <see cref="ReportError(BakedError)"/>. Retrieves error information during parsing or execution.
     /// </summary>
     public event EventHandler<BakedError>? ErrorReported;
 
@@ -210,6 +210,8 @@ public class BakedInterpreter
     public bool TryGetNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
         AssertReady();
+
+        InvalidInstruction CreateInvalidInstruction() => new(Iterator.Current.Span.Start);
         
         instruction = null;
 
@@ -285,7 +287,7 @@ public class BakedInterpreter
                     {
                         if (!TryParseIdentifier(out var path))
                         {
-                            instruction = new InvalidInstruction(Iterator.Current.Span.Start);
+                            instruction = CreateInvalidInstruction();
 
                             break;
                         }
@@ -294,7 +296,7 @@ public class BakedInterpreter
                         
                         if (ErrorReporter.TestUnexpectedTokenTypeError(Iterator.Current, LexerTokenId.Equals))
                         {
-                            instruction = new InvalidInstruction(Iterator.Current.Span.Start);
+                            instruction = CreateInvalidInstruction();
 
                             break;
                         }
@@ -309,7 +311,7 @@ public class BakedInterpreter
                             }
                             else
                             {
-                                instruction = new InvalidInstruction(Iterator.Current.Span.Start);
+                                instruction = CreateInvalidInstruction();
 
                                 break;
                             }
@@ -322,7 +324,7 @@ public class BakedInterpreter
                                 
                                 if (!TryParseValue(out var value))
                                 {
-                                    instruction = new InvalidInstruction(Iterator.Current.Span.Start);
+                                    instruction = CreateInvalidInstruction();
 
                                     break;
                                 }
