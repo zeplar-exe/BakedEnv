@@ -20,7 +20,7 @@ public class VariableReference
             return;
 
         Name = array.Last();
-        Path = new ReadOnlyCollection<string>(array.Take(array.Length - 1).ToList());
+        Path = array.Take(array.Length - 1).ToList().AsReadOnly();
     }
     
     public bool TryGetValue(out BakedObject? bakedObject)

@@ -16,10 +16,11 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <summary>
     /// Attempt to invoke this object with a set of parameters.
     /// </summary>
+    /// <param name="interpreter"></param>
     /// <param name="scope">Target scope to invoke in.</param>
     /// <param name="returnValue">If invocation was successful, the return value (which may be null) is returned.</param>
     /// <returns>Whether the object could be invoked.</returns>
-    public abstract bool TryInvoke(IBakedScope scope, out BakedObject? returnValue);
+    public abstract bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue);
 
     /// <inheritdoc />
     public virtual bool Equals(BakedObject? other)

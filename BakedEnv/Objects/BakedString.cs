@@ -21,7 +21,7 @@ public class BakedString : BakedObject
     }
 
     /// <inheritdoc />
-    public override bool TryInvoke(IBakedScope scope, out BakedObject? returnValue)
+    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue)
     {
         returnValue = null;
         

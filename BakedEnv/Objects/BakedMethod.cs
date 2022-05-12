@@ -1,0 +1,64 @@
+using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Instructions;
+
+namespace BakedEnv.Objects;
+
+/// <summary>
+/// A defined method.
+/// </summary>
+public class BakedMethod : BakedObject
+{
+    /// <summary>
+    /// Expected parameters to use during invocation.
+    /// </summary>
+    public List<ParameterDefinition> ExpectedParameters { get; }
+    public List<InterpreterInstruction> Instructions { get; }
+
+    public BakedMethod(IEnumerable<ParameterDefinition> expectedParameters)
+    {
+        ExpectedParameters = expectedParameters.ToList();
+        Instructions = new List<InterpreterInstruction>();
+    }
+
+    /// <inheritdoc />
+    public override object? GetValue()
+    {
+        return null;
+    }
+
+    /// <inheritdoc />
+    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue)
+    {
+        returnValue = Invoke(interpreter, scope);
+
+        return true;
+    }
+    
+    public BakedObject Invoke(BakedInterpreter interpreter, IBakedScope scope)
+    {
+        foreach (var instruction in Instructions)
+        {
+            instruction.Execute(interpreter, scope);
+        }
+
+        return new BakedVoid();
+    }
+    
+    /// <inheritdoc />
+    public override bool TryGetContainedObject(string name, out BakedObject? bakedObject)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public override bool TrySetContainedObject(string name, BakedObject? bakedObject)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        throw new NotImplementedException();
+    }
+}
