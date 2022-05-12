@@ -11,6 +11,25 @@
       <PackageReference Include="CommandLineParser" Version="2.8.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Update="HelpTextResources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>HelpTextResources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="HelpTextResources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>HelpTextResources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BakedEnv\BakedEnv.csproj" />
+    </ItemGroup>
+
     <Target Name="RenameCopy" AfterTargets="AfterBuild">
         <Copy SourceFiles="$(OUTDIR)\BakedEnv.CLI.exe" DestinationFiles="$(OUTDIR)\ben.exe" />
         <Message Text="Renamed executable file." Importance="high" />
