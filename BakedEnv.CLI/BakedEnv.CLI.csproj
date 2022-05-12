@@ -7,6 +7,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    </ItemGroup>
+
     <Target Name="RenameCopy" AfterTargets="AfterBuild">
         <Copy SourceFiles="$(OUTDIR)\BakedEnv.CLI.exe" DestinationFiles="$(OUTDIR)\ben.exe" />
         <Message Text="Renamed executable file." Importance="high" />
