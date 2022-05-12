@@ -1,13 +1,10 @@
-using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Objects;
-using BakedEnv.Objects.Interfaces;
 
 namespace BakedEnv.Interpreter.ProcessorStatementHandling;
 
 /// <summary>
 /// Default implementation of <see cref="IProcessorStatementHandler"/>.
-/// Handles <see cref="BakeType"/> and <see cref="InterpreterContext.NullReferenceErrorEnabled"/>.
 /// <br></br>
 /// Allows for disabling of said items via <see cref="DefaultStatementHandler.DisableStatement"/>.
 /// </summary>
@@ -41,7 +38,7 @@ public class DefaultStatementHandler : IProcessorStatementHandler
         {
             case "BakeType":
             {
-                if (instruction.Value is not IBakedString stringValue)
+                if (instruction.Value is not BakedString stringValue)
                 {
                     interpreter.ReportError(ProcessorHandleHelper.CreateIncorrectValueTypeError<string>(instruction));
                     

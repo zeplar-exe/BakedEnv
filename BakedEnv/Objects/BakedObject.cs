@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter;
+
 namespace BakedEnv.Objects;
 
 /// <summary>
@@ -14,14 +16,11 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <summary>
     /// Attempt to invoke this object with a set of parameters.
     /// </summary>
-    /// <param name="parameters">Invocation parameters.</param>
+    /// <param name="scope">Target scope to invoke in.</param>
     /// <param name="returnValue">If invocation was successful, the return value (which may be null) is returned.</param>
     /// <returns>Whether the object could be invoked.</returns>
-    public abstract bool TryInvoke(BakedObject[] parameters, out BakedObject? returnValue);
+    public abstract bool TryInvoke(IBakedScope scope, out BakedObject? returnValue);
 
-    /// <inheritdoc />
-    public abstract override bool Equals(object? obj);
-    
     /// <inheritdoc />
     public virtual bool Equals(BakedObject? other)
     {
@@ -32,10 +31,20 @@ public abstract class BakedObject : IEquatable<BakedObject>
                GetValue() == other.GetValue();
     }
 
-    /// <inheritdoc />
-    public abstract override int GetHashCode();
-
+    /// <summary>
+    /// Attempt to get a child object by name.
+    /// </summary>
+    /// <param name="name">Child name to get.</param>
+    /// <param name="bakedObject">Value retrieved by name.</param>
+    /// <returns>Whether a child object was found.</returns>
     public abstract bool TryGetContainedObject(string name, out BakedObject? bakedObject);
+    
+    /// <summary>
+    /// Attempt to set a child object by name.
+    /// </summary>
+    /// <param name="name">Child name to set.</param>
+    /// <param name="bakedObject">Value to use for setting.</param>
+    /// <returns>Whether a child object was found.</returns>
     public abstract bool TrySetContainedObject(string name, BakedObject? bakedObject);
 
     /// <summary>

@@ -1,13 +1,13 @@
-using BakedEnv.Objects.Interfaces;
+using BakedEnv.Interpreter;
 
 namespace BakedEnv.Objects;
 
 /// <summary>
 /// A string value.
 /// </summary>
-public class BakedString : BakedObject, IBakedString
+public class BakedString : BakedObject
 {
-    private string Value { get; }
+    public string Value { get; }
 
     public BakedString(string value)
     {
@@ -21,7 +21,7 @@ public class BakedString : BakedObject, IBakedString
     }
 
     /// <inheritdoc />
-    public override bool TryInvoke(BakedObject[] parameters, out BakedObject? returnValue)
+    public override bool TryInvoke(IBakedScope scope, out BakedObject? returnValue)
     {
         returnValue = null;
         

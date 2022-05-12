@@ -5,7 +5,6 @@ using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
-using BakedEnv.Objects.Interfaces;
 using Jammo.ParserTools;
 using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tools;

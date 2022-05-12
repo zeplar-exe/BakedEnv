@@ -1,6 +1,5 @@
 using System.Numerics;
-using BakedEnv.Extensions;
-using BakedEnv.Objects.Interfaces;
+using BakedEnv.Interpreter;
 
 namespace BakedEnv.Objects;
 
@@ -8,9 +7,9 @@ namespace BakedEnv.Objects;
 /// An integer value.
 /// </summary>
 /// <remarks>Uses a <see cref="BigInteger"/> implicitly.</remarks>
-public class BakedInteger : BakedObject, IBakedInteger
+public class BakedInteger : BakedObject
 {
-    private BigInteger Value { get; }
+    public BigInteger Value { get; }
 
     public BakedInteger()
     {
@@ -80,7 +79,7 @@ public class BakedInteger : BakedObject, IBakedInteger
     }
 
     /// <inheritdoc />
-    public override bool TryInvoke(BakedObject[] parameters, out BakedObject? returnValue)
+    public override bool TryInvoke(IBakedScope scope, out BakedObject? returnValue)
     {
         returnValue = null;
         

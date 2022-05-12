@@ -1,13 +1,13 @@
-using BakedEnv.Objects.Interfaces;
+using BakedEnv.Interpreter;
 
 namespace BakedEnv.Objects;
 
 /// <summary>
 /// A boolean value.
 /// </summary>
-public class BakedBoolean : BakedObject, IBakedBoolean
+public class BakedBoolean : BakedObject
 {
-    private bool Value { get; }
+    public bool Value { get; }
 
     public BakedBoolean(bool value)
     {
@@ -21,7 +21,7 @@ public class BakedBoolean : BakedObject, IBakedBoolean
     }
 
     /// <inheritdoc />
-    public override bool TryInvoke(BakedObject[] parameters, out BakedObject? returnValue)
+    public override bool TryInvoke(IBakedScope scope, out BakedObject? returnValue)
     {
         returnValue = null;
         
