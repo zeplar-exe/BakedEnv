@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <Target Name="RenameCopy" AfterTargets="AfterBuild">
+        <Copy SourceFiles="$(OUTDIR)\BakedEnv.CLI.exe" DestinationFiles="$(OUTDIR)\ben.exe" />
+        <Message Text="Renamed executable file." Importance="high" />
+    </Target>
+
+</Project>
