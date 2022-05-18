@@ -20,7 +20,12 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="scope">Target scope to invoke in.</param>
     /// <param name="returnValue">If invocation was successful, the return value (which may be null) is returned.</param>
     /// <returns>Whether the object could be invoked.</returns>
-    public abstract bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue);
+    public virtual bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue)
+    {
+        returnValue = new BakedVoid();
+        
+        return false;
+    }
 
     /// <inheritdoc />
     public virtual bool Equals(BakedObject? other)
@@ -38,7 +43,12 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="name">Child name to get.</param>
     /// <param name="bakedObject">Value retrieved by name.</param>
     /// <returns>Whether a child object was found.</returns>
-    public abstract bool TryGetContainedObject(string name, out BakedObject? bakedObject);
+    public virtual bool TryGetContainedObject(string name, out BakedObject? bakedObject)
+    {
+        bakedObject = new BakedNull();
+        
+        return false;
+    }
     
     /// <summary>
     /// Attempt to set a child object by name.
@@ -46,7 +56,10 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="name">Child name to set.</param>
     /// <param name="bakedObject">Value to use for setting.</param>
     /// <returns>Whether a child object was found.</returns>
-    public abstract bool TrySetContainedObject(string name, BakedObject? bakedObject);
+    public virtual bool TrySetContainedObject(string name, BakedObject? bakedObject)
+    {
+        return false;
+    }
 
     /// <summary>
     /// Attempt negation of this object.

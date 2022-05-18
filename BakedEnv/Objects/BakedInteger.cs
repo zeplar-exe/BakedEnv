@@ -65,28 +65,6 @@ public class BakedInteger : BakedObject
     }
 
     /// <inheritdoc />
-    public override bool TryGetContainedObject(string name, out BakedObject? bakedObject)
-    {
-        bakedObject = null;
-        
-        return false;
-    }
-    
-    /// <inheritdoc />
-    public override bool TrySetContainedObject(string name, BakedObject? bakedObject)
-    {
-        return false;
-    }
-
-    /// <inheritdoc />
-    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue)
-    {
-        returnValue = null;
-        
-        return false;
-    }
-
-    /// <inheritdoc />
     /// <remarks>Only supports primitive numeric types and <see cref="BigInteger"/>.</remarks>
     public override bool Equals(object? obj)
     {

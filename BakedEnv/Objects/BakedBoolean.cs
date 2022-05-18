@@ -21,14 +21,6 @@ public class BakedBoolean : BakedObject
     }
 
     /// <inheritdoc />
-    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue)
-    {
-        returnValue = null;
-        
-        return false;
-    }
-
-    /// <inheritdoc />
     public override bool Equals(object? obj)
     {
         return Value.Equals(obj);
@@ -49,21 +41,7 @@ public class BakedBoolean : BakedObject
     {
         return Value.GetHashCode();
     }
-
-    /// <inheritdoc />
-    public override bool TryGetContainedObject(string name, out BakedObject? bakedObject)
-    {
-        bakedObject = null;
-        
-        return false;
-    }
     
-    /// <inheritdoc />
-    public override bool TrySetContainedObject(string name, BakedObject? bakedObject)
-    {
-        return false;
-    }
-
     /// <inheritdoc />
     public override string ToString()
     {

@@ -27,7 +27,7 @@ public class BakedMethod : BakedObject
     }
 
     /// <inheritdoc />
-    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject? returnValue)
+    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject returnValue)
     {
         returnValue = Invoke(interpreter, scope);
 
@@ -43,22 +43,10 @@ public class BakedMethod : BakedObject
 
         return new BakedVoid();
     }
-    
-    /// <inheritdoc />
-    public override bool TryGetContainedObject(string name, out BakedObject? bakedObject)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public override bool TrySetContainedObject(string name, BakedObject? bakedObject)
-    {
-        throw new NotImplementedException();
-    }
 
     /// <inheritdoc />
     public override string ToString()
     {
-        throw new NotImplementedException();
+        return string.Empty;
     }
 }
