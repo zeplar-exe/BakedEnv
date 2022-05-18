@@ -1,5 +1,3 @@
-using BakedEnv.Interpreter;
-
 namespace BakedEnv.Objects;
 
 public class BakedVoid : BakedObject

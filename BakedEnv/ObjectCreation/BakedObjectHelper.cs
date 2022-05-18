@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using BakedEnv.Objects;
 
 namespace BakedEnv.ObjectCreation;

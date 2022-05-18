@@ -3,9 +3,6 @@ using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
-using Jammo.ParserTools;
-using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tokenization;
 
 namespace BakedEnv;
 
