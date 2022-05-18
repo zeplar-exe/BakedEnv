@@ -35,7 +35,7 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
     }
 
     var environment = new BakedEnvironment();
-    environment.Invoke(source);
+    environment.Invoke(source, AutoExecutionMode.BeforeYield);
 
     return 0;
 }

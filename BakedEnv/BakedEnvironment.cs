@@ -29,15 +29,18 @@ public class BakedEnvironment
     /// <see cref="ApiStructure">ApiStructures</see> accessible during execution.
     /// </summary>
     public List<ApiStructure> ApiStructures { get; }
+    
+    public List<IErrorHandler> ErrorHandlers { get; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
     /// </summary>
     public BakedEnvironment()
     {
+        DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
         ApiStructures = new List<ApiStructure>();
-        DefaultBakeType = BakeType.Script;
+        ErrorHandlers = new List<IErrorHandler>();
     }
 
     /// <summary>
@@ -51,26 +54,42 @@ public class BakedEnvironment
 
         return this;
     }
-    
+
+    public BakedEnvironment WithErrorHandler(IErrorHandler errorHandler)
+    {
+        ErrorHandlers.Add(errorHandler);
+
+        return this;
+    }
+
     /// <summary>
     /// Begin interpreting an <see cref="IBakedSource"/> .
     /// </summary>
     /// <param name="source">Implementation of an IBakedSource to interpret.</param>
+    /// <param name="executionMode"><see cref="AutoExecutionMode"/> used during invocation.</param>
     /// <returns>An enumeration of each instruction interpreted. Can be used for debugging purposes.</returns>
     /// <remarks><see cref="BakedInterpreter.WithEnvironment"/> and
     /// <see cref="BakedInterpreter.WithDefaultStatementHandler()"/> are used during initiation.</remarks>
-    public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source)
+    public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source, AutoExecutionMode executionMode)
     {
         var interpreter = new BakedInterpreter()
-            .WithSource(source)
             .WithEnvironment(this)
-            .WithDefaultStatementHandler();
-
+            .WithDefaultStatementHandler()
+            .WithSource(source);
+        
         interpreter.Init();
         
         // TODO: Global method to get api structure by name
 
         while (interpreter.TryGetNextInstruction(out var instruction))
+        {
+            if (executionMode == AutoExecutionMode.BeforeYield)
+                instruction.Execute(interpreter);
+            
             yield return instruction;
+            
+            if (executionMode == AutoExecutionMode.AfterYield)
+                instruction.Execute(interpreter);
+        }
     }
 }
