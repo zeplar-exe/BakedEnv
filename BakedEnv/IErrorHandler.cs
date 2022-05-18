@@ -1,8 +1,8 @@
-using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter;
 
 namespace BakedEnv;
 
 public interface IErrorHandler
 {
-    public bool Handle(InvalidInstruction instruction);
+    public void HandleError(BakedError error, BakedInterpreter interpreter);
 }

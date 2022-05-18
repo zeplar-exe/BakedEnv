@@ -55,9 +55,9 @@ public class BakedEnvironment
         return this;
     }
 
-    public BakedEnvironment WithErrorHandler(IErrorHandler errorHandler)
+    public BakedEnvironment WithErrorHandlers(params IErrorHandler[] errorHandler)
     {
-        ErrorHandlers.Add(errorHandler);
+        ErrorHandlers.AddRange(errorHandler);
 
         return this;
     }
@@ -77,8 +77,10 @@ public class BakedEnvironment
             .WithDefaultStatementHandler()
             .WithSource(source);
         
-        interpreter.Init();
+        interpreter.ErrorReported += (sender, error) => ErrorHandlers.ForEach(e => e.HandleError(error, interpreter));
         
+        interpreter.Init();
+
         // TODO: Global method to get api structure by name
 
         while (interpreter.TryGetNextInstruction(out var instruction))
