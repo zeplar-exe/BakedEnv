@@ -23,58 +23,56 @@ public class VariableReference
         Path = array.Take(array.Length - 1).ToList().AsReadOnly();
     }
     
-    public bool TryGetValue(out BakedObject? bakedObject)
+    public BakedObject GetValue()
     {
-        bakedObject = null;
-
         if (Path.Count == 0)
-            return false;
+            return new BakedNull();
         
         if (Path.Count > 1)
         {
             var first = Path.First();
             
-            BakedObject? targetObject = null;
+            BakedObject targetObject = new BakedNull();
             
-            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
-                return false;
+            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject!) ?? false)
+                return new BakedNull();
 
-            if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject) ?? false)
-                return false;
+            if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject!) ?? false)
+                return new BakedNull();
 
             foreach (var part in Path.Skip(1))
             {
-                if (targetObject?.TryGetContainedObject(part, out var contained) ?? false)
+                if (targetObject.TryGetContainedObject(part, out var contained))
                 {
                     targetObject = contained;
                 }
                 else
                 {
-                    return false;
+                    return new BakedNull();
                 }
             }
 
-            if (targetObject!.TryGetContainedObject(Name, out bakedObject))
+            if (targetObject!.TryGetContainedObject(Name, out var bakedObject))
             {
-                return true;
+                return bakedObject;
             }
 
-            return false;
+            return new BakedNull();
         }
         else
         {
-            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject) ?? false)
+            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out var bakedObject) ?? false)
             {
-                return true;
+                return bakedObject;
             }
             
             if (Interpreter.Context?.Variables.TryGetValue(Name, out bakedObject) ?? false)
             {
-                return true;
+                return bakedObject;
             }
         }
 
-        return false;
+        return new BakedNull();
     }
 
     public bool TrySetValue(BakedObject value)

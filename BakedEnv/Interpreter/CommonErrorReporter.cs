@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Jammo.ParserTools.Lexing;
 
 namespace BakedEnv.Interpreter;
@@ -11,11 +12,13 @@ internal class CommonErrorReporter
         Interpreter = interpreter;
     }
     
-    public bool TestUnexpectedTokenTypeError(LexerToken token, params LexerTokenId[] expected)
+    public bool TestUnexpectedTokenType(LexerToken token, [NotNullWhen(true)] out BakedError? error, params LexerTokenId[] expected)
     {
+        error = null;
+        
         if (!expected.Any(token.Is))
         {
-            ReportUnexpectedTokenType(token, expected);
+            error = ReportUnexpectedTokenType(token, expected);
 
             return true;
         }
@@ -23,19 +26,19 @@ internal class CommonErrorReporter
         return false;
     }
     
-    public void ReportUnexpectedTokenType(LexerToken token, params LexerTokenId[] expected)
+    public BakedError ReportUnexpectedTokenType(LexerToken token, params LexerTokenId[] expected)
     {
         var expectedText = string.Join(", ", expected);
 
-        Interpreter.ReportError(
+        return Interpreter.ReportError(
             null,
             $"Unexpected token. Expected enum '{expectedText}', got '{token.Id.ToString()}'.",
             token.Span.Start);
     }
 
-    public void ReportInvalidValue(LexerToken token)
+    public BakedError ReportInvalidValue(LexerToken token)
     {
-        Interpreter.ReportError(
+        return Interpreter.ReportError(
             null, 
             "Expected a value (string, number, variable).",
             token.Span.Start);
