@@ -30,38 +30,40 @@ public class Interpreter
     [Test]
     public void TestVariableAssignment()
     {
-        var interpreter = InitInterpreter(new RawStringSource("pizza = 1"));
+        var environment = new BakedEnvironment();
+
+        environment.WithExitHandlers(new ExitHandler(delegate(BakedInterpreter interpreter)
+        {
+            Assert.True(interpreter.Context.Variables["pizza"].Equals(1));
+        }));
         
-        if (!interpreter.TryGetNextInstruction(out var instruction))
-            Assert.Fail();
-        
-        instruction.Execute(interpreter);
-        
-        Assert.True(interpreter.Context.Variables["pizza"].Equals(1));
+        environment.Invoke(new RawStringSource("pizza = 1"));
     }
 
     [Test]
     public void TestMultipleVariableAssignment()
     {
-        var interpreter = InitInterpreter(new RawStringSource("foo = 1 \n bar=2"));
+        var environment = new BakedEnvironment();
+
+        environment.WithExitHandlers(new ExitHandler(delegate(BakedInterpreter interpreter)
+        {
+            Assert.True(interpreter.Context.Variables["bar"].Equals(2));
+        }));
         
-        while (interpreter.TryGetNextInstruction(out var instruction))
-            instruction.Execute(interpreter);
-        
-        Assert.True(interpreter.Context.Variables["bar"].Equals(2));
+        environment.Invoke(new RawStringSource("foo = 1 \n bar=2"));
     }
 
     [Test]
     public void TestMultiAssignment()
     {
-        var interpreter = InitInterpreter(new RawStringSource("foo = 1 \n foo=2"));
+        var environment = new BakedEnvironment();
+
+        environment.WithExitHandlers(new ExitHandler(delegate(BakedInterpreter interpreter)
+        {
+            Assert.True(interpreter.Context.Variables["foo"].Equals(2));
+        }));
         
-        interpreter.Init();
-        
-        while (interpreter.TryGetNextInstruction(out var instruction))
-            instruction.Execute(interpreter);
-        
-        Assert.True(interpreter.Context.Variables["foo"].Equals(2));
+        environment.Invoke(new RawStringSource("foo = 1 \n foo=2"));
     }
 
     private BakedInterpreter InitInterpreter(IBakedSource source)

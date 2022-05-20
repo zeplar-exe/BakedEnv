@@ -1,4 +1,5 @@
-﻿using BakedEnv.ExternalApi;
+﻿using System.Collections;
+using BakedEnv.ExternalApi;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
@@ -11,6 +12,8 @@ namespace BakedEnv;
 /// </summary>
 public class BakedEnvironment
 {
+    public BakedInterpreter Interpreter { get; private set; }
+
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
@@ -27,6 +30,8 @@ public class BakedEnvironment
     /// </summary>
     public List<ApiStructure> ApiStructures { get; }
     
+    public List<IExitHandler> ExitHandlers { get; }
+
     public List<IErrorHandler> ErrorHandlers { get; }
 
     /// <summary>
@@ -37,7 +42,22 @@ public class BakedEnvironment
         DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
         ApiStructures = new List<ApiStructure>();
+        ExitHandlers = new List<IExitHandler>();
         ErrorHandlers = new List<IErrorHandler>();
+
+        WithDefaultInterpreter();
+    }
+
+    public BakedEnvironment WithDefaultInterpreter()
+    {
+        return WithInterpreter(new BakedInterpreter().WithEnvironment(this).WithDefaultStatementHandler());
+    }
+
+    public BakedEnvironment WithInterpreter(BakedInterpreter interpreter)
+    {
+        Interpreter = interpreter;
+
+        return this;
     }
 
     /// <summary>
@@ -59,6 +79,18 @@ public class BakedEnvironment
         return this;
     }
 
+    public BakedEnvironment WithExitHandlers(params IExitHandler[] exitHandlers)
+    {
+        ExitHandlers.AddRange(exitHandlers);
+
+        return this;
+    }
+
+    public void Invoke(IBakedSource source)
+    {
+        _ = Invoke(source, AutoExecutionMode.AfterYield);
+    }
+
     /// <summary>
     /// Begin interpreting an <see cref="IBakedSource"/> .
     /// </summary>
@@ -67,7 +99,7 @@ public class BakedEnvironment
     /// <returns>An enumeration of each instruction interpreted. Can be used for debugging purposes.</returns>
     /// <remarks><see cref="BakedInterpreter.WithEnvironment"/> and
     /// <see cref="BakedInterpreter.WithDefaultStatementHandler()"/> are used during initiation.</remarks>
-    public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source, AutoExecutionMode executionMode)
+    public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source, AutoExecutionMode executionMode = AutoExecutionMode.AfterYield)
     {
         var interpreter = new BakedInterpreter()
             .WithEnvironment(this)
@@ -90,5 +122,7 @@ public class BakedEnvironment
             if (executionMode == AutoExecutionMode.AfterYield)
                 instruction.Execute(interpreter);
         }
+        
+        interpreter.TearDown();
     }
 }
