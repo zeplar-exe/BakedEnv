@@ -1,6 +1,8 @@
 using System;
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
+using BakedEnv.Objects;
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -52,6 +54,28 @@ public class Interpreter
         session.ExecuteUntilEnd();
 
         Assert.True(session.Interpreter.Context.Variables["foo"].Equals(2));
+    }
+
+    [Test]
+    public void TestMethod()
+    {
+        var target = 0;
+        var testAction = new ActionInstruction((_, _) => target = 1);
+        var testMethod = new BakedMethod(Array.Empty<ParameterDefinition>());
+        testMethod.Instructions.Add(testAction);
+
+        var environment = new BakedEnvironment
+        {
+            GlobalVariables =
+            {
+                ["foo"] = testMethod
+            }
+        };
+        
+        var session = environment.CreateSession(new RawStringSource("foo()")).Init();
+        session.ExecuteUntilEnd();
+        
+        Assert.True(target == 1);
     }
 
     private BakedInterpreter InitInterpreter(IBakedSource source)

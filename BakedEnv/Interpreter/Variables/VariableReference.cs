@@ -24,10 +24,7 @@ public class VariableReference
     
     public BakedObject GetValue()
     {
-        if (Path.Count == 0)
-            return new BakedNull();
-        
-        if (Path.Count > 1)
+        if (Path.Count > 0)
         {
             var first = Path.First();
             
@@ -51,7 +48,7 @@ public class VariableReference
                 }
             }
 
-            if (targetObject!.TryGetContainedObject(Name, out var bakedObject))
+            if (targetObject.TryGetContainedObject(Name, out var bakedObject))
             {
                 return bakedObject;
             }

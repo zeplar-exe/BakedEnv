@@ -285,35 +285,51 @@ public class BakedInterpreter
                         }
 
                         SkipWhitespaceAndNewlinesReserved();
-                        
-                        if (ErrorReporter.TestUnexpectedTokenType(Iterator.Current, out var equalsError, 
-                                LexerTokenId.Equals))
-                        {
-                            instruction = new InvalidInstruction(equalsError.Value);
 
-                            break;
-                        }
-
-                        var referenceResult = TryGetVariableReference(path, out var reference);
-
-                        if (!referenceResult.Success)
-                        {
-                            if (path.Length == 1)
-                            {
-                                Context.Variables[path.First().ToString()] = new BakedString(string.Empty);
-
-                                reference = new VariableReference(path.Select(c => c.ToString()), this);
-                            }
-                            else
-                            {
-                                instruction = new InvalidInstruction(referenceResult.Error);
-
-                                break;
-                            }
-                        }
+                        var reference = GetVariableReference(path);
 
                         switch (Iterator.Current.Id)
                         {
+                            case LexerTokenId.LeftParenthesis:
+                                SkipWhitespaceAndNewlines();
+
+                                var valueExpected = true;
+                                var parameters = new List<BakedObject>();
+
+                                while (Iterator.TryMoveNext(out var next))
+                                {
+                                    switch (next.Id)
+                                    {
+                                        case LexerTokenId.RightParenthesis:
+                                            goto ParametersCompleted;
+                                        case LexerTokenId.Comma:
+                                            if (valueExpected)
+                                                parameters.Add(new BakedNull());
+                                            
+                                            valueExpected = true;
+                                            break;
+                                        default:
+                                            var valueResult = TryParseValue(out var parameter);
+
+                                            if (!valueResult.Success)
+                                            {
+                                                instruction = new InvalidInstruction(valueResult.Error);
+                                                
+                                                break;
+                                            }
+                                            
+                                            parameters.Add(parameter);
+                                            valueExpected = false;
+                                            
+                                            break;
+                                    }
+                                }
+                                
+                                ParametersCompleted:
+                                
+                                instruction = new ObjectInvocationInstruction(Iterator.Current.Span.Start, reference.GetValue(), parameters.ToArray());
+                                
+                                break;
                             case LexerTokenId.Equals:
                                 SkipWhitespaceAndNewlines();
 
@@ -334,7 +350,9 @@ public class BakedInterpreter
 
                                 break;
                             default:
-                                break; // ??
+                                instruction = new InvalidInstruction(new BakedError());
+
+                                break;
                         }
 
                         break;
@@ -373,16 +391,10 @@ public class BakedInterpreter
                 if (!identifierResult.Success)
                     return identifierResult;
 
-                var referenceResult = TryGetVariableReference(path, out var reference);
-                
-                if (referenceResult.Success)
-                {
-                    value = reference.GetValue();
-                    
-                    return new TryResult(true);
-                }
+                var reference = GetVariableReference(path);
+                value = reference.GetValue();
 
-                return new TryResult(false);
+                return new TryResult(true);
             }
             case LexerTokenId.Numeric:
             {
@@ -432,16 +444,9 @@ public class BakedInterpreter
         return new TryResult(false);
     }
     
-    private TryResult TryGetVariableReference(LexerToken[] path, out VariableReference reference)
+    private VariableReference GetVariableReference(LexerToken[] path)
     {
-        reference = new VariableReference(Array.Empty<string>(), this);
-
-        if (path.Length == 0)
-            return new TryResult(false);
-
-        reference = new VariableReference(path.Select(c => c.ToString()), this);
-
-        return new TryResult(true);
+        return new VariableReference(path.Select(c => c.ToString()), this);
     }
 
     private TryResult TryParseIdentifier(out LexerToken[] path)
