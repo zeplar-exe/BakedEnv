@@ -31,7 +31,7 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
     }
     else
     {
-        source = new RawStringSource(executeArgs.RawString!);
+        source = new RawStringSource(executeArgs.RawString ?? string.Empty);
     }
 
     var session = new BakedEnvironment().CreateSession(source).Init();
