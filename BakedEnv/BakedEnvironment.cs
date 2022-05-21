@@ -29,10 +29,6 @@ public class BakedEnvironment
     /// <see cref="ApiStructure">ApiStructures</see> accessible during execution.
     /// </summary>
     public List<ApiStructure> ApiStructures { get; }
-    
-    public List<IExitHandler> ExitHandlers { get; }
-
-    public List<IErrorHandler> ErrorHandlers { get; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
@@ -42,22 +38,6 @@ public class BakedEnvironment
         DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
         ApiStructures = new List<ApiStructure>();
-        ExitHandlers = new List<IExitHandler>();
-        ErrorHandlers = new List<IErrorHandler>();
-
-        WithDefaultInterpreter();
-    }
-
-    public BakedEnvironment WithDefaultInterpreter()
-    {
-        return WithInterpreter(new BakedInterpreter().WithEnvironment(this).WithDefaultStatementHandler());
-    }
-
-    public BakedEnvironment WithInterpreter(BakedInterpreter interpreter)
-    {
-        Interpreter = interpreter;
-
-        return this;
     }
 
     /// <summary>
@@ -72,57 +52,23 @@ public class BakedEnvironment
         return this;
     }
 
-    public BakedEnvironment WithErrorHandlers(params IErrorHandler[] errorHandler)
+    public ScriptSession CreateSession()
     {
-        ErrorHandlers.AddRange(errorHandler);
-
-        return this;
+        return CreateSession(new BakedInterpreter().WithDefaultStatementHandler());
+    }
+    
+    public ScriptSession CreateSession(BakedInterpreter interpreter)
+    {
+        return new ScriptSession(interpreter.WithEnvironment(this));
+    }
+    
+    public ScriptSession CreateSession(IBakedSource source)
+    {
+        return CreateSession(new BakedInterpreter().WithDefaultStatementHandler(), source);
     }
 
-    public BakedEnvironment WithExitHandlers(params IExitHandler[] exitHandlers)
+    public ScriptSession CreateSession(BakedInterpreter interpreter, IBakedSource source)
     {
-        ExitHandlers.AddRange(exitHandlers);
-
-        return this;
-    }
-
-    public void Invoke(IBakedSource source)
-    {
-        _ = Invoke(source, AutoExecutionMode.AfterYield);
-    }
-
-    /// <summary>
-    /// Begin interpreting an <see cref="IBakedSource"/> .
-    /// </summary>
-    /// <param name="source">Implementation of an IBakedSource to interpret.</param>
-    /// <param name="executionMode"><see cref="AutoExecutionMode"/> used during invocation.</param>
-    /// <returns>An enumeration of each instruction interpreted. Can be used for debugging purposes.</returns>
-    /// <remarks><see cref="BakedInterpreter.WithEnvironment"/> and
-    /// <see cref="BakedInterpreter.WithDefaultStatementHandler()"/> are used during initiation.</remarks>
-    public IEnumerable<InterpreterInstruction> Invoke(IBakedSource source, AutoExecutionMode executionMode = AutoExecutionMode.AfterYield)
-    {
-        var interpreter = new BakedInterpreter()
-            .WithEnvironment(this)
-            .WithDefaultStatementHandler()
-            .WithSource(source);
-        
-        interpreter.ErrorReported += (sender, error) => ErrorHandlers.ForEach(e => e.HandleError(error, interpreter));
-        
-        interpreter.Init();
-
-        // TODO: Global method to get api structure by name
-
-        while (interpreter.TryGetNextInstruction(out var instruction))
-        {
-            if (executionMode == AutoExecutionMode.BeforeYield)
-                instruction.Execute(interpreter);
-            
-            yield return instruction;
-            
-            if (executionMode == AutoExecutionMode.AfterYield)
-                instruction.Execute(interpreter);
-        }
-        
-        interpreter.TearDown();
+        return new ScriptSession(interpreter.WithEnvironment(this)).WithSource(source);
     }
 }

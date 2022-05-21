@@ -34,8 +34,10 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
         source = new RawStringSource(executeArgs.RawString!);
     }
 
-    var environment = new BakedEnvironment();
-    environment.Invoke(source, AutoExecutionMode.BeforeYield);
+    var session = new BakedEnvironment().CreateSession(source).Init();
+    var result = session.ExecuteUntilTermination();
+    
+    Console.WriteLine(result);
 
     return 0;
 }

@@ -30,40 +30,28 @@ public class Interpreter
     [Test]
     public void TestVariableAssignment()
     {
-        var environment = new BakedEnvironment();
+        var session = new BakedEnvironment().CreateSession(new RawStringSource("pizza = 1")).Init();
+        session.ExecuteUntilEnd();
 
-        environment.WithExitHandlers(new ExitHandler(delegate(BakedInterpreter interpreter)
-        {
-            Assert.True(interpreter.Context.Variables["pizza"].Equals(1));
-        }));
-        
-        environment.Invoke(new RawStringSource("pizza = 1"));
+        Assert.True(session.Interpreter.Context.Variables["pizza"].Equals(1));
     }
 
     [Test]
     public void TestMultipleVariableAssignment()
     {
-        var environment = new BakedEnvironment();
-
-        environment.WithExitHandlers(new ExitHandler(delegate(BakedInterpreter interpreter)
-        {
-            Assert.True(interpreter.Context.Variables["bar"].Equals(2));
-        }));
+        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n bar=2")).Init();
+        session.ExecuteUntilEnd();
         
-        environment.Invoke(new RawStringSource("foo = 1 \n bar=2"));
+        Assert.True(session.Interpreter.Context.Variables["bar"].Equals(2));
     }
 
     [Test]
     public void TestMultiAssignment()
     {
-        var environment = new BakedEnvironment();
+        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n foo=2")).Init();
+        session.ExecuteUntilEnd();
 
-        environment.WithExitHandlers(new ExitHandler(delegate(BakedInterpreter interpreter)
-        {
-            Assert.True(interpreter.Context.Variables["foo"].Equals(2));
-        }));
-        
-        environment.Invoke(new RawStringSource("foo = 1 \n foo=2"));
+        Assert.True(session.Interpreter.Context.Variables["foo"].Equals(2));
     }
 
     private BakedInterpreter InitInterpreter(IBakedSource source)
