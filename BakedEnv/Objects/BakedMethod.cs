@@ -38,6 +38,9 @@ public class BakedMethod : BakedObject
     {
         foreach (var instruction in Instructions)
         {
+            if (instruction is IScriptTermination termination)
+                return termination.ReturnValue;
+            
             instruction.Execute(interpreter, scope);
         }
 

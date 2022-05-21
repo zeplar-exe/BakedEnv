@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using BakedEnv.ExternalApi;
-using BakedEnv.Interpreter;
-using BakedEnv.Interpreter.Instructions;
+﻿using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
 
@@ -24,11 +21,6 @@ public class BakedEnvironment
     /// Default value (during construction) is <see cref="BakeType.Script">BakeType.Script</see>.
     /// </summary>
     public BakeType DefaultBakeType { get; set; }
-    
-    /// <summary>
-    /// <see cref="ApiStructure">ApiStructures</see> accessible during execution.
-    /// </summary>
-    public List<ApiStructure> ApiStructures { get; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
@@ -37,7 +29,6 @@ public class BakedEnvironment
     {
         DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
-        ApiStructures = new List<ApiStructure>();
     }
 
     /// <summary>
