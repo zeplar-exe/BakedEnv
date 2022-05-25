@@ -61,7 +61,7 @@ public class Interpreter
     {
         var target = 0;
         var testAction = new ActionInstruction((_, _) => target = 1);
-        var testMethod = new BakedMethod(Array.Empty<ParameterDefinition>());
+        var testMethod = new BakedMethod(Array.Empty<string>());
         testMethod.Instructions.Add(testAction);
 
         var environment = new BakedEnvironment

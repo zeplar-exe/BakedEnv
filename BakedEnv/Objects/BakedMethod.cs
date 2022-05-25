@@ -6,17 +6,17 @@ namespace BakedEnv.Objects;
 /// <summary>
 /// A defined method.
 /// </summary>
-public class BakedMethod : BakedObject
+public class BakedMethod : BakedObject, IBakedCallable
 {
     /// <summary>
     /// Expected parameters to use during invocation.
     /// </summary>
-    public List<ParameterDefinition> ExpectedParameters { get; }
+    public List<string> ParameterNames { get; }
     public List<InterpreterInstruction> Instructions { get; }
 
-    public BakedMethod(IEnumerable<ParameterDefinition> expectedParameters)
+    public BakedMethod(IEnumerable<string> parameterNames)
     {
-        ExpectedParameters = expectedParameters.ToList();
+        ParameterNames = parameterNames.ToList();
         Instructions = new List<InterpreterInstruction>();
     }
 
@@ -26,16 +26,16 @@ public class BakedMethod : BakedObject
         return null;
     }
 
-    /// <inheritdoc />
-    public override bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject returnValue)
+    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, IBakedScope scope)
     {
-        returnValue = Invoke(interpreter, scope);
+        for (var paramIndex = 0; paramIndex < parameters.Length && paramIndex < ParameterNames.Count; paramIndex++)
+        {
+            var param = parameters[paramIndex];
+            var paramName = ParameterNames[paramIndex];
 
-        return true;
-    }
-    
-    public BakedObject Invoke(BakedInterpreter interpreter, IBakedScope scope)
-    {
+            scope.Variables[paramName] = param;
+        }
+        
         foreach (var instruction in Instructions)
         {
             if (instruction is IScriptTermination termination)

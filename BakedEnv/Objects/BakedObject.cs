@@ -13,20 +13,6 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <returns>The raw value of this object, or null.</returns>
     public abstract object? GetValue();
 
-    /// <summary>
-    /// Attempt to invoke this object with a set of parameters.
-    /// </summary>
-    /// <param name="interpreter"></param>
-    /// <param name="scope">Target scope to invoke in.</param>
-    /// <param name="returnValue">If invocation was successful, the return value (which may be null) is returned.</param>
-    /// <returns>Whether the object could be invoked.</returns>
-    public virtual bool TryInvoke(BakedInterpreter interpreter, IBakedScope scope, out BakedObject returnValue)
-    {
-        returnValue = new BakedVoid();
-        
-        return false;
-    }
-
     /// <inheritdoc />
     public virtual bool Equals(BakedObject? other)
     {
