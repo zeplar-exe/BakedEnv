@@ -326,8 +326,15 @@ public class BakedInterpreter
                                 }
                                 
                                 ParametersCompleted:
+
+                                if (reference.GetValue() is not IBakedCallable callable)
+                                {
+                                    instruction = new InvalidInstruction(new BakedError());
+
+                                    break;
+                                }
                                 
-                                instruction = new ObjectInvocationInstruction(Iterator.Current.Span.Start, reference.GetValue(), parameters.ToArray());
+                                instruction = new ObjectInvocationInstruction(Iterator.Current.Span.Start, callable, parameters.ToArray());
                                 
                                 break;
                             case LexerTokenId.Equals:
