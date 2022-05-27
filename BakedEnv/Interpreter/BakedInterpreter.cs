@@ -412,12 +412,13 @@ public class BakedInterpreter
             case LexerTokenId.Quote:
             case LexerTokenId.DoubleQuote:
             {
+                var quoteType = Iterator.Current.Id;
                 var builder = new StringBuilder();
                 var escaped = false;
                 
                 while (Iterator.TryMoveNext(out var next))
                 {
-                    if (next.Id is LexerTokenId.DoubleQuote or LexerTokenId.Quote && !escaped)
+                    if (next.Id == quoteType && !escaped)
                     {
                         Iterator.Skip();
                         break;
