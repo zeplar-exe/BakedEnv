@@ -409,6 +409,7 @@ public class BakedInterpreter
 
                 return new TryResult(true);
             }
+            case LexerTokenId.Quote:
             case LexerTokenId.DoubleQuote:
             {
                 var builder = new StringBuilder();
@@ -416,7 +417,7 @@ public class BakedInterpreter
                 
                 while (Iterator.TryMoveNext(out var next))
                 {
-                    if (next.Is(LexerTokenId.DoubleQuote) && !escaped)
+                    if (next.Id is LexerTokenId.DoubleQuote or LexerTokenId.Quote && !escaped)
                     {
                         Iterator.Skip();
                         break;
