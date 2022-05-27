@@ -5,8 +5,15 @@ namespace BakedEnv.Objects;
 /// </summary>
 public class BakedString : BakedObject
 {
+    /// <summary>
+    /// Raw value of this object.
+    /// </summary>
     public string Value { get; }
 
+    /// <summary>
+    /// Initialize a BakedString with an initial value.
+    /// </summary>
+    /// <param name="value">Initial value.</param>
     public BakedString(string value)
     {
         Value = value;
@@ -39,7 +46,12 @@ public class BakedString : BakedObject
         return false;
     }
 
-    public BakedString Add(BakedString bakedString) => new(Value + bakedString.Value);
+    /// <summary>
+    /// Append <paramref name="other"/> to this string.
+    /// </summary>
+    /// <param name="other">String to append.</param>
+    /// <returns>The resulting concatenated string.</returns>
+    public BakedString Add(BakedString other) => new(Value + other.Value);
 
     /// <inheritdoc />
     public override int GetHashCode()

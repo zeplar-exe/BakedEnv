@@ -8,43 +8,90 @@ namespace BakedEnv.Objects;
 /// <remarks>Uses a <see cref="BigInteger"/> implicitly.</remarks>
 public class BakedInteger : BakedObject
 {
+    /// <summary>
+    /// BigInteger value of this object.
+    /// </summary>
     public BigInteger Value { get; }
 
+    /// <summary>
+    /// Initialize a BakedInteger.
+    /// </summary>
     public BakedInteger()
     {
         Value = BigInteger.Zero;
     }
     
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="value">Initial value.</param>
     public BakedInteger(BigInteger value)
     {
         Value = value;
     }
 
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="ulongValue">Initial value.</param>
+    /// <remarks>The initial value is converted/initialized as a BigInteger.</remarks>
     public BakedInteger(ulong ulongValue)
     {
         Value = ulongValue;
     }
     
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="longValue">Initial value.</param>
+    /// <remarks>The initial value is converted/initialized as a BigInteger.</remarks>
     public BakedInteger(long longValue)
     {
         Value = longValue;
     }
     
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="decimalValue">Initial value.</param>
+    /// <remarks>The initial value is converted/initialized as a BigInteger.
+    /// Floating point types are truncated.</remarks>
     public BakedInteger(decimal decimalValue)
     {
         Value = new BigInteger(decimalValue);
     }
 
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="doubleValue">Initial value.</param>
+    /// <remarks>The initial value is converted/initialized as a BigInteger.
+    /// Floating point types are truncated.</remarks>
     public BakedInteger(double doubleValue)
     {
         Value = new BigInteger(doubleValue);
     }
     
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="floatValue">Initial value.</param>
+    /// <remarks>The initial value is converted/initialized as a BigInteger.
+    /// Floating point types are truncated.</remarks>
     public BakedInteger(float floatValue)
     {
         Value = new BigInteger(floatValue);
     }
 
+    /// <summary>
+    /// Initialize a BakedInteger with an initial value.
+    /// </summary>
+    /// <param name="stringValue">Initial value.</param>
+    /// <remarks>The initial value is converted/initialized as a BigInteger.
+    /// <br/>
+    /// Conversion is attempted is the following order:
+    /// <see cref="BigInteger"/> > <see cref="decimal"/> > <see cref="double"/> > <see cref="float"/><br/>
+    /// If conversion is unsuccessful, the default value of 0 is used.</remarks>
     public BakedInteger(string stringValue)
     {
         if (BigInteger.TryParse(stringValue, out var value))
@@ -92,8 +139,11 @@ public class BakedInteger : BakedObject
 
         return true;
     }
-
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// Negate this integer.
+    /// </summary>
+    /// <returns>A negative version of this integer.</returns>
     public BakedInteger Negate() => new(-Value);
 
     /// <inheritdoc />
@@ -110,8 +160,12 @@ public class BakedInteger : BakedObject
 
         return false;
     }
-
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// Add <paramref name="other"/> to this integer.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>The resulting integer value.</returns>
     public BakedInteger Add(BakedInteger other) => new(Value + other.Value);
 
     /// <inheritdoc />
@@ -128,8 +182,12 @@ public class BakedInteger : BakedObject
 
         return false;
     }
-
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// Subtract <paramref name="other"/> from this integer.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>The resulting integer value.</returns>
     public BakedInteger Subtract(BakedInteger other) => new(Value - other.Value);
 
     /// <inheritdoc />
@@ -147,7 +205,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Multiply this integer by <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>The resulting integer value.</returns>
     public BakedInteger Multiply(BakedInteger other) => new(Value * other.Value);
 
     /// <inheritdoc />
@@ -165,7 +227,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Raise this integer by <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>The resulting integer value.</returns>
     public BakedInteger Exponent(BakedInteger other)
     {
         var integer = Value;
@@ -193,7 +259,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Divide this integer by <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>The resulting integer value.</returns>
     public BakedInteger Divide(BakedInteger other) => new(Value / other.Value);
 
     /// <inheritdoc />
@@ -211,7 +281,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Apply a modulo operation in this integer by <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>The resulting integer value.</returns>
     public BakedInteger Modulus(BakedInteger other) => new(Value % other.Value);
 
     /// <inheritdoc />
@@ -229,7 +303,12 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// Determine if this integer is less than <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>Whether this integer is less than <paramref name="other"/>.</returns>
     public bool LessThan(BakedInteger other) => Value < other.Value;
 
     /// <inheritdoc />
@@ -247,7 +326,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determine if this integer is greater than <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>Whether this integer is greater than <paramref name="other"/>.</returns>
     public bool GreaterThan(BakedInteger other) => Value > other.Value;
 
     /// <inheritdoc />
@@ -265,7 +348,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determine if this integer is less than or equal to <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>Whether this integer is less than or equal to <paramref name="other"/>.</returns>
     public bool LessThanOrEqual(BakedInteger other) => Value <= other.Value;
 
     /// <inheritdoc />
@@ -283,7 +370,11 @@ public class BakedInteger : BakedObject
         return false;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Determine if this integer is greater than or equal to <paramref name="other"/>.
+    /// </summary>
+    /// <param name="other">Right operand integer.</param>
+    /// <returns>Whether this integer is greater than or equal to <paramref name="other"/>.</returns>
     public bool GreaterThanOrEqual(BakedInteger other) => Value >= other.Value;
 
     /// <inheritdoc />

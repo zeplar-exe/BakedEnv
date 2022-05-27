@@ -32,6 +32,10 @@ public class BakedBoolean : BakedObject
         return true;
     }
 
+    /// <summary>
+    /// Negate this boolean.
+    /// </summary>
+    /// <returns>Negated boolean object.</returns>
     public BakedBoolean Negate() => new(!Value);
 
     /// <inheritdoc />
