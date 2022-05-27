@@ -9,7 +9,7 @@ var parserResult = Parser.Default.ParseArguments<CommandArgs, CommandArgs.Execut
 parserResult.MapResult(
     (CommandArgs options) => ParseMainArgs(options),
     (CommandArgs.ExecuteArgs options) => ParseExecuteArgs(options),
-    errors => 1);
+    _ => 1);
 
 int ParseMainArgs(CommandArgs mainArgs)
 {

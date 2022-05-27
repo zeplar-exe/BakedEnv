@@ -15,6 +15,12 @@ public class BakedVoid : BakedObject
     }
 
     /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return int.MinValue;
+    }
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return "void";

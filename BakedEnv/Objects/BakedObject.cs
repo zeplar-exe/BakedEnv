@@ -12,14 +12,22 @@ public abstract class BakedObject : IEquatable<BakedObject>
     public abstract object? GetValue();
 
     /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as BakedObject);
+    }
+
+    /// <inheritdoc />
     public virtual bool Equals(BakedObject? other)
     {
         if (ReferenceEquals(null, other))
             return false;
 
-        return ReferenceEquals(this, other) ||
-               GetValue() == other.GetValue();
+        return ReferenceEquals(this, other) || GetHashCode() == other.GetHashCode();
     }
+
+    /// <inheritdoc />
+    public abstract override int GetHashCode();
 
     /// <summary>
     /// Attempt to get a child object by name.

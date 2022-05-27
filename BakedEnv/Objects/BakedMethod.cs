@@ -33,6 +33,12 @@ public class BakedMethod : BakedObject, IBakedCallable
         return null;
     }
 
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Instructions.GetHashCode();
+    }
+
     /// <summary>
     /// Invoke this method.
     /// </summary>
