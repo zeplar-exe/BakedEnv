@@ -34,10 +34,19 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
         source = new RawStringSource(executeArgs.RawString ?? string.Empty);
     }
 
-    var session = new BakedEnvironment().CreateSession(source).Init();
-    var result = session.ExecuteUntilTermination();
-    
-    Console.WriteLine(result);
+    if (!executeArgs.Debug)
+    {
+        var session = new BakedEnvironment().CreateSession(source).Init();
+        var result = session.ExecuteUntilTermination();
+
+        Console.WriteLine(result);
+    }
+    else
+    {
+        using var session = new DebugSession(source);
+
+        session.Start();
+    }
 
     return 0;
 }
