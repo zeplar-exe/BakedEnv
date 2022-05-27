@@ -18,6 +18,8 @@ public class ProcessorInstructions
         
         if (processorStatement == null)
             Assert.Fail();
+        
+        processorStatement!.Execute(session.Interpreter);
 
         Assert.True(processorStatement!.Value.Equals("SomeBakeType"));
     }
@@ -33,6 +35,8 @@ public class ProcessorInstructions
         if (processorStatement == null)
             Assert.Fail();
         
+        processorStatement!.Execute(session.Interpreter);
+        
         Assert.True(session.Interpreter.Context!.BakeType == BakeType.Module);
     }
 
@@ -44,9 +48,12 @@ public class ProcessorInstructions
         var session = new BakedEnvironment()
             .CreateSession(new RawStringSource($"[    BakeType: \t \"{nameof(BakeType.Module)}\" \n ]"))
             .Init();
+        session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
 
         if (processorStatement == null)
             Assert.Fail();
+        
+        processorStatement!.Execute(session.Interpreter);
 
         Assert.True(session.Interpreter.Context!.BakeType == BakeType.Module);
     }
