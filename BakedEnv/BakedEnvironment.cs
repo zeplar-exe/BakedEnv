@@ -9,8 +9,6 @@ namespace BakedEnv;
 /// </summary>
 public class BakedEnvironment
 {
-    public BakedInterpreter Interpreter { get; private set; }
-
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
@@ -29,18 +27,6 @@ public class BakedEnvironment
     {
         DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
-    }
-
-    /// <summary>
-    /// Assign true and false to their respective variables.
-    /// </summary>
-    /// <returns></returns>
-    public BakedEnvironment WithBooleanVariables()
-    {
-        GlobalVariables["true"] = new BakedBoolean(true);
-        GlobalVariables["false"] = new BakedBoolean(false);
-
-        return this;
     }
 
     public ScriptSession CreateSession()
