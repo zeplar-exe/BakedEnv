@@ -15,6 +15,9 @@ public class CommandArgs
             HelpText = "ExecuteRawString", ResourceType = typeof(HelpTextResources))]
         public string? RawString { get; set; }
         
+        [Option('i', "interactive", HelpText = "ExecuteInteractive", ResourceType = typeof(HelpTextResources))]
+        public bool Interactive { get; set; }
+        
         [Option('d', "debug", HelpText = "ExecuteDebug", ResourceType = typeof(HelpTextResources))]
         public bool Debug { get; set; }
     }

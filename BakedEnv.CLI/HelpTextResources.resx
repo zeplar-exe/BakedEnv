@@ -30,4 +30,7 @@
     <data name="ExecuteDebug" xml:space="preserve">
         <value />
     </data>
+    <data name="ExecuteInteractive" xml:space="preserve">
+        <value />
+    </data>
 </root>

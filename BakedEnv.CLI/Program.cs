@@ -6,7 +6,7 @@ using CommandLine;
 
 var parserResult = Parser.Default.ParseArguments<CommandArgs, CommandArgs.ExecuteArgs>(args);
 
-parserResult.MapResult(
+return parserResult.MapResult(
     (CommandArgs options) => ParseMainArgs(options),
     (CommandArgs.ExecuteArgs options) => ParseExecuteArgs(options),
     errors => 1);
@@ -34,18 +34,24 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
         source = new RawStringSource(executeArgs.RawString ?? string.Empty);
     }
 
-    if (!executeArgs.Debug)
+    if (executeArgs.Interactive)
+    {
+        using var session = new InteractiveSession();
+        
+        session.Start();
+    }
+    else if (executeArgs.Debug)
+    {
+        using var session = new DebugSession(source);
+
+        session.Start();
+    }
+    else
     {
         var session = new BakedEnvironment().CreateSession(source).Init();
         var result = session.ExecuteUntilTermination();
 
         Console.WriteLine(result);
-    }
-    else
-    {
-        using var session = new DebugSession(source);
-
-        session.Start();
     }
 
     return 0;

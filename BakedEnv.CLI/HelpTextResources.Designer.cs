@@ -29,7 +29,7 @@ namespace BakedEnv.CLI {
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public HelpTextResources() {
+        internal HelpTextResources() {
         }
         
         /// <summary>
@@ -84,6 +84,15 @@ namespace BakedEnv.CLI {
         public static string ExecuteFilePath {
             get {
                 return ResourceManager.GetString("ExecuteFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ExecuteInteractive {
+            get {
+                return ResourceManager.GetString("ExecuteInteractive", resourceCulture);
             }
         }
         
