@@ -1,4 +1,5 @@
 using System;
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
@@ -76,6 +77,16 @@ public class Interpreter
         session.ExecuteUntilEnd();
         
         Assert.True(target == 1);
+    }
+
+    [Test]
+    public void TestReadOnlyVariable()
+    {
+        var environment = new BakedEnvironment().WithReadOnlyVariable("Foo", new BakedInteger(1));
+        var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
+        session.ExecuteUntilEnd();
+        
+        Assert.True(environment.ReadOnlyGlobalVariables["Foo"].Equals(1));
     }
 
     private BakedInterpreter InitInterpreter(IBakedSource source)

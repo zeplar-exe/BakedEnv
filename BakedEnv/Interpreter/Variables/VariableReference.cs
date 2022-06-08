@@ -27,13 +27,15 @@ public class VariableReference
         if (Path.Count > 0)
         {
             var first = Path.First();
-            
-            BakedObject targetObject = new BakedNull();
-            
-            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject!) ?? false)
-                return new BakedNull();
 
-            if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject!) ?? false)
+            BakedObject? targetObject = new BakedNull();
+
+            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out targetObject) ?? false)
+                if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
+                    if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject) ?? false)
+                        return new BakedNull();
+
+            if (targetObject == null)
                 return new BakedNull();
 
             foreach (var part in Path.Skip(1))
@@ -57,7 +59,12 @@ public class VariableReference
         }
         else
         {
-            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out var bakedObject) ?? false)
+            if (Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(Name, out var bakedObject) ?? false)
+            {
+                return bakedObject;
+            }
+            
+            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject) ?? false)
             {
                 return bakedObject;
             }
@@ -78,12 +85,13 @@ public class VariableReference
             var first = Path.First();
 
             BakedObject? targetObject = null;
+
+            if (Interpreter.Environment.ReadOnlyGlobalVariables.ContainsKey(first))
+                return false;
             
             if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
-                return false;
-
-            if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject) ?? false)
-                return false;
+                if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject) ?? false)
+                    return false;
 
             foreach (var part in Path.Skip(1))
             {

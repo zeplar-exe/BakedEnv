@@ -14,4 +14,26 @@ public static class BakedEnvironmentExtensions
 
         return environment;
     }
+    
+    public static BakedEnvironment WithReadOnlyBooleanVariables(this BakedEnvironment environment)
+    {
+        environment.ReadOnlyGlobalVariables["true"] = new BakedBoolean(true);
+        environment.ReadOnlyGlobalVariables["false"] = new BakedBoolean(false);
+
+        return environment;
+    }
+
+    public static BakedEnvironment WithNullVariable(this BakedEnvironment environment)
+    {
+        environment.GlobalVariables["null"] = new BakedNull();
+
+        return environment;
+    }
+    
+    public static BakedEnvironment WithReadOnlyNullVariable(this BakedEnvironment environment)
+    {
+        environment.ReadOnlyGlobalVariables["null"] = new BakedNull();
+
+        return environment;
+    }
 }

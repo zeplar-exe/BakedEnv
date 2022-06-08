@@ -1,4 +1,5 @@
-﻿using BakedEnv.Interpreter;
+﻿using System.Collections.ObjectModel;
+using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
 
@@ -13,6 +14,7 @@ public class BakedEnvironment
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
     public Dictionary<string, BakedObject> GlobalVariables { get; }
+    public Dictionary<string, BakedObject> ReadOnlyGlobalVariables { get; }
     
     /// <summary>
     /// <see cref="BakeType"/> to assume when it is not specified during execution.
@@ -27,6 +29,21 @@ public class BakedEnvironment
     {
         DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
+        ReadOnlyGlobalVariables = new Dictionary<string, BakedObject>();
+    }
+
+    public BakedEnvironment WithVariable(string key, BakedObject value)
+    {
+        GlobalVariables[key] = value;
+
+        return this;
+    }
+    
+    public BakedEnvironment WithReadOnlyVariable(string key, BakedObject value)
+    {
+        ReadOnlyGlobalVariables[key] = value;
+
+        return this;
     }
 
     public ScriptSession CreateSession()
