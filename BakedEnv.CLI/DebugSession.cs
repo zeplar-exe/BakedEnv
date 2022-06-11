@@ -14,9 +14,9 @@ public class DebugSession : IDisposable
         Source = source;
     }
 
-    public void Start()
+    public int Run()
     {
-        
+        return 0;
     }
     
     public void Dispose()

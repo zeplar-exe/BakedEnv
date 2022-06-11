@@ -15,13 +15,16 @@ public class CommandArgs
             HelpText = "ExecuteRawString", ResourceType = typeof(HelpTextResources))]
         public string? RawString { get; set; }
         
-        [Option('i', "interactive", HelpText = "ExecuteInteractive", ResourceType = typeof(HelpTextResources))]
-        public bool Interactive { get; set; }
-        
         [Option('d', "debug", HelpText = "ExecuteDebug", ResourceType = typeof(HelpTextResources))]
         public bool Debug { get; set; }
         
         [Option('s', "silent", HelpText = "ExecuteSilent", ResourceType = typeof(HelpTextResources))]
         public bool Silent { get; set; }
+    }
+
+    [Verb("interactive", HelpText = "Interactive", ResourceType = typeof(HelpTextResources))]
+    public class InteractiveArgs
+    {
+        
     }
 }

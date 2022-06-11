@@ -1,14 +1,16 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using BakedEnv;
 using BakedEnv.CLI;
 using BakedEnv.Interpreter.Sources;
 using CommandLine;
 
-var parserResult = Parser.Default.ParseArguments<CommandArgs, CommandArgs.ExecuteArgs>(args);
+var parserResult = Parser.Default.ParseArguments<CommandArgs, CommandArgs.ExecuteArgs, CommandArgs.InteractiveArgs>(args);
 
 return parserResult.MapResult(
     (CommandArgs options) => ParseMainArgs(options),
     (CommandArgs.ExecuteArgs options) => ParseExecuteArgs(options),
+    (CommandArgs.InteractiveArgs options) => ParseInteractiveArgs(options),
     errors => 1);
 
 int ParseMainArgs(CommandArgs mainArgs)
@@ -33,20 +35,15 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
     {
         source = new RawStringSource(executeArgs.RawString ?? string.Empty);
     }
-
-    if (executeArgs.Interactive)
-    {
-        using var session = new InteractiveSession();
-        
-        session.Start();
-    }
-    else if (executeArgs.Debug)
+    
+    if (executeArgs.Debug)
     {
         using var session = new DebugSession(source);
 
-        session.Start();
+        return session.Run();
     }
-    else
+    
+    try
     {
         var session = new BakedEnvironment().CreateSession(source).Init();
         var result = session.ExecuteUntilTermination();
@@ -56,6 +53,36 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
             Console.WriteLine(result);
         }
     }
+    catch (Exception e)
+    {
+        var executable = new FileInfo(Assembly.GetExecutingAssembly().Location);
+        var logPath = Path.Join(executable.DirectoryName, "error.log");
+        using var logFile = File.CreateText(logPath);
+        
+        if (!executeArgs.Silent)
+        {
+            var errorBuilder = new StringBuilder()
+                .AppendLine("Something went wrong:")
+                .AppendLine("An exception of type '' occured.")
+                .AppendLine("The full error log can be found in the executable directory: ")
+                .Append(logPath)
+                .AppendLine("This is most likely a bug and should be reported on GitHub ")
+                .Append("(https://github.com/zeplar-exe/BakedEnv/issues).");
 
+            Console.WriteLine(errorBuilder.ToString());
+        }
+        
+        logFile.Write(e.ToString());
+
+        return 1;
+    }
+    
     return 0;
+}
+
+int ParseInteractiveArgs(CommandArgs.InteractiveArgs interactiveArgs)
+{
+    using var session = new InteractiveSession();
+        
+    return session.Run();
 }

@@ -61,7 +61,7 @@ namespace BakedEnv.CLI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Instant execution..
         /// </summary>
         public static string Execute {
             get {
@@ -70,7 +70,7 @@ namespace BakedEnv.CLI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Execute the given source in debug mode..
         /// </summary>
         public static string ExecuteDebug {
             get {
@@ -79,7 +79,7 @@ namespace BakedEnv.CLI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Provide a file path (absolute or relative) to read as an execution source..
         /// </summary>
         public static string ExecuteFilePath {
             get {
@@ -88,20 +88,29 @@ namespace BakedEnv.CLI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string ExecuteInteractive {
-            get {
-                return ResourceManager.GetString("ExecuteInteractive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Provide a raw string (&quot;abc123&quot;) as an execution source..
         /// </summary>
         public static string ExecuteRawString {
             get {
                 return ResourceManager.GetString("ExecuteRawString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execute the given source in silent mode (results are not displayed)..
+        /// </summary>
+        public static string ExecuteSilent {
+            get {
+                return ResourceManager.GetString("ExecuteSilent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start an interactive session..
+        /// </summary>
+        public static string Interactive {
+            get {
+                return ResourceManager.GetString("Interactive", resourceCulture);
             }
         }
     }
