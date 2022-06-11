@@ -51,7 +51,10 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
         var session = new BakedEnvironment().CreateSession(source).Init();
         var result = session.ExecuteUntilTermination();
 
-        Console.WriteLine(result);
+        if (!executeArgs.Silent)
+        {
+            Console.WriteLine(result);
+        }
     }
 
     return 0;

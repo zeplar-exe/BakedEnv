@@ -7,7 +7,6 @@ public class DebugSession : IDisposable
     private int InstructionCount { get; }
     private TimeSpan TotalExecutionTime { get; }
     
-    private IntPtr Screen { get; set; }
     private IBakedSource Source { get; }
 
     public DebugSession(IBakedSource source)
