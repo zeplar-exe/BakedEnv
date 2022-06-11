@@ -14,7 +14,7 @@
 
     <ItemGroup>
       <EmbeddedResource Update="HelpTextResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
+        <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>HelpTextResources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
@@ -31,4 +31,9 @@
       <ProjectReference Include="..\BakedEnv\BakedEnv.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="InteractiveResources\Screens\interactive_main.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

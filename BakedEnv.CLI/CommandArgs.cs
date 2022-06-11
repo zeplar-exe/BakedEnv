@@ -17,5 +17,14 @@ public class CommandArgs
         
         [Option('d', "debug", HelpText = "ExecuteDebug", ResourceType = typeof(HelpTextResources))]
         public bool Debug { get; set; }
+        
+        [Option('s', "silent", HelpText = "ExecuteSilent", ResourceType = typeof(HelpTextResources))]
+        public bool Silent { get; set; }
+    }
+
+    [Verb("interactive", HelpText = "Interactive", ResourceType = typeof(HelpTextResources))]
+    public class InteractiveArgs
+    {
+        
     }
 }

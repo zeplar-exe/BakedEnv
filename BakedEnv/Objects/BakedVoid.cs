@@ -23,6 +23,6 @@ public class BakedVoid : BakedObject
     /// <inheritdoc />
     public override string ToString()
     {
-        return "void";
+        return "";
     }
 }

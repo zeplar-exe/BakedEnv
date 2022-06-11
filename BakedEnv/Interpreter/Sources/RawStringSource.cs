@@ -7,9 +7,11 @@ public class RawStringSource : IBakedSource
 {
     private string String { get; }
 
-    public RawStringSource(string s)
+    public RawStringSource(string value)
     {
-        String = s;
+        ArgumentNullException.ThrowIfNull(value); 
+        
+        String = value;
     }
 
     /// <inheritdoc />

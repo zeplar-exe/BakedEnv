@@ -19,15 +19,21 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="Execute" xml:space="preserve">
-        <value />
+        <value>Instant execution.</value>
     </data>
     <data name="ExecuteFilePath" xml:space="preserve">
-        <value />
+        <value>Provide a file path (absolute or relative) to read as an execution source.</value>
     </data>
     <data name="ExecuteRawString" xml:space="preserve">
-        <value />
+        <value>Provide a raw string ("abc123") as an execution source.</value>
     </data>
     <data name="ExecuteDebug" xml:space="preserve">
-        <value />
+        <value>Execute the given source in debug mode.</value>
+    </data>
+    <data name="Interactive" xml:space="preserve">
+        <value>Start an interactive session.</value>
+    </data>
+    <data name="ExecuteSilent" xml:space="preserve">
+        <value>Execute the given source in silent mode (results are not displayed).</value>
     </data>
 </root>
