@@ -30,65 +30,6 @@ public class Interpreter
         });
     }
 
-    [Test]
-    public void TestVariableAssignment()
-    {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("pizza = 1")).Init();
-        session.ExecuteUntilEnd();
-
-        Assert.True(session.Interpreter.Context.Variables["pizza"].Equals(1));
-    }
-
-    [Test]
-    public void TestMultipleVariableAssignment()
-    {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n bar=2")).Init();
-        session.ExecuteUntilEnd();
-        
-        Assert.True(session.Interpreter.Context.Variables["bar"].Equals(2));
-    }
-
-    [Test]
-    public void TestMultiAssignment()
-    {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n foo=2")).Init();
-        session.ExecuteUntilEnd();
-
-        Assert.True(session.Interpreter.Context.Variables["foo"].Equals(2));
-    }
-
-    [Test]
-    public void TestMethod()
-    {
-        var target = 0;
-        var testAction = new ActionInstruction((_, _) => target = 1);
-        var testMethod = new BakedMethod(Array.Empty<string>());
-        testMethod.Instructions.Add(testAction);
-
-        var environment = new BakedEnvironment
-        {
-            GlobalVariables =
-            {
-                ["foo"] = testMethod
-            }
-        };
-        
-        var session = environment.CreateSession(new RawStringSource("foo()")).Init();
-        session.ExecuteUntilEnd();
-        
-        Assert.True(target == 1);
-    }
-
-    [Test]
-    public void TestReadOnlyVariable()
-    {
-        var environment = new BakedEnvironment().WithReadOnlyVariable("Foo", new BakedInteger(1));
-        var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
-        session.ExecuteUntilEnd();
-        
-        Assert.True(environment.ReadOnlyGlobalVariables["Foo"].Equals(1));
-    }
-
     private BakedInterpreter InitInterpreter(IBakedSource source)
     {
         var interpreter = new BakedInterpreter()
