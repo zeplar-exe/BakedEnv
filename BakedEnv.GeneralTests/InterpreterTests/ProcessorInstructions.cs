@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
-using BakedEnv.Objects;
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;

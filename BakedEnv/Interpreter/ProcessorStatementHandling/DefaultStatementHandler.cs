@@ -1,5 +1,4 @@
 using BakedEnv.Interpreter.Instructions;
-using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.ProcessorStatementHandling;
 
