@@ -5,8 +5,15 @@ namespace BakedEnv.Objects;
 /// </summary>
 public class BakedBoolean : BakedObject
 {
+    /// <summary>
+    /// The value of this boolean.
+    /// </summary>
     public bool Value { get; }
 
+    /// <summary>
+    /// Initialize a BakedBoolean with an initial value.
+    /// </summary>
+    /// <param name="value">The initial value.</param>
     public BakedBoolean(bool value)
     {
         Value = value;
