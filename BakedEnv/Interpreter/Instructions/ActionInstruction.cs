@@ -15,7 +15,7 @@ public class ActionInstruction : InterpreterInstruction
     /// </summary>
     /// <param name="action">Action to invoke during execution.</param>
     /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public ActionInstruction(Action<BakedInterpreter, IBakedScope> action, int sourceIndex) : base(sourceIndex)
+    public ActionInstruction(Action<BakedInterpreter, IBakedScope> action, int sourceIndex = -1) : base(sourceIndex)
     {
         Action = action;
     }
