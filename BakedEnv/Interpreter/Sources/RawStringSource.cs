@@ -7,6 +7,10 @@ public class RawStringSource : IBakedSource
 {
     private string String { get; }
 
+    /// <summary>
+    /// Initialize a RawStringSource with a string.
+    /// </summary>
+    /// <param name="value"></param>
     public RawStringSource(string value)
     {
         ArgumentNullException.ThrowIfNull(value); 

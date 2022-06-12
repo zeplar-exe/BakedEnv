@@ -12,16 +12,26 @@ public class FileSource : IBakedSource
     /// </summary>
     public FileInfo File { get; }
     /// <summary>
-    /// The encoding to use when translating from bytes to characters.
+    /// Encoding to use when translating from bytes to characters.
     /// </summary>
     public Encoding Encoding { get; }
 
+    /// <summary>
+    /// Initialize a FileSource with a raw file path and an encoding.
+    /// </summary>
+    /// <param name="filePath">The target file.</param>
+    /// <param name="encoding">Encoding to use when translating from bytes to characters.</param>
     public FileSource(string filePath, Encoding encoding)
     {
         File = new FileInfo(filePath);
         Encoding = encoding;
     }
     
+    /// <summary>
+    /// Initialize a FileSource with a FileInfo and an encoding.
+    /// </summary>
+    /// <param name="file">The target file.</param>
+    /// <param name="encoding">Encoding to use when translating from bytes to characters.</param>
     public FileSource(FileInfo file, Encoding encoding)
     {
         File = file;

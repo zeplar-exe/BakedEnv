@@ -7,6 +7,10 @@ public class StackSource : IBakedSource
 {
     private Stack<string> StringStack { get; }
 
+    /// <summary>
+    /// Initialize a StackSource with a string array/params.
+    /// </summary>
+    /// <param name="init"></param>
     public StackSource(params string[] init)
     {
         StringStack = new Stack<string>();
