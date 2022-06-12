@@ -12,17 +12,22 @@ public class BakedSourceImplementations
     [Test]
     public void TestStreamSource()
     {
-        const string TestString = "Hello world! I am foo, and this is my friend bar.";
+        var fullText = TestFileHelper.ReadRaw("source_test.txt");
+        var utf32Source = new StreamSource(TestFileHelper.CreateStream("source_test.txt"), Encoding.UTF32);
         
-        var utf8Source = new StreamSource(CreateStream(TestString), Encoding.UTF8);
-        var utf32Source = new StreamSource(CreateStream(TestString), Encoding.UTF32);
-        var asciiSource = new StreamSource(CreateStream(TestString), Encoding.ASCII);
-
-        var utf8Text = string.Concat(utf8Source.EnumerateCharacters());
         var utf32Text = string.Concat(utf32Source.EnumerateCharacters());
-        var asciiText = string.Concat(asciiSource.EnumerateCharacters());
         
-        Assert.True(AllEqual(utf8Text, utf32Text, asciiText, TestString));
+        Assert.True(AllEqual(utf32Text, fullText));
+    }
+
+    [Test]
+    public void TestFileSource()
+    {
+        var fullText = TestFileHelper.ReadRaw("source_test.txt");
+        var utf32File = new FileSource(TestFileHelper.GetRelativeFilePath("source_test.txt"), Encoding.UTF32);
+        var utf32Text = string.Concat(utf32File.EnumerateCharacters());
+        
+        Assert.True(AllEqual(utf32Text, fullText));
     }
     
     private bool AllEqual<T>(params T[] values) {
@@ -30,18 +35,5 @@ public class BakedSourceImplementations
             return true;
         
         return values.All(v => v?.Equals(values[0]) ?? false);    
-    }
-    
-    private static Stream CreateStream(string s)
-    {
-        var stream = new MemoryStream();
-        var writer = new StreamWriter(stream);
-        
-        writer.Write(s);
-        writer.Flush();
-        
-        stream.Position = 0;
-        
-        return stream;
     }
 }

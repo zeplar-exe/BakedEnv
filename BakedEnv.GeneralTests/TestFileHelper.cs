@@ -7,7 +7,12 @@ public static class TestFileHelper
 {
     public static string GetRelativeFilePath(string relative)
     {
-        return Path.Join(Directory.GetCurrentDirectory(), relative);
+        return Path.Join(Directory.GetCurrentDirectory(), "TestFiles", relative);
+    }
+    
+    public static Stream CreateStream(string relative)
+    {
+        return File.OpenRead(GetRelativeFilePath(relative));
     }
     
     public static string ReadRaw(string relative)
