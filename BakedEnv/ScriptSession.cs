@@ -6,19 +6,35 @@ using BakedEnv.Objects;
 
 namespace BakedEnv;
 
+/// <summary>
+/// Singular unit of a BakedEnv script session. 
+/// </summary>
 public class ScriptSession : IDisposable
 {
     private bool Disposed { get; set; }
-    // benchmarking
+    
+    /// <summary>
+    /// Interpreter used by the session.
+    /// </summary>
     public BakedInterpreter Interpreter { get; }
     
+    /// <summary>
+    /// Event which fires before the ScriptSession is disposed. Useful for last-minute cleanup.
+    /// </summary>
     public event EventHandler? OnDisposing;
 
+    /// <summary>
+    /// Initialize a ScriptSession with an interpreter.
+    /// </summary>
+    /// <param name="interpreter">The interpreter to use.</param>
     public ScriptSession(BakedInterpreter interpreter)
     {
         Interpreter = interpreter;
     }
     
+    /// <summary>
+    /// Init the ScriptSession (and Interpreter)
+    /// </summary>
     public ScriptSession Init()
     {
         Interpreter.Init();
@@ -26,6 +42,10 @@ public class ScriptSession : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Update the interpreter's IBakedSource.
+    /// </summary>
+    /// <param name="source">The new source.</param>
     public ScriptSession WithSource(IBakedSource source)
     {
         Interpreter.WithSource(source);
@@ -33,6 +53,10 @@ public class ScriptSession : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Execute instructions from the interpreter until an <see cref="IScriptTermination"/> is reached.
+    /// </summary>
+    /// <returns>The returned value or void.</returns>
     public BakedObject ExecuteUntilTermination()
     {
         IScriptTermination? termination = null;
@@ -48,11 +72,18 @@ public class ScriptSession : IDisposable
         return termination?.ReturnValue ?? new BakedVoid();
     }
 
+    /// <summary>
+    /// Execute instructions from the interpreter without regard for termination.
+    /// </summary>
     public void ExecuteUntilEnd()
     {
         ExecuteUntil(_ => false);
     }
 
+    /// <summary>
+    /// Execute instructions until the predicate returns true.
+    /// </summary>
+    /// <param name="predicate">Instruction conditional function.</param>
     public void ExecuteUntil(Func<InterpreterInstruction, bool> predicate)
     {
         AssertDisposed();
@@ -64,6 +95,12 @@ public class ScriptSession : IDisposable
         }
     }
 
+    /// <summary>
+    /// Enumerate instructions from the interpreter with an <see cref="AutoExecutionMode"/>, controlling
+    /// how execution is handled.
+    /// </summary>
+    /// <param name="executionMode"></param>
+    /// <returns>Enumeration of instructions from the interpreter.</returns>
     public IEnumerable<InterpreterInstruction> EnumerateInstructions(AutoExecutionMode executionMode = AutoExecutionMode.None)
     {
         AssertDisposed();
@@ -80,6 +117,11 @@ public class ScriptSession : IDisposable
         }
     }
 
+    /// <summary>
+    /// Attempt to get the next instruction.
+    /// </summary>
+    /// <param name="instruction">The output instruction.</param>
+    /// <returns>Whether the attempt was successful.</returns>
     public bool TryGetNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
         AssertDisposed();
@@ -87,6 +129,11 @@ public class ScriptSession : IDisposable
         return Interpreter.TryGetNextInstruction(out instruction);
     }
     
+    /// <summary>
+    /// Attempt to get and execute the next instruction.
+    /// </summary>
+    /// <param name="instruction">The output instruction.</param>
+    /// <returns>Whether the attempt was successful.</returns>
     public bool TryExecuteNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
         if (!TryGetNextInstruction(out instruction))
@@ -97,6 +144,10 @@ public class ScriptSession : IDisposable
         return true;
     }
 
+    /// <summary>
+    /// Dispose of the ScriptSession.
+    /// </summary>
+    /// <remarks>Invokes the <see cref="OnDisposing"/> event.</remarks>
     public void Dispose()
     {
         AssertDisposed();
