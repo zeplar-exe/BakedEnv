@@ -1,14 +1,31 @@
+using System.Collections.ObjectModel;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Variables;
 
+/// <summary>
+/// A 'reference' to variables within a BakedInterpreter.
+/// </summary>
 public class VariableReference
 {
     private BakedInterpreter Interpreter { get; }
     
+    /// <summary>
+    /// The final name of the references variable (a.b.c.Name)
+    /// </summary>
     public string Name { get; }
+    /// <summary>
+    /// The qualifying path of the referenced variable (path1.path2.path3...Name)
+    /// </summary>
+    /// <remarks>If the path is empty, the variable is assumed to be top-level.</remarks>
     public IReadOnlyCollection<string> Path { get; }
 
+    /// <summary>
+    /// Initialize a VariableReference with a full qualifying path.
+    /// </summary>
+    /// <param name="fullPath">The full path.</param>
+    /// <param name="interpreter">The target interpreter.</param>
+    /// <exception cref="ArgumentException">The full path is empty.</exception>
     public VariableReference(IEnumerable<string> fullPath, BakedInterpreter interpreter)
     {
         Interpreter = interpreter;
@@ -16,13 +33,45 @@ public class VariableReference
         var array = fullPath.ToArray();
         
         if (array.Length < 1)
-            return;
+            throw new ArgumentException("The full path cannot be empty.");
 
         Name = array.Last();
         Path = array.Take(array.Length - 1).ToList().AsReadOnly();
     }
     
-    public BakedObject GetValue(IBakedScope scope) // grab from current baked context
+    /// <summary>
+    /// Initialize a VariableReference.
+    /// </summary>
+    /// <param name="name">The referenced variable's name.</param>
+    /// <param name="path">The qualifying path/</param>
+    /// <param name="interpreter">The target interpreter.</param>
+    public VariableReference(string name, IEnumerable<string> path, BakedInterpreter interpreter)
+    {
+        Interpreter = interpreter;
+        
+        Name = name;
+        Path = path.ToList().AsReadOnly();
+    }
+    
+    /// <summary>
+    /// Initialize a top-level variable reference.
+    /// </summary>
+    /// <param name="name">The referenced variable name.</param>
+    /// <param name="interpreter">The target interpreter.</param>
+    public VariableReference(string name, BakedInterpreter interpreter)
+    {
+        Interpreter = interpreter;
+
+        Name = name;
+        Path = new List<string>().AsReadOnly();
+    }
+    
+    /// <summary>
+    /// Get the value (or null) of the referenced variable.
+    /// </summary>
+    /// <param name="scope">The target scope.</param>
+    /// <returns>The value (or null) of the referenced variable.</returns>
+    public BakedObject GetValue(IBakedScope scope)
     {
         if (Path.Count > 0)
         {
@@ -92,6 +141,12 @@ public class VariableReference
         return new BakedNull();
     }
 
+    /// <summary>
+    /// Attempt to set the referenced variable.
+    /// </summary>
+    /// <param name="scope">The target scope.</param>
+    /// <param name="value">Value to assign to the referenced variable.</param>
+    /// <returns>Whether the variable could be set (false if the variable is read-only or part of its path does not exist).</returns>
     public bool TrySetValue(IBakedScope scope, BakedObject value)
     {
         if (Path.Count > 0)
