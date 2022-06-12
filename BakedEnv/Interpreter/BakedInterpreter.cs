@@ -51,6 +51,9 @@ public class BakedInterpreter
     /// </summary>
     public event EventHandler<BakedError>? ErrorReported;
 
+    /// <summary>
+    /// Initialize a BakedInterpreter.
+    /// </summary>
     public BakedInterpreter()
     {
         ErrorReporter = new CommonErrorReporter(this);
