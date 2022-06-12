@@ -12,6 +12,9 @@ public class DefaultStatementHandler : IProcessorStatementHandler
 {
     private HashSet<string> Disabled { get; }
 
+    /// <summary>
+    /// Initialize a DefaultStatementHandler.
+    /// </summary>
     public DefaultStatementHandler()
     {
         Disabled = new HashSet<string>();
