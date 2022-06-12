@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
 
@@ -17,19 +18,18 @@ public class BakedEnvironment
     public Dictionary<string, BakedObject> ReadOnlyGlobalVariables { get; }
     
     /// <summary>
-    /// <see cref="BakeType"/> to assume when it is not specified during execution.
-    /// Default value (during construction) is <see cref="BakeType.Script">BakeType.Script</see>.
+    /// Processor statement handlers.
     /// </summary>
-    public BakeType DefaultBakeType { get; set; }
+    public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
     /// </summary>
     public BakedEnvironment()
     {
-        DefaultBakeType = BakeType.Script;
         GlobalVariables = new Dictionary<string, BakedObject>();
         ReadOnlyGlobalVariables = new Dictionary<string, BakedObject>();
+        ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
     }
 
     public BakedEnvironment WithVariable(string key, BakedObject value)
@@ -45,10 +45,21 @@ public class BakedEnvironment
 
         return this;
     }
+    
+    /// <summary>
+    /// Add an array of <see cref="IProcessorStatementHandler"/> to the interpreter.
+    /// </summary>
+    /// <param name="handlers">Handlers to add.</param>
+    public BakedEnvironment WithStatementHandlers(params IProcessorStatementHandler[] handlers)
+    {
+        ProcessorStatementHandlers.AddRange(handlers);
+
+        return this;
+    }
 
     public ScriptSession CreateSession()
     {
-        return CreateSession(new BakedInterpreter().WithDefaultStatementHandler());
+        return CreateSession(new BakedInterpreter());
     }
     
     public ScriptSession CreateSession(BakedInterpreter interpreter)
@@ -58,7 +69,7 @@ public class BakedEnvironment
     
     public ScriptSession CreateSession(IBakedSource source)
     {
-        return CreateSession(new BakedInterpreter().WithDefaultStatementHandler(), source);
+        return CreateSession(new BakedInterpreter(), source);
     }
 
     public ScriptSession CreateSession(BakedInterpreter interpreter, IBakedSource source)

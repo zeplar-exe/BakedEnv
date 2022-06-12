@@ -32,11 +32,6 @@ public class BakedInterpreter
     /// Externally accessible context of the interpreter. Can be used to edit variables and such at runtime.
     /// </summary>
     public InterpreterContext? Context { get; private set; }
-    
-    /// <summary>
-    /// Processor statement handlers.
-    /// </summary>
-    public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
 
     /// <summary>
     /// Informative property of whether the interpreter is ready for parsing.
@@ -61,7 +56,6 @@ public class BakedInterpreter
     public BakedInterpreter()
     {
         ErrorReporter = new CommonErrorReporter(this);
-        ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
     }
 
     /// <summary>
@@ -112,39 +106,7 @@ public class BakedInterpreter
 
         return this;
     }
-    
-    /// <summary>
-    /// Add a <see cref="DefaultStatementHandler"/> if it doesn't already exist.
-    /// </summary>
-    public BakedInterpreter WithDefaultStatementHandler()
-    {
-        WithDefaultStatementHandler(out _);
 
-        return this;
-    }
-
-    /// <summary>
-    /// Add a <see cref="DefaultStatementHandler"/> if it doesn't already exist.
-    /// </summary>
-    /// <param name="handler">Output of the created or existing <see cref="DefaultStatementHandler"/>.</param>
-    public BakedInterpreter WithDefaultStatementHandler(out DefaultStatementHandler handler)
-    {
-        handler = ProcessorStatementHandlers.GetOrAddByType(new DefaultStatementHandler());
-
-        return this;
-    }
-
-    /// <summary>
-    /// Add an array of <see cref="IProcessorStatementHandler"/> to the interpreter.
-    /// </summary>
-    /// <param name="handlers">Handlers to add.</param>
-    public BakedInterpreter WithStatementHandlers(params IProcessorStatementHandler[] handlers)
-    {
-        ProcessorStatementHandlers.AddRange(handlers);
-
-        return this;
-    }
-    
     /// <summary>
     /// Tear down values used for parsing. Resets the state.
     /// </summary>

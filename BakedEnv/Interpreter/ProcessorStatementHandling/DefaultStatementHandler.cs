@@ -36,26 +36,7 @@ public class DefaultStatementHandler : IProcessorStatementHandler
         
         switch (instruction.Name)
         {
-            case "BakeType":
-            {
-                if (instruction.Value is not BakedString stringValue)
-                {
-                    interpreter.ReportError(ProcessorHandleHelper.CreateIncorrectValueTypeError<string>(instruction));
-                    
-                    return false;
-                }
-
-                if (!Enum.TryParse<BakeType>(stringValue.ToString(), out var bakeType))
-                {
-                    interpreter.ReportError(ProcessorHandleHelper.CreateInvalidEnumValueError<BakeType>(instruction));
-                    
-                    return false;
-                }
-
-                interpreter.Context.BakeType = bakeType;
-                
-                break;
-            }
+            
         }
 
         return false;

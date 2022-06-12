@@ -15,7 +15,10 @@ public class ProcessorStatementInstruction : InterpreterInstruction
     /// <inheritdoc />
     public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
     {
-        foreach (var handler in interpreter.ProcessorStatementHandlers)
+        if (interpreter.Environment == null)
+            return;
+        
+        foreach (var handler in interpreter.Environment.ProcessorStatementHandlers)
         {
             if (handler.TryHandle(this, interpreter))
                 return;
