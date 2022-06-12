@@ -21,6 +21,7 @@ public class BakedInterpreter
     private CommonErrorReporter ErrorReporter { get; set; }
     private EnumerableIterator<LexerToken>? Iterator { get; set; }
     private StateMachine<ParserState>? State { get; set; }
+    private IBakedScope? CurrentScope { get; set; }
     
     /// <summary>
     /// The current environment used during interpretation.
@@ -76,6 +77,7 @@ public class BakedInterpreter
         Iterator = new Lexer(Source.EnumerateCharacters()).ToIterator();
         State = new StateMachine<ParserState>(ParserState.Root);
         Context = new InterpreterContext();
+        CurrentScope = Context;
         IsReady = true;
 
         SourceLocked = true;
@@ -152,6 +154,7 @@ public class BakedInterpreter
         State = null;
         Context = null;
         IsReady = false;
+        CurrentScope = null;
 
         SourceLocked = false;
     }
@@ -327,7 +330,7 @@ public class BakedInterpreter
                                 
                                 ParametersCompleted:
 
-                                if (reference.GetValue() is not IBakedCallable callable)
+                                if (reference.GetValue(CurrentScope) is not IBakedCallable callable)
                                 {
                                     instruction = new InvalidInstruction(new BakedError());
 
@@ -399,7 +402,7 @@ public class BakedInterpreter
                     return identifierResult;
 
                 var reference = GetVariableReference(path);
-                value = reference.GetValue();
+                value = reference.GetValue(CurrentScope);
 
                 return new TryResult(true);
             }

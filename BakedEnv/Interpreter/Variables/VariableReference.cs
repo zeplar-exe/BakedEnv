@@ -22,7 +22,7 @@ public class VariableReference
         Path = array.Take(array.Length - 1).ToList().AsReadOnly();
     }
     
-    public BakedObject GetValue()
+    public BakedObject GetValue(IBakedScope scope) // grab from current baked context
     {
         if (Path.Count > 0)
         {
@@ -30,10 +30,24 @@ public class VariableReference
 
             BakedObject? targetObject = new BakedNull();
 
-            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out targetObject) ?? false)
+            if (!Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(first, out targetObject) ?? false)
+            {
                 if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
-                    if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject) ?? false)
+                {
+                    var targetScope = scope;
+
+                    while (!scope.Variables.TryGetValue(first, out targetObject))
+                    {
+                        if (targetScope.Parent == null)
+                            return new BakedNull();
+                        
+                        targetScope = targetScope.Parent;
+                    }
+
+                    if (targetObject == null)
                         return new BakedNull();
+                }
+            }
 
             if (targetObject == null)
                 return new BakedNull();
@@ -78,7 +92,7 @@ public class VariableReference
         return new BakedNull();
     }
 
-    public bool TrySetValue(BakedObject value)
+    public bool TrySetValue(IBakedScope scope, BakedObject value)
     {
         if (Path.Count > 0)
         {
@@ -90,8 +104,20 @@ public class VariableReference
                 return false;
             
             if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
-                if (!Interpreter.Context?.Variables.TryGetValue(first, out targetObject) ?? false)
+            {
+                var targetScope = scope;
+
+                while (!scope.Variables.TryGetValue(first, out targetObject))
+                {
+                    if (targetScope.Parent == null)
+                        return false;
+                        
+                    targetScope = targetScope.Parent;
+                }
+
+                if (targetObject == null)
                     return false;
+            }
 
             foreach (var part in Path.Skip(1))
             {

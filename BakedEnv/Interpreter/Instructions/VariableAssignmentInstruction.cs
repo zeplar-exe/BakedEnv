@@ -14,9 +14,9 @@ public class VariableAssignmentInstruction : InterpreterInstruction
 
     public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
     {
-        if (!Reference.TrySetValue(Value))
+        if (!Reference.TrySetValue(scope, Value))
         {
-            // ??
+            // TODO: ??
         }
     }
 }
