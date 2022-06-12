@@ -1,15 +1,33 @@
+using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Instructions;
 
+/// <summary>
+/// Instruction used in the handling of processor statements.
+/// </summary>
+/// <remarks>Usually used internally through <see cref="IProcessorStatementHandler"/>.</remarks>
 public class ProcessorStatementInstruction : InterpreterInstruction
 {
+    /// <summary>
+    /// The key/name of this processor statement.
+    /// </summary>
     public string Name { get; set; }
+    /// <summary>
+    /// The value of this processor statement.
+    /// </summary>
     public BakedObject Value { get; set; }
     
-    public ProcessorStatementInstruction(int sourceIndex) : base(sourceIndex)
+    /// <summary>
+    /// Initialize a ProcessorStatementInstruction.
+    /// </summary>
+    /// <param name="name">The key/name of this processor statement.</param>
+    /// <param name="value">The value of this processor statement.</param>
+    /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
+    public ProcessorStatementInstruction(string name, BakedObject value, int sourceIndex) : base(sourceIndex)
     {
-        
+        Name = name;
+        Value = value;
     }
 
     /// <inheritdoc />

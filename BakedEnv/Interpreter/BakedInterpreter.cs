@@ -217,11 +217,7 @@ public class BakedInterpreter
                     break;
                 }
 
-                instruction = new ProcessorStatementInstruction(nameToken.Span.Start)
-                {
-                    Name = name,
-                    Value = value
-                };
+                instruction = new ProcessorStatementInstruction(name, value, nameToken.Span.Start);
                 
                 break;
             }
@@ -299,7 +295,7 @@ public class BakedInterpreter
                                     break;
                                 }
                                 
-                                instruction = new ObjectInvocationInstruction(Iterator.Current.Span.Start, callable, parameters.ToArray());
+                                instruction = new ObjectInvocationInstruction(callable, parameters.ToArray(), Iterator.Current.Span.Start);
                                 
                                 break;
                             case LexerTokenId.Equals:
@@ -314,11 +310,7 @@ public class BakedInterpreter
                                     break;
                                 }
 
-                                instruction = new VariableAssignmentInstruction(Iterator.Current.Span.Start)
-                                {
-                                    Reference = reference,
-                                    Value = value
-                                };
+                                instruction = new VariableAssignmentInstruction(reference, value, Iterator.Current.Span.Start);
 
                                 break;
                             default:
