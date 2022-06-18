@@ -140,19 +140,32 @@ public class VariableReference
         }
         else
         {
-            if (Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
+            foreach (var variableType in GetReferenceOrder())
             {
-                return true;
-            }
-            
-            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
-            {
-                return true;
-            }
-            
-            if (scope.Variables.TryGetValue(Name, out bakedObject!))
-            {
-                return true;
+                switch (variableType)
+                {
+                    case VariableReferenceType.Globals:
+                        if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
+                        {
+                            return true;
+                        }
+                        
+                        break;
+                    case VariableReferenceType.ReadOnlyGlobals:
+                        if (Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
+                        {
+                            return true;
+                        }
+                        
+                        break;
+                    case VariableReferenceType.ScopeVariables:
+                        if (scope.Variables.TryGetValue(Name, out bakedObject!))
+                        {
+                            return true;
+                        }
+                        
+                        break;
+                }
             }
         }
 
@@ -178,22 +191,33 @@ public class VariableReference
         var first = Path.First();
 
         BakedObject? targetObject = null;
-
-        if (!Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(first, out targetObject) ?? false)
+        
+        foreach (var variableType in GetReferenceOrder())
         {
-            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
+            switch (variableType)
             {
-                var targetScope = scope;
+                case VariableReferenceType.Globals:
+                    Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject);
+                        
+                    break;
+                case VariableReferenceType.ReadOnlyGlobals:
+                    Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(first, out targetObject);
+                        
+                    break;
+                case VariableReferenceType.ScopeVariables:
+                    var targetScope = scope;
 
-                while (!scope.Variables.TryGetValue(first, out targetObject))
-                {
-                    if (targetScope.Parent == null)
+                    while (!scope.Variables.TryGetValue(first, out targetObject))
                     {
-                        return false;
-                    }
+                        if (targetScope.Parent == null)
+                        {
+                            return false;
+                        }
 
-                    targetScope = targetScope.Parent;
-                }
+                        targetScope = targetScope.Parent;
+                    }
+                    
+                    break;
             }
         }
 
@@ -215,5 +239,27 @@ public class VariableReference
         bakedObject = targetObject;
 
         return true;
+    }
+
+    private VariableReferenceType[] GetReferenceOrder()
+    {
+        if (Interpreter.Environment != null)
+        {
+            var order = Interpreter.Environment.VariableReferenceOrder.ToArray();
+            
+            return order.Length > 0 ? order : new[]
+            {
+                VariableReferenceType.ReadOnlyGlobals,
+                VariableReferenceType.Globals,
+                VariableReferenceType.ScopeVariables
+            };
+        }
+
+        return new[]
+        {
+            VariableReferenceType.ReadOnlyGlobals,
+            VariableReferenceType.Globals,
+            VariableReferenceType.ScopeVariables
+        };
     }
 }

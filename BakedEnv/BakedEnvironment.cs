@@ -23,6 +23,8 @@ public class BakedEnvironment
     /// Processor statement handlers.
     /// </summary>
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
+    
+    public List<VariableReferenceType> VariableReferenceOrder { get; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
@@ -32,6 +34,7 @@ public class BakedEnvironment
         GlobalVariables = new Dictionary<string, BakedObject>();
         ReadOnlyGlobalVariables = new Dictionary<string, BakedObject>();
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
+        VariableReferenceOrder = new List<VariableReferenceType>();
     }
 
     /// <summary>
