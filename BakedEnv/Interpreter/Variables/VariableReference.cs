@@ -65,6 +65,13 @@ public class VariableReference
         Path = new List<string>().AsReadOnly();
     }
     
+    public BakedObject GetValue()
+    {
+        Interpreter.AssertReady();
+
+        return GetValue(Interpreter.Context);
+    }
+    
     /// <summary>
     /// Get the value (or null) of the referenced variable.
     /// </summary>
@@ -72,72 +79,14 @@ public class VariableReference
     /// <returns>The value (or null) of the referenced variable.</returns>
     public BakedObject GetValue(IBakedScope scope)
     {
-        if (Path.Count > 0)
-        {
-            var first = Path.First();
+        return TryFindVariable(scope, out var targetObject) ? targetObject : new BakedNull();
+    }
 
-            BakedObject? targetObject = new BakedNull();
+    public bool TrySetValue(BakedObject value)
+    {
+        Interpreter.AssertReady();
 
-            if (!Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(first, out targetObject) ?? false)
-            {
-                if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
-                {
-                    var targetScope = scope;
-
-                    while (!scope.Variables.TryGetValue(first, out targetObject))
-                    {
-                        if (targetScope.Parent == null)
-                            return new BakedNull();
-                        
-                        targetScope = targetScope.Parent;
-                    }
-
-                    if (targetObject == null)
-                        return new BakedNull();
-                }
-            }
-
-            if (targetObject == null)
-                return new BakedNull();
-
-            foreach (var part in Path.Skip(1))
-            {
-                if (targetObject.TryGetContainedObject(part, out var contained))
-                {
-                    targetObject = contained;
-                }
-                else
-                {
-                    return new BakedNull();
-                }
-            }
-
-            if (targetObject.TryGetContainedObject(Name, out var bakedObject))
-            {
-                return bakedObject;
-            }
-
-            return new BakedNull();
-        }
-        else
-        {
-            if (Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(Name, out var bakedObject) ?? false)
-            {
-                return bakedObject;
-            }
-            
-            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject) ?? false)
-            {
-                return bakedObject;
-            }
-            
-            if (Interpreter.Context?.Variables.TryGetValue(Name, out bakedObject) ?? false)
-            {
-                return bakedObject;
-            }
-        }
-
-        return new BakedNull();
+        return TrySetValue(Interpreter.Context, value);
     }
 
     /// <summary>
@@ -148,44 +97,11 @@ public class VariableReference
     /// <returns>Whether the variable could be set (false if the variable is read-only or part of its path does not exist).</returns>
     public bool TrySetValue(IBakedScope scope, BakedObject value)
     {
+        Interpreter.AssertReady();
+        
         if (Path.Count > 0)
         {
-            var first = Path.First();
-
-            BakedObject? targetObject = null;
-
-            if (Interpreter.Environment.ReadOnlyGlobalVariables.ContainsKey(first))
-                return false;
-            
-            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
-            {
-                var targetScope = scope;
-
-                while (!scope.Variables.TryGetValue(first, out targetObject))
-                {
-                    if (targetScope.Parent == null)
-                        return false;
-                        
-                    targetScope = targetScope.Parent;
-                }
-
-                if (targetObject == null)
-                    return false;
-            }
-
-            foreach (var part in Path.Skip(1))
-            {
-                if (targetObject?.TryGetContainedObject(part, out var contained) ?? false)
-                {
-                    targetObject = contained;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return targetObject!.TrySetContainedObject(Name, value);
+            return TryFindPathVariable(scope, out var targetObject) && targetObject.TrySetContainedObject(Name, value);
         }
         else
         {
@@ -193,5 +109,111 @@ public class VariableReference
             
             return true;
         }
+    }
+    
+    public bool VariableExists()
+    {
+        Interpreter.AssertReady();
+        
+        return TryFindVariable(Interpreter.Context, out _);
+    }
+
+    public bool VariableExists(IBakedScope scope)
+    {
+        return TryFindVariable(scope, out _);
+    }
+
+    public bool TryFindVariable(out BakedObject bakedObject)
+    {
+        Interpreter.AssertReady();
+        
+        return TryFindVariable(Interpreter.Context, out bakedObject);
+    }
+
+    public bool TryFindVariable(IBakedScope scope, out BakedObject bakedObject)
+    {
+        bakedObject = new BakedNull();
+        
+        if (Path.Count > 0)
+        {
+            return TryFindPathVariable(scope, out var targetObject) && targetObject.TryGetContainedObject(Name, out bakedObject);
+        }
+        else
+        {
+            if (Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
+            {
+                return true;
+            }
+            
+            if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
+            {
+                return true;
+            }
+            
+            if (scope.Variables.TryGetValue(Name, out bakedObject!))
+            {
+                return true;
+            }
+        }
+
+        bakedObject = new BakedNull();
+
+        return false;
+    }
+
+    public bool TryFindPathVariable(out BakedObject bakedObject)
+    {
+        Interpreter.AssertReady();
+        
+        return TryFindPathVariable(Interpreter.Context, out bakedObject);
+    }
+
+    public bool TryFindPathVariable(IBakedScope scope, out BakedObject bakedObject)
+    {
+        bakedObject = new BakedNull();
+        
+        if (Path.Count == 0)
+            return false;
+        
+        var first = Path.First();
+
+        BakedObject? targetObject = null;
+
+        if (!Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(first, out targetObject) ?? false)
+        {
+            if (!Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject) ?? false)
+            {
+                var targetScope = scope;
+
+                while (!scope.Variables.TryGetValue(first, out targetObject))
+                {
+                    if (targetScope.Parent == null)
+                    {
+                        return false;
+                    }
+
+                    targetScope = targetScope.Parent;
+                }
+            }
+        }
+
+        if (targetObject == null)
+            return false;
+
+        foreach (var part in Path.Skip(1))
+        {
+            if (targetObject.TryGetContainedObject(part, out var contained))
+            {
+                targetObject = contained;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        bakedObject = targetObject;
+
+        return true;
     }
 }
