@@ -57,7 +57,7 @@ public class ScriptSession : IDisposable
     /// Execute instructions from the interpreter until an <see cref="IScriptTermination"/> is reached.
     /// </summary>
     /// <returns>The returned value or void.</returns>
-    public BakedObject ExecuteUntilTermination()
+    public BakedObject? ExecuteUntilTermination()
     {
         IScriptTermination? termination = null;
         
@@ -69,7 +69,7 @@ public class ScriptSession : IDisposable
             return termination != null;
         });
 
-        return termination?.ReturnValue ?? new BakedVoid();
+        return termination?.ReturnValue;
     }
 
     /// <summary>

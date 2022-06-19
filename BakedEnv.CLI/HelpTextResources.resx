@@ -27,13 +27,28 @@
     <data name="ExecuteRawString" xml:space="preserve">
         <value>Provide a raw string ("abc123") as an execution source.</value>
     </data>
-    <data name="ExecuteDebug" xml:space="preserve">
-        <value>Execute the given source in debug mode.</value>
-    </data>
     <data name="Interactive" xml:space="preserve">
         <value>Start an interactive session.</value>
     </data>
     <data name="ExecuteSilent" xml:space="preserve">
-        <value>Execute the given source in silent mode (results are not displayed).</value>
+        <value>Execute the given source in silent mode (results and errors are not displayed).</value>
+    </data>
+    <data name="Debug" xml:space="preserve">
+        <value>Start a debug session.</value>
+    </data>
+    <data name="InteractiveExitMethod" xml:space="preserve">
+        <value>Name of the method defined to exit the session.</value>
+    </data>
+    <data name="InteractiveSilent" xml:space="preserve">
+        <value>Interactive script results are not displayed.</value>
+    </data>
+    <data name="DebugInteractive" xml:space="preserve">
+        <value>Run the debug session in interactive mode.</value>
+    </data>
+    <data name="DebugFilePath" xml:space="preserve">
+        <value>Provide a file path (absolute or relative) to read as a debug source.</value>
+    </data>
+    <data name="DebugRawString" xml:space="preserve">
+        <value>Provide a raw string ("abc123") as a debug source.</value>
     </data>
 </root>
