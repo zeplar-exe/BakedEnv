@@ -88,10 +88,12 @@ public class ScriptSession : IDisposable
     {
         AssertDisposed();
 
-        foreach (var instruction in EnumerateInstructions(AutoExecutionMode.AfterYield))
+        foreach (var instruction in EnumerateInstructions())
         {
             if (predicate.Invoke(instruction))
                 break;
+            
+            instruction.Execute(Interpreter);
         }
     }
 
@@ -111,9 +113,6 @@ public class ScriptSession : IDisposable
                 instruction.Execute(Interpreter);
             
             yield return instruction;
-            
-            if (executionMode == AutoExecutionMode.AfterYield)
-                instruction.Execute(Interpreter);
         }
     }
 

@@ -15,12 +15,7 @@ public class ProcessorInstructions
         ProcessorStatementInstruction? processorStatement = null;
         
         var session = new BakedEnvironment().CreateSession(new RawStringSource("[BakeType: \"Cake\"]")).Init();
-        session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
-        
-        if (processorStatement == null)
-            Assert.Fail();
-        
-        processorStatement!.Execute(session.Interpreter);
+        session.ExecuteUntilEnd();
 
         Assert.True(processorStatement!.Value.Equals("Cake"));
     }
@@ -28,46 +23,32 @@ public class ProcessorInstructions
     [Test]
     public void TestProcessorStatementExecution()
     {
-        ProcessorStatementInstruction? processorStatement = null;
-        
         var session = new BakedEnvironment()
             .WithStatementHandlers(new MockStatementHandler())
             .CreateSession(new RawStringSource($"[Pizza: \"Time\"]"))
             .Init();
-        session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
-
-        if (processorStatement == null)
-            Assert.Fail();
+        session.ExecuteUntilEnd();
         
-        processorStatement!.Execute(session.Interpreter);
-        
-        Assert.True(session.Interpreter.Context.Variables["Pizza"].Equals("Time"));
+        Assert.True(session.Interpreter.Context.Variables["Pizza"].Value.Equals("Time"));
     }
 
     [Test]
     public void TestWhitespace()
     {
-        ProcessorStatementInstruction? processorStatement = null;
-        
         var session = new BakedEnvironment()
             .WithStatementHandlers(new MockStatementHandler())
             .CreateSession(new RawStringSource($"[    NaN: \t 0 \n ]"))
             .Init();
-        session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
+        session.ExecuteUntilEnd();
 
-        if (processorStatement == null)
-            Assert.Fail();
-        
-        processorStatement!.Execute(session.Interpreter);
-
-        Assert.True(session.Interpreter.Context.Variables["NaN"].Equals(0));
+        Assert.True(session.Interpreter.Context.Variables["NaN"].Value.Equals(0));
     }
 
     private class MockStatementHandler : IProcessorStatementHandler
     {
         public bool TryHandle(ProcessorStatementInstruction instruction, BakedInterpreter interpreter)
         {
-            interpreter.Context.Variables[instruction.Name] = instruction.Value;
+            interpreter.Context.Variables.Add(instruction.Name, instruction.Value);
             
             return true;
         }

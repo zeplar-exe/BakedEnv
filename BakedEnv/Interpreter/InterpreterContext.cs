@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter;
@@ -11,11 +12,11 @@ public class InterpreterContext : IBakedScope
     public IBakedScope? Parent { get; }
 
     /// <inheritdoc />
-    public Dictionary<string, BakedObject> Variables { get; }
+    public VariableContainer Variables { get; }
 
     internal InterpreterContext()
     {
         Parent = null;
-        Variables = new Dictionary<string, BakedObject>();
+        Variables = new VariableContainer();
     }
 }

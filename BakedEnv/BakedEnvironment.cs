@@ -1,6 +1,7 @@
 ﻿using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
 namespace BakedEnv;
@@ -13,11 +14,7 @@ public class BakedEnvironment
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
-    public Dictionary<string, BakedObject> GlobalVariables { get; }
-    /// <summary>
-    /// Read-only variables accessible anywhere within an executed script.
-    /// </summary>
-    public Dictionary<string, BakedObject> ReadOnlyGlobalVariables { get; }
+    public VariableContainer GlobalVariables { get; }
     
     /// <summary>
     /// Processor statement handlers.
@@ -31,8 +28,7 @@ public class BakedEnvironment
     /// </summary>
     public BakedEnvironment()
     {
-        GlobalVariables = new Dictionary<string, BakedObject>();
-        ReadOnlyGlobalVariables = new Dictionary<string, BakedObject>();
+        GlobalVariables = new VariableContainer();
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
         VariableReferenceOrder = new List<VariableReferenceType>();
     }
@@ -41,27 +37,22 @@ public class BakedEnvironment
     /// Add a variable by key and value to the global variables.
     /// </summary>
     /// <param name="key">The variable name.</param>
-    /// <param name="value">The variable's value.</param>
+    /// <param name="variable">The variable's value.</param>
     /// <returns></returns>
-    public BakedEnvironment WithVariable(string key, BakedObject value)
+    public BakedEnvironment WithVariable(BakedVariable variable)
     {
-        GlobalVariables[key] = value;
+        GlobalVariables.Add(variable);
 
         return this;
     }
     
-    /// <summary>
-    /// Add a read-only variable by key and value to the global read-only variables.
-    /// </summary>
-    /// <param name="key">The variable name.</param>
-    /// <param name="value">The variable's value.</param>
-    /// <returns></returns>
-    public BakedEnvironment WithReadOnlyVariable(string key, BakedObject value)
+    public BakedEnvironment WithVariable(string name, BakedObject value)
     {
-        ReadOnlyGlobalVariables[key] = value;
+        GlobalVariables.Add(new BakedVariable(name, value));
 
         return this;
     }
+
     
     /// <summary>
     /// Add an array of <see cref="IProcessorStatementHandler"/> to the interpreter.

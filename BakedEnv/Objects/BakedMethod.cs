@@ -1,5 +1,6 @@
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.Variables;
 
 namespace BakedEnv.Objects;
 
@@ -54,7 +55,7 @@ public class BakedMethod : BakedObject, IBakedCallable
             var param = parameters[paramIndex];
             var paramName = ParameterNames[paramIndex];
 
-            scope.Variables[paramName] = param;
+            scope.Variables.Add(new BakedVariable(paramName, param));
         }
         
         foreach (var instruction in Instructions)

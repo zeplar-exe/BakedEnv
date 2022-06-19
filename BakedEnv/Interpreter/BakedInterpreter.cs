@@ -296,8 +296,15 @@ public class BakedInterpreter
                                 }
                                 
                                 ParametersCompleted:
+                                
+                                if (!reference.TryGetVariable(CurrentScope, out var variable))
+                                {
+                                    instruction = new InvalidInstruction(new BakedError()); // TODO
 
-                                if (reference.GetValue(CurrentScope) is not IBakedCallable callable)
+                                    break;
+                                }
+
+                                if (variable.Value is not IBakedCallable callable)
                                 {
                                     instruction = new InvalidInstruction(new BakedError()); // TODO
 
@@ -371,9 +378,15 @@ public class BakedInterpreter
                     return identifierResult;
 
                 var reference = GetVariableReference(path);
-                value = reference.GetValue(CurrentScope);
+                
+                if (reference.TryGetVariable(CurrentScope, out var variable))
+                {
+                    value = variable.Value;
+                    
+                    return new TryResult(true);
+                }
 
-                return new TryResult(true);
+                return new TryResult(false);
             }
             case LexerTokenId.Numeric:
             {

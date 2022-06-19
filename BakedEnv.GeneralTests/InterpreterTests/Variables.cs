@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Sources;
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 using NUnit.Framework;
 
@@ -13,7 +14,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("pizza = 1")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["pizza"].Equals(1));
+        Assert.True(session.Interpreter.Context.Variables["pizza"].Value.Equals(1));
     }
 
     [Test]
@@ -22,7 +23,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n bar=2")).Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(session.Interpreter.Context.Variables["bar"].Equals(2));
+        Assert.True(session.Interpreter.Context.Variables["bar"].Value.Equals(2));
     }
 
     [Test]
@@ -31,16 +32,20 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n foo=2")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["foo"].Equals(2));
+        Assert.True(session.Interpreter.Context.Variables["foo"].Value.Equals(2));
     }
     
     [Test]
     public void TestReadOnlyVariable()
     {
-        var environment = new BakedEnvironment().WithReadOnlyVariable("Foo", new BakedInteger(1));
+        var environment = new BakedEnvironment().WithVariable(
+            new BakedVariable("Foo", new BakedInteger(1))
+        {
+            IsReadOnly = true
+        });
         var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(environment.ReadOnlyGlobalVariables["Foo"].Equals(1));
+        Assert.True(environment.GlobalVariables["Foo"].Value.Equals(1));
     }
 }

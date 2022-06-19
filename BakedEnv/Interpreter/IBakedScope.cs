@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter;
@@ -14,5 +15,5 @@ public interface IBakedScope
     /// <summary>
     /// Any variables specific to this scope.
     /// </summary>
-    public Dictionary<string, BakedObject> Variables { get; }
+    public VariableContainer Variables { get; }
 }

@@ -13,8 +13,4 @@ public enum AutoExecutionMode
     /// Instructions are executed before the object is yielded to the iterator.
     /// </summary>
     BeforeYield,
-    /// <summary>
-    /// Instructions are executed after the object is yielded to the iterator.
-    /// </summary>
-    AfterYield
 }

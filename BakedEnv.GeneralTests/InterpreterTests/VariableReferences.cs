@@ -15,9 +15,10 @@ public class VariableReferences
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("hello", session.Interpreter);
-        var value = reference.GetValue();
+        if (!reference.TryGetVariable(out BakedVariable variable))
+            Assert.Fail();
         
-        Assert.True(value.Equals("world"));
+        Assert.True(variable.Value.Equals("world"));
     }
     
     [Test]
@@ -27,9 +28,9 @@ public class VariableReferences
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("baz", session.Interpreter);
-        var value = reference.GetValue();
+        reference.TryGetVariable(out BakedVariable variable);
         
-        Assert.True(value is BakedNull);
+        Assert.True(variable == null);
     }
 
     private ScriptSession CreateSession(string text)

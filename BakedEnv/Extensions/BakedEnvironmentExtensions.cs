@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Extensions;
@@ -9,31 +10,27 @@ public static class BakedEnvironmentExtensions
     /// </summary>
     public static BakedEnvironment WithBooleanVariables(this BakedEnvironment environment)
     {
-        environment.GlobalVariables["true"] = new BakedBoolean(true);
-        environment.GlobalVariables["false"] = new BakedBoolean(false);
-
-        return environment;
+        return environment
+            .WithVariable("true", new BakedBoolean(true))
+            .WithVariable("false", new BakedBoolean(false));
     }
     
     public static BakedEnvironment WithReadOnlyBooleanVariables(this BakedEnvironment environment)
     {
-        environment.ReadOnlyGlobalVariables["true"] = new BakedBoolean(true);
-        environment.ReadOnlyGlobalVariables["false"] = new BakedBoolean(false);
-
-        return environment;
+        return environment
+            .WithVariable(new BakedVariable("true", new BakedBoolean(true)) { IsReadOnly = true })
+            .WithVariable(new BakedVariable("false", new BakedBoolean(true)) { IsReadOnly = true });
     }
 
     public static BakedEnvironment WithNullVariable(this BakedEnvironment environment)
     {
-        environment.GlobalVariables["null"] = new BakedNull();
-
-        return environment;
+        return environment
+            .WithVariable("null", new BakedNull());
     }
     
     public static BakedEnvironment WithReadOnlyNullVariable(this BakedEnvironment environment)
     {
-        environment.ReadOnlyGlobalVariables["null"] = new BakedNull();
-
-        return environment;
+        return environment
+            .WithVariable(new BakedVariable("null", new BakedNull()) { IsReadOnly = true });
     }
 }

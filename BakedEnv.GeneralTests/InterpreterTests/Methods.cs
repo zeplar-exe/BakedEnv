@@ -17,13 +17,7 @@ public class Methods
         var testMethod = new BakedMethod(Array.Empty<string>());
         testMethod.Instructions.Add(testAction);
 
-        var environment = new BakedEnvironment
-        {
-            GlobalVariables =
-            {
-                ["foo"] = testMethod
-            }
-        };
+        var environment = new BakedEnvironment().WithVariable("foo", testMethod);
         
         var session = environment.CreateSession(new RawStringSource("foo()")).Init();
         session.ExecuteUntilEnd();

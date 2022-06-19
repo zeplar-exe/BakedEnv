@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Variables;
@@ -65,11 +66,11 @@ public class VariableReference
         Path = new List<string>().AsReadOnly();
     }
     
-    public BakedObject GetValue()
+    public bool TryGetVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
     {
         Interpreter.AssertReady();
 
-        return GetValue(Interpreter.Context);
+        return TryGetVariable(Interpreter.Context, out bakedVariable);
     }
     
     /// <summary>
@@ -77,9 +78,11 @@ public class VariableReference
     /// </summary>
     /// <param name="scope">The target scope.</param>
     /// <returns>The value (or null) of the referenced variable.</returns>
-    public BakedObject GetValue(IBakedScope scope)
+    public bool TryGetVariable(IBakedScope scope, [NotNullWhen(true)] out BakedVariable? bakedVariable)
     {
-        return TryFindVariable(scope, out var targetObject) ? targetObject : new BakedNull();
+        bakedVariable = null;
+
+        return TryFindVariable(scope, out bakedVariable);
     }
 
     public bool TrySetValue(BakedObject value)
@@ -101,11 +104,18 @@ public class VariableReference
         
         if (Path.Count > 0)
         {
-            return TryFindPathVariable(scope, out var targetObject) && targetObject.TrySetContainedObject(Name, value);
+            if (TryFindVariable(scope, out var variable))
+            {
+                variable.Value = value;
+
+                return true;
+            }
+
+            return false;
         }
         else
         {
-            Interpreter.Context.Variables[Name] = value;
+            Interpreter.Context.Variables.Add(Name, value);
             
             return true;
         }
@@ -123,20 +133,20 @@ public class VariableReference
         return TryFindVariable(scope, out _);
     }
 
-    public bool TryFindVariable(out BakedObject bakedObject)
+    public bool TryFindVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
     {
         Interpreter.AssertReady();
         
-        return TryFindVariable(Interpreter.Context, out bakedObject);
+        return TryFindVariable(Interpreter.Context, out bakedVariable);
     }
 
-    public bool TryFindVariable(IBakedScope scope, out BakedObject bakedObject)
+    public bool TryFindVariable(IBakedScope scope, [NotNullWhen(true)] out BakedVariable? bakedVariable)
     {
-        bakedObject = new BakedNull();
+        bakedVariable = null;
         
         if (Path.Count > 0)
         {
-            return TryFindPathVariable(scope, out var targetObject) && targetObject.TryGetContainedObject(Name, out bakedObject);
+            return TryFindVariable(scope, out bakedVariable);
         }
         else
         {
@@ -145,21 +155,14 @@ public class VariableReference
                 switch (variableType)
                 {
                     case VariableReferenceType.Globals:
-                        if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
-                        {
-                            return true;
-                        }
-                        
-                        break;
-                    case VariableReferenceType.ReadOnlyGlobals:
-                        if (Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(Name, out bakedObject!) ?? false)
+                        if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedVariable) ?? false)
                         {
                             return true;
                         }
                         
                         break;
                     case VariableReferenceType.ScopeVariables:
-                        if (scope.Variables.TryGetValue(Name, out bakedObject!))
+                        if (scope.Variables.TryGetValue(Name, out bakedVariable))
                         {
                             return true;
                         }
@@ -169,21 +172,19 @@ public class VariableReference
             }
         }
 
-        bakedObject = new BakedNull();
-
         return false;
     }
 
-    public bool TryFindPathVariable(out BakedObject bakedObject)
+    public bool TryFindPathObject([NotNullWhen(true)] out BakedObject? bakedObject)
     {
         Interpreter.AssertReady();
         
-        return TryFindPathVariable(Interpreter.Context, out bakedObject);
+        return TryFindPathObject(Interpreter.Context, out bakedObject);
     }
 
-    public bool TryFindPathVariable(IBakedScope scope, out BakedObject bakedObject)
+    public bool TryFindPathObject(IBakedScope scope, [NotNullWhen(true)] out BakedObject? bakedObject)
     {
-        bakedObject = new BakedNull();
+        bakedObject = null;
         
         if (Path.Count == 0)
             return false;
@@ -197,17 +198,19 @@ public class VariableReference
             switch (variableType)
             {
                 case VariableReferenceType.Globals:
-                    Interpreter.Environment?.GlobalVariables.TryGetValue(first, out targetObject);
-                        
+                {
+                    if (Interpreter.Environment?.GlobalVariables.TryGetValue(first, out var targetVariable) ?? false)
+                        targetObject = targetVariable.Value;
+                    
                     break;
-                case VariableReferenceType.ReadOnlyGlobals:
-                    Interpreter.Environment?.ReadOnlyGlobalVariables.TryGetValue(first, out targetObject);
-                        
-                    break;
+                }
                 case VariableReferenceType.ScopeVariables:
+                {
                     var targetScope = scope;
 
-                    while (!scope.Variables.TryGetValue(first, out targetObject))
+                    BakedVariable? targetVariable;
+
+                    while (!scope.Variables.TryGetValue(first, out targetVariable))
                     {
                         if (targetScope.Parent == null)
                         {
@@ -216,8 +219,12 @@ public class VariableReference
 
                         targetScope = targetScope.Parent;
                     }
+
+                    if (targetVariable != null)
+                        targetObject = targetVariable.Value;
                     
                     break;
+                }
             }
         }
 
@@ -249,7 +256,6 @@ public class VariableReference
             
             return order.Length > 0 ? order : new[]
             {
-                VariableReferenceType.ReadOnlyGlobals,
                 VariableReferenceType.Globals,
                 VariableReferenceType.ScopeVariables
             };
@@ -257,7 +263,6 @@ public class VariableReference
 
         return new[]
         {
-            VariableReferenceType.ReadOnlyGlobals,
             VariableReferenceType.Globals,
             VariableReferenceType.ScopeVariables
         };
