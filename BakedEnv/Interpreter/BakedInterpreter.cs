@@ -34,6 +34,10 @@ public class BakedInterpreter
     /// <summary>
     /// Informative property of whether the interpreter is ready for parsing.
     /// </summary>
+    [MemberNotNullWhen(true, nameof(Context))]
+    [MemberNotNullWhen(true, nameof(CurrentScope))]
+    [MemberNotNullWhen(true, nameof(Iterator))]
+    [MemberNotNullWhen(true, nameof(Source))]
     public bool IsReady { get; private set; }
     
     /// <summary>
@@ -98,10 +102,10 @@ public class BakedInterpreter
     /// </summary>
     /// <param name="environment"></param>
     /// <exception cref="InvalidOperationException">The interpreter is locked and disallows manipulation of its environment.</exception>
-    public BakedInterpreter WithEnvironment(BakedEnvironment environment)
+    public BakedInterpreter WithEnvironment(BakedEnvironment? environment)
     {
         if (SourceLocked)
-            throw new InvalidOperationException("Cannot use a source while the interpreter is locked.");
+            throw new InvalidOperationException("Cannot use an environment while the interpreter is locked.");
         
         Environment = environment;
 
@@ -129,6 +133,8 @@ public class BakedInterpreter
     /// <param name="message">Error message.</param>
     public BakedError ReportError(string? id, string message)
     {
+        AssertReady();
+        
         return ReportError(id, message, Iterator.Current.Span.Start);
     }
 
@@ -140,6 +146,8 @@ public class BakedInterpreter
     /// <param name="sourceIndex">Error index.</param>
     public BakedError ReportError(string? id, string message, int sourceIndex)
     {
+        AssertReady();
+        
         return ReportError(new BakedError(id, message, sourceIndex));
     }
 
@@ -229,11 +237,11 @@ public class BakedInterpreter
                 {
                     case "method":
                     {
-                        break;
+                        break; // TODO
                     }
                     case "return":
                     {
-                        break;
+                        break; // TODO
                     }
                     default:
                     {
@@ -291,7 +299,7 @@ public class BakedInterpreter
 
                                 if (reference.GetValue(CurrentScope) is not IBakedCallable callable)
                                 {
-                                    instruction = new InvalidInstruction(new BakedError());
+                                    instruction = new InvalidInstruction(new BakedError()); // TODO
 
                                     break;
                                 }
@@ -315,7 +323,7 @@ public class BakedInterpreter
 
                                 break;
                             default:
-                                instruction = new InvalidInstruction(new BakedError());
+                                instruction = new InvalidInstruction(new BakedError()); // TODO
 
                                 break;
                         }
@@ -335,6 +343,10 @@ public class BakedInterpreter
     /// Assert whether the BakedInterpreter has been initialized,
     /// following with an <see cref="InvalidOperationException"/> if it is not.
     /// </summary>
+    [MemberNotNull(nameof(Context))]
+    [MemberNotNull(nameof(CurrentScope))]
+    [MemberNotNull(nameof(Iterator))]
+    [MemberNotNull(nameof(Source))]
     public void AssertReady()
     {
         if (!IsReady)
@@ -344,6 +356,8 @@ public class BakedInterpreter
     
     private TryResult TryParseValue(out BakedObject value)
     {
+        AssertReady();
+        
         value = new BakedNull();
         
         switch (Iterator.Current.Id)
@@ -418,6 +432,8 @@ public class BakedInterpreter
 
     private TryResult TryParseIdentifier(out LexerToken[] path)
     {
+        AssertReady();
+        
         path = Array.Empty<LexerToken>();
         
         var pathList = new List<LexerToken> { Iterator.Current };
@@ -461,6 +477,8 @@ public class BakedInterpreter
     
     private int SkipWhitespace()
     {
+        AssertReady();
+        
         var stride = 0;
 
         foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace))
@@ -473,6 +491,8 @@ public class BakedInterpreter
     
     private int SkipWhitespaceAndNewlines()
     {
+        AssertReady();
+        
         var stride = 0;
 
         foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace or LexerTokenId.Newline))
@@ -485,6 +505,8 @@ public class BakedInterpreter
     
     private int SkipWhitespaceAndNewlinesReserved()
     {
+        AssertReady();
+        
         if (Iterator.Current.Id is not LexerTokenId.Whitespace or LexerTokenId.Newline)
             return 0;
         
