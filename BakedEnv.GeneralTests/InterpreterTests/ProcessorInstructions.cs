@@ -15,7 +15,12 @@ public class ProcessorInstructions
         ProcessorStatementInstruction? processorStatement = null;
         
         var session = new BakedEnvironment().CreateSession(new RawStringSource("[BakeType: \"Cake\"]")).Init();
-        session.ExecuteUntilEnd();
+        session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
+        
+        if (processorStatement == null)
+            Assert.Fail();
+        
+        processorStatement!.Execute(session.Interpreter);
 
         Assert.True(processorStatement!.Value.Equals("Cake"));
     }
