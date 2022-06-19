@@ -10,6 +10,7 @@ var parserResult = Parser.Default.ParseArguments<CommandArgs, CommandArgs.Execut
 parserResult.MapResult(
     (CommandArgs options) => ParseMainArgs(options),
     (CommandArgs.ExecuteArgs options) => ParseExecuteArgs(options),
+    (CommandArgs.DebugArgs options) => ParseDebugArgs(options),
     (CommandArgs.InteractiveArgs options) => ParseInteractiveArgs(options),
     _ => 1);
 
@@ -24,7 +25,7 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
     
     if (executeArgs.FilePath != null)
     {
-        var fullFilePath = executeArgs.FilePath!;
+        var fullFilePath = executeArgs.FilePath;
 
         if (!Path.IsPathRooted(executeArgs.FilePath))
             fullFilePath = Path.Join(Directory.GetCurrentDirectory(), executeArgs.FilePath);
@@ -34,13 +35,6 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
     else
     {
         source = new RawStringSource(executeArgs.RawString ?? string.Empty);
-    }
-    
-    if (executeArgs.Debug)
-    {
-        using var session = new DebugSession(source);
-
-        return session.Run();
     }
     
     try
@@ -63,7 +57,7 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
         {
             var errorBuilder = new StringBuilder()
                 .AppendLine("Something went wrong:")
-                .AppendLine("An exception of type '' occured.")
+                .AppendLine($"An exception of type '{e.GetType().Name}' occured.")
                 .AppendLine("The full error log can be found in the executable directory: ")
                 .Append(logPath)
                 .AppendLine("This is most likely a bug and should be reported on GitHub ")
@@ -78,6 +72,29 @@ int ParseExecuteArgs(CommandArgs.ExecuteArgs executeArgs)
     }
     
     return 0;
+}
+
+int ParseDebugArgs(CommandArgs.DebugArgs debugArgs)
+{
+    var source = new StackSource();
+    
+    if (debugArgs.FilePath != null)
+    {
+        var fullFilePath = debugArgs.FilePath;
+
+        if (!Path.IsPathRooted(debugArgs.FilePath))
+            fullFilePath = Path.Join(Directory.GetCurrentDirectory(), debugArgs.FilePath);
+
+        source.Push(File.ReadAllText(fullFilePath));
+    }
+    else if (debugArgs.RawString != null)
+    {
+        source.Push(debugArgs.RawString ?? string.Empty);
+    }
+    
+    using var session = new DebugSession(source);
+
+    return session.Run();
 }
 
 int ParseInteractiveArgs(CommandArgs.InteractiveArgs interactiveArgs)
