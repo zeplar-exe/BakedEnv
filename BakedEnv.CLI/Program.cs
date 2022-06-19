@@ -5,7 +5,12 @@ using BakedEnv.CLI;
 using BakedEnv.Interpreter.Sources;
 using CommandLine;
 
-var parserResult = Parser.Default.ParseArguments<CommandArgs, CommandArgs.ExecuteArgs>(args);
+var parserResult = Parser.Default.ParseArguments<
+    CommandArgs, 
+    CommandArgs.ExecuteArgs, 
+    CommandArgs.DebugArgs, 
+    CommandArgs.InteractiveArgs>
+    (args);
 
 parserResult.MapResult(
     (CommandArgs options) => ParseMainArgs(options),
@@ -99,7 +104,7 @@ int ParseDebugArgs(CommandArgs.DebugArgs debugArgs)
 
 int ParseInteractiveArgs(CommandArgs.InteractiveArgs interactiveArgs)
 {
-    using var session = new InteractiveSession();
+    using var session = new InteractiveSession(interactiveArgs);
         
     return session.Run();
 }

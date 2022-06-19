@@ -61,20 +61,47 @@ namespace BakedEnv.CLI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start a debug session..
+        /// </summary>
+        public static string Debug {
+            get {
+                return ResourceManager.GetString("Debug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide a file path (absolute or relative) to read as a debug source..
+        /// </summary>
+        public static string DebugFilePath {
+            get {
+                return ResourceManager.GetString("DebugFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run the debug session in interactive mode..
+        /// </summary>
+        public static string DebugInteractive {
+            get {
+                return ResourceManager.GetString("DebugInteractive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide a raw string (&quot;abc123&quot;) as a debug source..
+        /// </summary>
+        public static string DebugRawString {
+            get {
+                return ResourceManager.GetString("DebugRawString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instant execution..
         /// </summary>
         public static string Execute {
             get {
                 return ResourceManager.GetString("Execute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Execute the given source in debug mode..
-        /// </summary>
-        public static string ExecuteDebug {
-            get {
-                return ResourceManager.GetString("ExecuteDebug", resourceCulture);
             }
         }
         
@@ -97,7 +124,7 @@ namespace BakedEnv.CLI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Execute the given source in silent mode (results are not displayed)..
+        ///   Looks up a localized string similar to Execute the given source in silent mode (results and errors are not displayed)..
         /// </summary>
         public static string ExecuteSilent {
             get {
@@ -111,6 +138,24 @@ namespace BakedEnv.CLI {
         public static string Interactive {
             get {
                 return ResourceManager.GetString("Interactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the method defined to exit the session..
+        /// </summary>
+        public static string InteractiveExitMethod {
+            get {
+                return ResourceManager.GetString("InteractiveExitMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interactive script results are not displayed..
+        /// </summary>
+        public static string InteractiveSilent {
+            get {
+                return ResourceManager.GetString("InteractiveSilent", resourceCulture);
             }
         }
     }
