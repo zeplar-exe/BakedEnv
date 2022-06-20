@@ -22,6 +22,8 @@ public class BakedEnvironment
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
     
     public List<VariableReferenceType> VariableReferenceOrder { get; }
+    
+    public Stream? OutputStream { get; set; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
@@ -61,6 +63,13 @@ public class BakedEnvironment
     public BakedEnvironment WithStatementHandlers(params IProcessorStatementHandler[] handlers)
     {
         ProcessorStatementHandlers.AddRange(handlers);
+
+        return this;
+    }
+
+    public BakedEnvironment WithOutputStream(Stream? stream)
+    {
+        OutputStream = stream;
 
         return this;
     }
