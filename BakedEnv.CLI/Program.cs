@@ -8,7 +8,6 @@ using CommandLine;
 var parserResult = Parser.Default.ParseArguments<
     CommandArgs, 
     CommandArgs.ExecuteArgs, 
-    CommandArgs.DebugArgs, 
     CommandArgs.InteractiveArgs>
     (args);
 
