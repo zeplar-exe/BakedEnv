@@ -48,4 +48,47 @@ public class Variables
         
         Assert.True(environment.GlobalVariables["Foo"].Value.Equals(1));
     }
+
+    [Test]
+    public void TestContainedVariable()
+    {
+        var environment = new BakedEnvironment()
+            .WithVariable("pizza", new MockPropertyObject());
+        var session = environment.CreateSession(new RawStringSource("a = pizza.foo")).Init();
+        session.ExecuteUntilEnd();
+
+        Assert.True(session.Interpreter.Context.Variables["a"].Value.Equals("bar"));
+    }
+
+    public class MockPropertyObject : BakedObject
+    {
+        public override object? GetValue()
+        {
+            return null;
+        }
+
+        public override bool TryGetContainedObject(string name, out BakedObject bakedObject)
+        {
+            bakedObject = new BakedNull();
+            
+            if (name == "foo")
+            {
+                bakedObject = new BakedString("bar");
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public override string ToString()
+        {
+            return string.Empty;
+        }
+    }
 }

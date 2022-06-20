@@ -11,7 +11,7 @@ public class ActionInstruction : InterpreterInstruction
     public Action<BakedInterpreter, IBakedScope> Action { get; set; }
 
     /// <summary>
-    /// Initialize an ActionInstruction with it's action.
+    /// Initialize an ActionInstruction with its action.
     /// </summary>
     /// <param name="action">Action to invoke during execution.</param>
     /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>

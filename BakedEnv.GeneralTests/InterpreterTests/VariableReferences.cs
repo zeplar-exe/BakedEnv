@@ -15,10 +15,8 @@ public class VariableReferences
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("hello", session.Interpreter);
-        if (!reference.TryGetVariable(out BakedVariable variable))
-            Assert.Fail();
         
-        Assert.True(variable.Value.Equals("world"));
+        Assert.True(reference.TryGetVariable(out var variable) && variable.Value.Equals("world"));
     }
     
     [Test]
@@ -28,13 +26,58 @@ public class VariableReferences
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("baz", session.Interpreter);
-        reference.TryGetVariable(out BakedVariable variable);
+        ;
         
-        Assert.True(variable == null);
+        Assert.True(!reference.TryGetVariable(out BakedVariable variable) && variable == null);
+    }
+    
+    [Test]
+    public void TestContainedVariable()
+    {
+        var environment = new BakedEnvironment()
+            .WithVariable("pizza", new MockPropertyObject());
+        var session = CreateSession("a = pizza.foo").Init();
+        session.ExecuteUntilEnd();
+
+        var reference = new VariableReference(new[] { "pizza", "foo" }, session.Interpreter);
+
+        Assert.True(reference.TryGetVariable(out var variable) && variable.Value.Equals("bar"));
     }
 
     private ScriptSession CreateSession(string text)
     {
         return new BakedEnvironment().CreateSession(new RawStringSource(text)).Init();
+    }
+    
+    public class MockPropertyObject : BakedObject
+    {
+        public override object? GetValue()
+        {
+            return null;
+        }
+
+        public override bool TryGetContainedObject(string name, out BakedObject bakedObject)
+        {
+            bakedObject = new BakedNull();
+            
+            if (name == "foo")
+            {
+                bakedObject = new BakedString("bar");
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
+
+        public override string ToString()
+        {
+            return string.Empty;
+        }
     }
 }
