@@ -26,9 +26,8 @@ public class VariableReferences
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("baz", session.Interpreter);
-        ;
-        
-        Assert.True(!reference.TryGetVariable(out BakedVariable variable) && variable == null);
+
+        Assert.True(!reference.TryGetVariable(out var variable) && variable == null);
     }
     
     [Test]
