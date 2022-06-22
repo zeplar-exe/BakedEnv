@@ -23,7 +23,7 @@ public class BakedEnvironment
     
     public List<VariableReferenceType> VariableReferenceOrder { get; }
     
-    public Stream? OutputStream { get; set; }
+    public TextWriter? OutputWriter { get; set; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
@@ -67,9 +67,9 @@ public class BakedEnvironment
         return this;
     }
 
-    public BakedEnvironment WithOutputStream(Stream? stream)
+    public BakedEnvironment WithOutputWriter(TextWriter? writer)
     {
-        OutputStream = stream;
+        OutputWriter = writer;
 
         return this;
     }
