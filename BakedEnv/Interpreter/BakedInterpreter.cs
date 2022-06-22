@@ -74,7 +74,7 @@ public class BakedInterpreter
                 $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
         
         Iterator = new Lexer(Source.EnumerateCharacters()).ToIterator();
-        State = new StateMachine<ParserState>(ParserState.Root);
+        State = new StateMachine<ParserState>(ParserState.Any);
         Context = new InterpreterContext();
         CurrentScope = Context;
         IsReady = true;
@@ -537,17 +537,9 @@ public class BakedInterpreter
 
     private enum ParserState
     {
-        Root,
-        ProcessorStatement,
+        Any,
         
-        Identifier,
-        TableInitialization,
-        
-        MethodIdentifier,
-        MethodParameters,
         MethodBody,
-        
-        ControlFlowCondition,
-        ControlFlowBody
+        StatementBody,
     }
 }
