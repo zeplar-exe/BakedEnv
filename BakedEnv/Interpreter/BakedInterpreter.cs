@@ -297,7 +297,7 @@ public class BakedInterpreter
                                 
                                 ParametersCompleted:
                                 
-                                if (!reference.TryGetVariable(CurrentScope, out var variable))
+                                if (!reference.TryGetVariable(out var variable))
                                 {
                                     instruction = new InvalidInstruction(new BakedError()); // TODO
 
@@ -379,7 +379,7 @@ public class BakedInterpreter
 
                 var reference = GetVariableReference(path);
                 
-                if (reference.TryGetVariable(CurrentScope, out var variable))
+                if (reference.TryGetVariable(out var variable))
                 {
                     value = variable.Value;
                     
@@ -440,7 +440,7 @@ public class BakedInterpreter
     
     private VariableReference GetVariableReference(LexerToken[] path)
     {
-        return new VariableReference(path.Select(c => c.ToString()), this);
+        return new VariableReference(path.Select(c => c.ToString()), this, CurrentScope);
     }
 
     private TryResult TryParseIdentifier(out LexerToken[] path)
