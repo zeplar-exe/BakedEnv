@@ -104,9 +104,6 @@ public class BakedInterpreter
     /// <exception cref="InvalidOperationException">The interpreter is locked and disallows manipulation of its environment.</exception>
     public BakedInterpreter WithEnvironment(BakedEnvironment? environment)
     {
-        if (SourceLocked)
-            throw new InvalidOperationException("Cannot use an environment while the interpreter is locked.");
-        
         Environment = environment;
 
         return this;
@@ -540,6 +537,6 @@ public class BakedInterpreter
         Any,
         
         MethodBody,
-        StatementBody,
+        ControlStatementBody,
     }
 }
