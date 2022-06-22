@@ -184,7 +184,7 @@ public class BakedInterpreter
 
         switch (Iterator.Current.Id)
         {
-            case LexerTokenId.OpenBracket:
+            case LexerTokenId.OpenBracket: // Processor statement
             {
                 SkipWhitespaceAndNewlines();
                 
@@ -228,7 +228,7 @@ public class BakedInterpreter
                 break;
             }
             case LexerTokenId.Alphabetic:
-            case LexerTokenId.AlphaNumeric:
+            case LexerTokenId.AlphaNumeric: // 
             {
                 switch (Iterator.Current.ToString())
                 {
@@ -240,8 +240,9 @@ public class BakedInterpreter
                     {
                         break; // TODO
                     }
-                    default:
+                    default: // Variable, invocation, control statement
                     {
+                        var startToken = Iterator.Current;
                         var identifierParseResult = TryParseIdentifier(out var path);
                         
                         if (!identifierParseResult.Success)
@@ -262,6 +263,26 @@ public class BakedInterpreter
 
                                 var valueExpected = true;
                                 var parameters = new List<BakedObject>();
+                                
+                                if (!reference.TryGetVariable(out var variable))
+                                {
+                                    instruction = new InvalidInstruction(new BakedError(
+                                        null,
+                                        "Cannot invoke a null value.",
+                                        startToken.Span.Start));
+
+                                    break;
+                                }
+
+                                if (variable.Value is not IBakedCallable callable)
+                                {
+                                    instruction = new InvalidInstruction(new BakedError(
+                                        null,
+                                        "Cannot invoke a non-callable object.",
+                                        startToken.Span.Start));
+
+                                    break;
+                                }
 
                                 while (Iterator.TryMoveNext(out var next))
                                 {
@@ -293,21 +314,7 @@ public class BakedInterpreter
                                 }
                                 
                                 ParametersCompleted:
-                                
-                                if (!reference.TryGetVariable(out var variable))
-                                {
-                                    instruction = new InvalidInstruction(new BakedError()); // TODO
 
-                                    break;
-                                }
-
-                                if (variable.Value is not IBakedCallable callable)
-                                {
-                                    instruction = new InvalidInstruction(new BakedError()); // TODO
-
-                                    break;
-                                }
-                                
                                 instruction = new ObjectInvocationInstruction(callable, parameters.ToArray(), Iterator.Current.Span.Start);
                                 
                                 break;
@@ -363,6 +370,7 @@ public class BakedInterpreter
         AssertReady();
         
         value = new BakedNull();
+        var startToken = Iterator.Current;
         
         switch (Iterator.Current.Id)
         {
@@ -383,7 +391,12 @@ public class BakedInterpreter
                     return new TryResult(true);
                 }
 
-                return new TryResult(false);
+                return new TryResult(false, 
+                    new BakedError(
+                        null, 
+                        $"Variable, variable path, or part of path " + 
+                        $"'{string.Join(".", path.AsEnumerable())}' does not exist.",
+                        startToken.Span.Start));
             }
             case LexerTokenId.Numeric:
             {
@@ -432,7 +445,11 @@ public class BakedInterpreter
             }
         }
 
-        return new TryResult(false);
+        return new TryResult(false,
+            new BakedError(
+                null,
+                "Expected a value (variable, string, integer, etc).",
+                startToken.Span.Start));
     }
     
     private VariableReference GetVariableReference(LexerToken[] path)
