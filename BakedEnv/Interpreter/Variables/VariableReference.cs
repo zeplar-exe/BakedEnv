@@ -9,7 +9,7 @@ namespace BakedEnv.Interpreter.Variables;
 public class VariableReference
 {
     private BakedInterpreter Interpreter { get; }
-    
+
     /// <summary>
     /// The final name of the references variable (a.b.c.Name)
     /// </summary>
@@ -19,6 +19,22 @@ public class VariableReference
     /// </summary>
     /// <remarks>If the path is empty, the variable is assumed to be top-level.</remarks>
     public IReadOnlyCollection<string> Path { get; }
+
+    private IBakedScope? b_scope;
+
+    public IBakedScope Scope
+    {
+        get
+        {
+            if (b_scope != null)
+                return b_scope;
+            
+            Interpreter.AssertReady();
+
+            return Interpreter.Context;
+        }
+        set => b_scope = value;
+    }
 
     /// <summary>
     /// Initialize a VariableReference with a full qualifying path.
@@ -38,6 +54,20 @@ public class VariableReference
         Name = array.Last();
         Path = array.Take(array.Length - 1).ToList().AsReadOnly();
     }
+
+    public VariableReference(IEnumerable<string> fullPath, BakedInterpreter interpreter, IBakedScope scope)
+    {
+        Interpreter = interpreter;
+        
+        var array = fullPath.ToArray();
+        
+        if (array.Length < 1)
+            throw new ArgumentException("The full path cannot be empty.");
+
+        Name = array.Last();
+        Path = array.Take(array.Length - 1).ToList().AsReadOnly(); 
+        Scope = scope;
+    }
     
     /// <summary>
     /// Initialize a VariableReference.
@@ -52,6 +82,15 @@ public class VariableReference
         Name = name;
         Path = path.ToList().AsReadOnly();
     }
+
+    public VariableReference(string name, IEnumerable<string> path, BakedInterpreter interpreter, IBakedScope scope)
+    {
+        Interpreter = interpreter;
+
+        Name = name;
+        Path = path.ToList().AsReadOnly();
+        Scope = scope;
+    }
     
     /// <summary>
     /// Initialize a top-level variable reference.
@@ -65,18 +104,14 @@ public class VariableReference
         Name = name;
         Path = new List<string>().AsReadOnly();
     }
-    
-    /// <summary>
-    /// Get the referenced (or null).
-    /// </summary>
-    /// <param name="bakedVariable">The value (or null) of the referenced variable.</param>
-    /// <returns>Whether the variable was successfully retrieved.</returns>
-    /// <remarks>Uses <see cref="BakedInterpreter.Context">BakedInterpreter.Context</see> as the target scope.</remarks>
-    public bool TryGetVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
-    {
-        Interpreter.AssertReady();
 
-        return TryGetVariable(Interpreter.Context, out bakedVariable);
+    public VariableReference(string name, BakedInterpreter interpreter, IBakedScope scope)
+    {
+        Interpreter = interpreter;
+
+        Name = name;
+        Path = new List<string>().AsReadOnly();
+        Scope = scope;
     }
 
     /// <summary>
@@ -85,24 +120,11 @@ public class VariableReference
     /// <param name="scope">The target scope.</param>
     /// <param name="bakedVariable">The value (or null) of the referenced variable.</param>
     /// <returns>Whether the variable was successfully retrieved.</returns>
-    public bool TryGetVariable(IBakedScope scope, [NotNullWhen(true)] out BakedVariable? bakedVariable)
+    public bool TryGetVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
     {
         bakedVariable = null;
 
-        return TryFindVariable(scope, out bakedVariable);
-    }
-
-    /// <summary>
-    /// Attempt to set the referenced variable.
-    /// </summary>
-    /// <param name="value">Value to assign to the referenced variable.</param>
-    /// <returns>Whether the variable could be set (false only if the variable is read-only or part of its path does not exist).</returns>
-    /// <remarks>Uses <see cref="BakedInterpreter.Context">BakedInterpreter.Context</see> as the target scope.</remarks>
-    public bool TrySetVariable(BakedObject value)
-    {
-        Interpreter.AssertReady();
-
-        return TrySetVariable(Interpreter.Context, value);
+        return TryFindVariable(out bakedVariable);
     }
 
     /// <summary>
@@ -111,14 +133,17 @@ public class VariableReference
     /// <param name="scope">The target scope.</param>
     /// <param name="value">Value to assign to the referenced variable.</param>
     /// <returns>Whether the variable could be set (false only if the variable is read-only or part of its path does not exist).</returns>
-    public bool TrySetVariable(IBakedScope scope, BakedObject value)
+    public bool TrySetVariable(BakedObject value)
     {
         Interpreter.AssertReady();
         
         if (Path.Count > 0)
         {
-            if (TryFindVariable(scope, out var variable))
+            if (TryFindVariable(out var variable))
             {
+                if (variable.IsReadOnly)
+                    return false;
+                    
                 variable.Value = value;
 
                 return true;
@@ -128,60 +153,53 @@ public class VariableReference
         }
         else
         {
-            Interpreter.Context.Variables.Add(Name, value);
+            if (TryFindVariable(out var variable))
+            {
+                if (variable.IsReadOnly)
+                    return false;
+                
+                variable.Value = value;
+            }
+            else
+                Scope.Variables.Add(Name, value);
             
             return true;
         }
     }
+
+    public bool VariableEquals(object value)
+    {
+        return TryFindVariable(out var variable) && variable.Value.Equals(value);
+    }
     
+    public bool VariableEquals(BakedObject value)
+    {
+        return TryFindVariable(out var variable) && variable.Value.Equals(value);
+    }
+
     /// <summary>
     /// Determine whether the referenced variable exists.
     /// </summary>
+    /// <param name="scope">The target scope.</param>
     /// <returns>Whether the referenced variable exists.</returns>
-    /// <remarks>Uses <see cref="BakedInterpreter.Context">BakedInterpreter.Context</see> as the target scope.</remarks>
     public bool VariableExists()
     {
-        Interpreter.AssertReady();
-        
-        return TryFindVariable(Interpreter.Context, out _);
-    }
-
-    /// <summary>
-    /// Determine whether the referenced variable exists.
-    /// </summary>
-    /// <param name="scope">The target scope.</param>
-    /// <returns>Whether the referenced variable exists.</returns>
-    public bool VariableExists(IBakedScope scope)
-    {
-        return TryFindVariable(scope, out _);
+        return TryFindVariable(out _);
     }
 
     /// <summary>
     /// Attempt to find the referenced variable.
     /// </summary>
+    /// <param name="scope">The target scope.</param>
     /// <param name="bakedVariable">The referenced variable.</param>
     /// <returns>Whether the variable could be found.</returns>
-    /// <remarks>Uses <see cref="BakedInterpreter.Context">BakedInterpreter.Context</see> as the target scope.</remarks>
     public bool TryFindVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
-    {
-        Interpreter.AssertReady();
-        
-        return TryFindVariable(Interpreter.Context, out bakedVariable);
-    }
-
-    /// <summary>
-    /// Attempt to find the referenced variable.
-    /// </summary>
-    /// <param name="scope">The target scope.</param>
-    /// <param name="bakedVariable">The referenced variable.</param>
-    /// <returns>Whether the variable could be found.</returns>
-    public bool TryFindVariable(IBakedScope scope, [NotNullWhen(true)] out BakedVariable? bakedVariable)
     {
         bakedVariable = null;
         
         if (Path.Count > 0)
         {
-            if (!TryFindPathObject(scope, out var pathObject))
+            if (!TryFindPathObject(out var pathObject))
                 return false;
 
             if (!pathObject.TryGetContainedObject(Name, out var bakedObject))
@@ -205,7 +223,7 @@ public class VariableReference
                         
                         break;
                     case VariableReferenceType.ScopeVariables:
-                        if (scope.Variables.TryGetValue(Name, out bakedVariable))
+                        if (Scope.Variables.TryGetValue(Name, out bakedVariable))
                         {
                             return true;
                         }
@@ -219,13 +237,6 @@ public class VariableReference
     }
 
     public bool TryFindPathObject([NotNullWhen(true)] out BakedObject? bakedObject)
-    {
-        Interpreter.AssertReady();
-        
-        return TryFindPathObject(Interpreter.Context, out bakedObject);
-    }
-
-    public bool TryFindPathObject(IBakedScope scope, [NotNullWhen(true)] out BakedObject? bakedObject)
     {
         bakedObject = null;
         

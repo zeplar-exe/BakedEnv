@@ -1,4 +1,5 @@
-﻿using BakedEnv.Interpreter;
+﻿using BakedEnv.ControlStatements;
+using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Interpreter.Variables;
@@ -21,6 +22,8 @@ public class BakedEnvironment
     /// </summary>
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
     
+    public List<ControlStatementDefinition> ControlStatements { get; }
+
     public List<VariableReferenceType> VariableReferenceOrder { get; }
     
     public TextWriter? OutputWriter { get; set; }
@@ -32,6 +35,7 @@ public class BakedEnvironment
     {
         GlobalVariables = new VariableContainer();
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
+        ControlStatements = new List<ControlStatementDefinition>();
         VariableReferenceOrder = new List<VariableReferenceType>();
     }
 
@@ -55,6 +59,12 @@ public class BakedEnvironment
         return this;
     }
 
+    public BakedEnvironment WithReadOnlyVariable(string name, BakedObject value)
+    {
+        GlobalVariables.Add(new BakedVariable(name, value) { IsReadOnly = true });
+
+        return this;
+    }
     
     /// <summary>
     /// Add an array of <see cref="IProcessorStatementHandler"/> to the interpreter.
@@ -63,6 +73,34 @@ public class BakedEnvironment
     public BakedEnvironment WithStatementHandlers(params IProcessorStatementHandler[] handlers)
     {
         ProcessorStatementHandlers.AddRange(handlers);
+
+        return this;
+    }
+    
+    public BakedEnvironment WithStatementHandlers(IProcessorStatementHandler handler)
+    {
+        ProcessorStatementHandlers.Add(handler);
+
+        return this;
+    }
+
+    public BakedEnvironment WithControlStatements(params ControlStatementDefinition[] definitions)
+    {
+        ControlStatements.AddRange(definitions);
+
+        return this;
+    }
+    
+    public BakedEnvironment WithControlStatement(ControlStatementDefinition definition)
+    {
+        ControlStatements.Add(definition);
+
+        return this;
+    }
+    
+    public BakedEnvironment WithControlStatement(string name, int parameters, ControlStatementExecution execution)
+    {
+        ControlStatements.Add(new ControlStatementDefinition(name, parameters, execution));
 
         return this;
     }

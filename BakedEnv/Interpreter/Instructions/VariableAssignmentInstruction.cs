@@ -32,7 +32,7 @@ public class VariableAssignmentInstruction : InterpreterInstruction
     /// <inheritdoc />
     public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
     {
-        if (!Reference.TrySetVariable(scope, Value))
+        if (!Reference.TrySetVariable(Value))
         {
             // TODO: ??
         }

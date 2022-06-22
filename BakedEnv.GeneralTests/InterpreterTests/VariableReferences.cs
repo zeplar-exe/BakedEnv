@@ -16,7 +16,7 @@ public class VariableReferences
         
         var reference = new VariableReference("hello", session.Interpreter);
         
-        Assert.True(reference.TryGetVariable(out var variable) && variable.Value.Equals("world"));
+        Assert.True(reference.VariableEquals("world"));
     }
     
     [Test]
@@ -31,16 +31,38 @@ public class VariableReferences
     }
     
     [Test]
+    public void TestSet()
+    {
+        var session = CreateSession("foo = 50");
+        session.ExecuteUntilEnd();
+
+        var reference = new VariableReference("foo", session.Interpreter);
+        
+        Assert.True(reference.TrySetVariable(new BakedString("papa")) && reference.VariableEquals("papa"));
+    }
+
+    [Test]
+    public void TestSetInvalid()
+    {
+        var session = CreateSession("");
+        session.ExecuteUntilEnd();
+
+        var reference = new VariableReference(new[] { "does", "not", "exist" }, session.Interpreter);
+
+        Assert.False(reference.TrySetVariable(new BakedString("")));
+    }
+    
+    [Test]
     public void TestContainedVariable()
     {
         var environment = new BakedEnvironment()
             .WithVariable("pizza", new MockPropertyObject());
-        var session = CreateSession("a = pizza.foo").Init();
+        var session = environment.CreateSession(new RawStringSource("")).Init();
         session.ExecuteUntilEnd();
 
         var reference = new VariableReference(new[] { "pizza", "foo" }, session.Interpreter);
 
-        Assert.True(reference.TryGetVariable(out var variable) && variable.Value.Equals("bar"));
+        Assert.True(reference.VariableEquals("bar"));
     }
 
     private ScriptSession CreateSession(string text)
@@ -50,6 +72,14 @@ public class VariableReferences
     
     public class MockPropertyObject : BakedObject
     {
+        public const string PropertyName = "foo";
+        public BakedString PropertyValue { get; set; }
+
+        public MockPropertyObject()
+        {
+            PropertyValue = new BakedString("bar");
+        }
+        
         public override object? GetValue()
         {
             return null;
@@ -59,14 +89,29 @@ public class VariableReferences
         {
             bakedObject = new BakedNull();
             
-            if (name == "foo")
+            if (name == PropertyName)
             {
-                bakedObject = new BakedString("bar");
+                bakedObject = PropertyValue;
                 
                 return true;
             }
 
             return false;
+        }
+
+        public override bool TrySetContainedObject(string name, BakedObject bakedObject)
+        {
+            if (name == PropertyName)
+            {
+                if (bakedObject is not BakedString stringObject)
+                    return false;
+
+                PropertyValue = stringObject;
+
+                return true;
+            }
+
+            return true;
         }
 
         public override int GetHashCode()

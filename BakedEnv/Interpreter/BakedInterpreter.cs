@@ -17,7 +17,9 @@ namespace BakedEnv.Interpreter;
 public class BakedInterpreter
 {
     private CommonErrorReporter ErrorReporter { get; set; }
+    
     private EnumerableIterator<LexerToken>? Iterator { get; set; }
+    private IteratorTools? IteratorTools { get; set; }
     private StateMachine<ParserState>? State { get; set; }
     private IBakedScope? CurrentScope { get; set; }
     
@@ -38,6 +40,8 @@ public class BakedInterpreter
     [MemberNotNullWhen(true, nameof(CurrentScope))]
     [MemberNotNullWhen(true, nameof(Iterator))]
     [MemberNotNullWhen(true, nameof(Source))]
+    [MemberNotNullWhen(true, nameof(State))]
+    [MemberNotNullWhen(true, nameof(IteratorTools))]
     public bool IsReady { get; private set; }
     
     /// <summary>
@@ -74,7 +78,8 @@ public class BakedInterpreter
                 $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
         
         Iterator = new Lexer(Source.EnumerateCharacters()).ToIterator();
-        State = new StateMachine<ParserState>(ParserState.Root);
+        IteratorTools = new IteratorTools(this, Iterator);
+        State = new StateMachine<ParserState>(ParserState.Any);
         Context = new InterpreterContext();
         CurrentScope = Context;
         IsReady = true;
@@ -104,9 +109,6 @@ public class BakedInterpreter
     /// <exception cref="InvalidOperationException">The interpreter is locked and disallows manipulation of its environment.</exception>
     public BakedInterpreter WithEnvironment(BakedEnvironment? environment)
     {
-        if (SourceLocked)
-            throw new InvalidOperationException("Cannot use an environment while the interpreter is locked.");
-        
         Environment = environment;
 
         return this;
@@ -121,6 +123,7 @@ public class BakedInterpreter
         State = null;
         Context = null;
         IsReady = false;
+        IteratorTools = null;
         CurrentScope = null;
 
         SourceLocked = false;
@@ -183,13 +186,13 @@ public class BakedInterpreter
         }
         
         if (first.Id is LexerTokenId.Whitespace or LexerTokenId.Newline)
-            SkipWhitespaceAndNewlines();
+            IteratorTools.SkipWhitespaceAndNewlines();
 
         switch (Iterator.Current.Id)
         {
-            case LexerTokenId.OpenBracket:
+            case LexerTokenId.OpenBracket: // Processor statement
             {
-                SkipWhitespaceAndNewlines();
+                IteratorTools.SkipWhitespaceAndNewlines();
                 
                 var nameToken = Iterator.Current;
 
@@ -203,7 +206,7 @@ public class BakedInterpreter
 
                 var name = nameToken.ToString();
                 
-                SkipWhitespaceAndNewlines();
+                IteratorTools.SkipWhitespaceAndNewlines();
                 
                 var colonToken = Iterator.Current;
                 
@@ -215,7 +218,7 @@ public class BakedInterpreter
                     break;
                 }
                 
-                SkipWhitespaceAndNewlines();
+                IteratorTools.SkipWhitespaceAndNewlines();
 
                 var parseResult = TryParseValue(out var value);
                 
@@ -231,7 +234,7 @@ public class BakedInterpreter
                 break;
             }
             case LexerTokenId.Alphabetic:
-            case LexerTokenId.AlphaNumeric:
+            case LexerTokenId.AlphaNumeric: // 
             {
                 switch (Iterator.Current.ToString())
                 {
@@ -243,8 +246,9 @@ public class BakedInterpreter
                     {
                         break; // TODO
                     }
-                    default:
+                    default: // Variable, invocation, control statement
                     {
+                        var startToken = Iterator.Current;
                         var identifierParseResult = TryParseIdentifier(out var path);
                         
                         if (!identifierParseResult.Success)
@@ -254,68 +258,114 @@ public class BakedInterpreter
                             break;
                         }
 
-                        SkipWhitespaceAndNewlinesReserved();
+                        IteratorTools.SkipWhitespaceAndNewlinesReserved();
 
                         var reference = GetVariableReference(path);
 
                         switch (Iterator.Current.Id)
                         {
                             case LexerTokenId.LeftParenthesis:
-                                SkipWhitespaceAndNewlines();
-
-                                var valueExpected = true;
-                                var parameters = new List<BakedObject>();
-
-                                while (Iterator.TryMoveNext(out var next))
+                                if (path.Length == 1 && Environment != null)
                                 {
-                                    switch (next.Id)
+                                    var name = path.First().ToString();
+                                    
+                                    foreach (var statement in Environment.ControlStatements)
                                     {
-                                        case LexerTokenId.RightParenthesis:
-                                            goto ParametersCompleted;
-                                        case LexerTokenId.Comma:
-                                            if (valueExpected)
-                                                parameters.Add(new BakedNull());
+                                        if (statement.Name == name)
+                                        {
+                                            var controlParameterResult = 
+                                                TryParseParameterList(out var controlParameters);
                                             
-                                            valueExpected = true;
-                                            break;
-                                        default:
-                                            var valueResult = TryParseValue(out var parameter);
-
-                                            if (!valueResult.Success)
+                                            if (!controlParameterResult.Success)
                                             {
-                                                instruction = new InvalidInstruction(valueResult.Error);
+                                                instruction = new InvalidInstruction(controlParameterResult.Error);
                                                 
-                                                break;
+                                                goto Skip;
+                                            }
+
+                                            if (controlParameters.Length != statement.ParameterCount)
+                                            {
+                                                instruction = new InvalidInstruction(new BakedError()); // TODO
+
+                                                goto Skip;
+                                            }
+
+                                            IteratorTools.SkipWhitespaceAndNewlines();
+
+                                            if (!Iterator.Current.Is(LexerTokenId.OpenCurlyBracket))
+                                            {
+                                                instruction = new InvalidInstruction(new BakedError()); // TODO
+
+                                                goto Skip;
                                             }
                                             
-                                            parameters.Add(parameter);
-                                            valueExpected = false;
-                                            
-                                            break;
+                                            State.MoveTo(ParserState.ControlStatementBody);
+
+                                            var instructions = new List<InterpreterInstruction>();
+
+                                            while (true) 
+                                                // TODO: volatile condition
+                                            {
+                                                if (!TryGetNextInstruction(out var controlInstruction))
+                                                {
+                                                    instruction = new InvalidInstruction(new BakedError()); // TODO
+
+                                                    goto Skip;
+                                                }
+                                                
+                                                if (State.Current != ParserState.ControlStatementBody)
+                                                    break;
+                                                
+                                                instructions.Add(controlInstruction);
+                                            }
+
+                                            instruction = new ControlStatementInstruction(
+                                                startToken.Span.Start,
+                                                statement.Execution,
+                                                controlParameters,
+                                                instructions);
+
+                                            goto Skip;
+                                        }
                                     }
                                 }
                                 
-                                ParametersCompleted:
-                                
-                                if (!reference.TryGetVariable(CurrentScope, out var variable))
+                                if (!reference.TryGetVariable(out var variable))
                                 {
-                                    instruction = new InvalidInstruction(new BakedError()); // TODO
+                                    instruction = new InvalidInstruction(new BakedError(
+                                        null,
+                                        "Cannot invoke a null value.",
+                                        startToken.Span.Start));
 
                                     break;
                                 }
 
                                 if (variable.Value is not IBakedCallable callable)
                                 {
-                                    instruction = new InvalidInstruction(new BakedError()); // TODO
+                                    instruction = new InvalidInstruction(new BakedError(
+                                        null,
+                                        "Cannot invoke a non-callable object.",
+                                        startToken.Span.Start));
 
                                     break;
                                 }
-                                
+
+                                var parameterResult = TryParseParameterList(out var parameters);
+
+                                if (!parameterResult.Success)
+                                {
+                                    instruction = new InvalidInstruction(parameterResult.Error);
+                                    
+                                    break;
+                                }
+
                                 instruction = new ObjectInvocationInstruction(callable, parameters.ToArray(), Iterator.Current.Span.Start);
+                                
+                                Skip:
                                 
                                 break;
                             case LexerTokenId.Equals:
-                                SkipWhitespaceAndNewlines();
+                                IteratorTools.SkipWhitespaceAndNewlines();
 
                                 var valueParseResult = TryParseValue(out var value);
                                 
@@ -341,6 +391,21 @@ public class BakedInterpreter
                 
                 break;
             }
+            case LexerTokenId.CloseCurlyBracket:
+            {
+                if (State.Current != ParserState.ControlStatementBody)
+                {
+                    instruction = new InvalidInstruction(new BakedError()); // TODO
+
+                    break;
+                }
+
+                instruction = new EmptyInstruction(Iterator.Current.Span.Start);
+
+                State.MoveLast();
+                
+                break;
+            }
         }
         
         return instruction != null;
@@ -354,11 +419,68 @@ public class BakedInterpreter
     [MemberNotNull(nameof(CurrentScope))]
     [MemberNotNull(nameof(Iterator))]
     [MemberNotNull(nameof(Source))]
+    [MemberNotNull(nameof(State))]
+    [MemberNotNull(nameof(IteratorTools))]
     public void AssertReady()
     {
         if (!IsReady)
             throw new InvalidOperationException(
                 $"The interpreter has not been initialized. Try calling '{nameof(Init)}' or '{nameof(WithSource)}' first.");
+    }
+
+    private TryResult TryParseParameterList(out BakedObject[] parameters)
+    {
+        var list = new List<BakedObject>();
+        var valueExpected = true;
+        
+        while (Iterator.TryMoveNext(out var next))
+        {
+            switch (next.Id)
+            {
+                case LexerTokenId.RightParenthesis:
+                    parameters = list.ToArray();
+                    return new TryResult(true);
+                case LexerTokenId.Comma:
+                    if (valueExpected)
+                        list.Add(new BakedNull());
+                                            
+                    valueExpected = true;
+                    break;
+                case LexerTokenId.Whitespace:
+                case LexerTokenId.Newline:
+                    break;
+                case LexerTokenId.Alphabetic:
+                case LexerTokenId.AlphaNumeric:
+                case LexerTokenId.Numeric:
+                    var valueResult = TryParseValue(out var parameter);
+
+                    if (!valueResult.Success)
+                    {
+                        parameters = Array.Empty<BakedObject>();
+                        
+                        return valueResult with { Success = false };
+                    }
+                                            
+                    list.Add(parameter);
+                    valueExpected = false;
+
+                    switch (Iterator.Current.Id)
+                    {
+                        case LexerTokenId.RightParenthesis:
+                            parameters = list.ToArray();
+                            return new TryResult(true);
+                        case LexerTokenId.Comma:
+                            valueExpected = true;
+                            break;
+                    }
+                                            
+                    break;
+            }
+        }
+
+        parameters = list.ToArray();
+
+        return new TryResult(true);
     }
     
     private TryResult TryParseValue(out BakedObject value)
@@ -366,6 +488,7 @@ public class BakedInterpreter
         AssertReady();
         
         value = new BakedNull();
+        var startToken = Iterator.Current;
         
         switch (Iterator.Current.Id)
         {
@@ -379,14 +502,19 @@ public class BakedInterpreter
 
                 var reference = GetVariableReference(path);
                 
-                if (reference.TryGetVariable(CurrentScope, out var variable))
+                if (reference.TryGetVariable(out var variable))
                 {
                     value = variable.Value;
                     
                     return new TryResult(true);
                 }
 
-                return new TryResult(false);
+                return new TryResult(false, 
+                    new BakedError(
+                        null, 
+                        $"Variable, variable path, or part of path " + 
+                        $"'{string.Join(".", path.AsEnumerable())}' does not exist.",
+                        startToken.Span.Start));
             }
             case LexerTokenId.Numeric:
             {
@@ -435,12 +563,16 @@ public class BakedInterpreter
             }
         }
 
-        return new TryResult(false);
+        return new TryResult(false,
+            new BakedError(
+                null,
+                "Expected a value (variable, string, integer, etc).",
+                startToken.Span.Start));
     }
     
     private VariableReference GetVariableReference(LexerToken[] path)
     {
-        return new VariableReference(path.Select(c => c.ToString()), this);
+        return new VariableReference(path.Select(c => c.ToString()), this, CurrentScope);
     }
 
     private TryResult TryParseIdentifier(out LexerToken[] path)
@@ -457,7 +589,7 @@ public class BakedInterpreter
 
             while (Iterator.TryMoveNext(out next))
             {
-                SkipWhitespaceAndNewlines();
+                IteratorTools.SkipWhitespaceAndNewlines();
                 
                 if (parseNextIdentifier)
                 {
@@ -487,67 +619,14 @@ public class BakedInterpreter
 
         return new TryResult(true);
     }
-    
-    private int SkipWhitespace()
-    {
-        AssertReady();
-        
-        var stride = 0;
-
-        foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace))
-        {
-            stride += token.Span.Size;
-        }
-
-        return stride;
-    }
-    
-    private int SkipWhitespaceAndNewlines()
-    {
-        AssertReady();
-        
-        var stride = 0;
-
-        foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace or LexerTokenId.Newline))
-        {
-            stride += token.Span.Size;
-        }
-
-        return stride;
-    }
-    
-    private int SkipWhitespaceAndNewlinesReserved()
-    {
-        AssertReady();
-        
-        if (Iterator.Current.Id is not LexerTokenId.Whitespace or LexerTokenId.Newline)
-            return 0;
-        
-        var stride = 0;
-
-        foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace or LexerTokenId.Newline))
-        {
-            stride += token.Span.Size;
-        }
-
-        return stride;
-    }
 
     private readonly record struct TryResult(bool Success, BakedError Error = default);
 
     private enum ParserState
     {
-        Root,
-        ProcessorStatement,
+        Any,
         
-        Identifier,
-        TableInitialization,
-        
-        MethodIdentifier,
-        MethodParameters,
         MethodBody,
-        
-        ControlFlowCondition,
-        ControlFlowBody
+        ControlStatementBody,
     }
 }
