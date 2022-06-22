@@ -1,3 +1,4 @@
+using BakedEnv.ControlStatements;
 using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
@@ -32,5 +33,11 @@ public static class BakedEnvironmentExtensions
     {
         return environment
             .WithVariable(new BakedVariable("null", new BakedNull()) { IsReadOnly = true });
+    }
+
+    public static BakedEnvironment WithControlFlow(this BakedEnvironment environment)
+    {
+        return environment
+            .WithControlStatement("if", 1, new IfStatementExecution());
     }
 }
