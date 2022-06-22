@@ -141,6 +141,9 @@ public class VariableReference
         {
             if (TryFindVariable(out var variable))
             {
+                if (variable.IsReadOnly)
+                    return false;
+                    
                 variable.Value = value;
 
                 return true;
@@ -151,7 +154,12 @@ public class VariableReference
         else
         {
             if (TryFindVariable(out var variable))
+            {
+                if (variable.IsReadOnly)
+                    return false;
+                
                 variable.Value = value;
+            }
             else
                 Scope.Variables.Add(Name, value);
             
