@@ -1,4 +1,5 @@
-﻿using BakedEnv.Interpreter;
+﻿using BakedEnv.ControlStatements;
+using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Interpreter.Variables;
@@ -21,6 +22,8 @@ public class BakedEnvironment
     /// </summary>
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
     
+    public List<ControlStatementDefinition> ControlStatements { get; }
+
     public List<VariableReferenceType> VariableReferenceOrder { get; }
     
     public Stream? OutputStream { get; set; }
@@ -32,6 +35,7 @@ public class BakedEnvironment
     {
         GlobalVariables = new VariableContainer();
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
+        ControlStatements = new List<ControlStatementDefinition>();
         VariableReferenceOrder = new List<VariableReferenceType>();
     }
 
@@ -55,6 +59,12 @@ public class BakedEnvironment
         return this;
     }
 
+    public BakedEnvironment WithReadOnlyVariable(string name, BakedObject value)
+    {
+        GlobalVariables.Add(new BakedVariable(name, value) { IsReadOnly = true });
+
+        return this;
+    }
     
     /// <summary>
     /// Add an array of <see cref="IProcessorStatementHandler"/> to the interpreter.
@@ -63,6 +73,13 @@ public class BakedEnvironment
     public BakedEnvironment WithStatementHandlers(params IProcessorStatementHandler[] handlers)
     {
         ProcessorStatementHandlers.AddRange(handlers);
+
+        return this;
+    }
+
+    public BakedEnvironment WithControlStatement(params ControlStatementDefinition[] definitions)
+    {
+        ControlStatements.AddRange(definitions);
 
         return this;
     }
