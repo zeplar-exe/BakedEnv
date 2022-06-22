@@ -7,7 +7,7 @@ public class ControlStatementDefinition
     
     public ControlStatementExecution Execution { get; } 
     
-    protected ControlStatementDefinition(string name, int parameterCount, ControlStatementExecution execution)
+    public ControlStatementDefinition(string name, int parameterCount, ControlStatementExecution execution)
     {
         Name = name;
         ParameterCount = parameterCount;

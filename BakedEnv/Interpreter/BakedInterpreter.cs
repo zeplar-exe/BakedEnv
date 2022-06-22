@@ -265,8 +265,6 @@ public class BakedInterpreter
                         switch (Iterator.Current.Id)
                         {
                             case LexerTokenId.LeftParenthesis:
-                                IteratorTools.SkipWhitespaceAndNewlines();
-
                                 if (path.Length == 1 && Environment != null)
                                 {
                                     var name = path.First().ToString();
@@ -291,12 +289,21 @@ public class BakedInterpreter
 
                                                 goto Skip;
                                             }
+
+                                            IteratorTools.SkipWhitespaceAndNewlines();
+
+                                            if (!Iterator.Current.Is(LexerTokenId.OpenCurlyBracket))
+                                            {
+                                                instruction = new InvalidInstruction(new BakedError()); // TODO
+
+                                                goto Skip;
+                                            }
                                             
                                             State.MoveTo(ParserState.ControlStatementBody);
 
                                             var instructions = new List<InterpreterInstruction>();
 
-                                            while (State.Current == ParserState.ControlStatementBody) 
+                                            while (true) 
                                                 // TODO: volatile condition
                                             {
                                                 if (!TryGetNextInstruction(out var controlInstruction))
@@ -305,6 +312,9 @@ public class BakedInterpreter
 
                                                     goto Skip;
                                                 }
+                                                
+                                                if (State.Current != ParserState.ControlStatementBody)
+                                                    break;
                                                 
                                                 instructions.Add(controlInstruction);
                                             }
@@ -390,6 +400,8 @@ public class BakedInterpreter
                     break;
                 }
 
+                instruction = new EmptyInstruction(Iterator.Current.Span.Start);
+
                 State.MoveLast();
                 
                 break;
@@ -434,7 +446,12 @@ public class BakedInterpreter
                                             
                     valueExpected = true;
                     break;
-                default:
+                case LexerTokenId.Whitespace:
+                case LexerTokenId.Newline:
+                    break;
+                case LexerTokenId.Alphabetic:
+                case LexerTokenId.AlphaNumeric:
+                case LexerTokenId.Numeric:
                     var valueResult = TryParseValue(out var parameter);
 
                     if (!valueResult.Success)
@@ -446,6 +463,16 @@ public class BakedInterpreter
                                             
                     list.Add(parameter);
                     valueExpected = false;
+
+                    switch (Iterator.Current.Id)
+                    {
+                        case LexerTokenId.RightParenthesis:
+                            parameters = list.ToArray();
+                            return new TryResult(true);
+                        case LexerTokenId.Comma:
+                            valueExpected = true;
+                            break;
+                    }
                                             
                     break;
             }

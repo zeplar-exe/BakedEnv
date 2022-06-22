@@ -76,10 +76,31 @@ public class BakedEnvironment
 
         return this;
     }
+    
+    public BakedEnvironment WithStatementHandlers(IProcessorStatementHandler handler)
+    {
+        ProcessorStatementHandlers.Add(handler);
 
-    public BakedEnvironment WithControlStatement(params ControlStatementDefinition[] definitions)
+        return this;
+    }
+
+    public BakedEnvironment WithControlStatements(params ControlStatementDefinition[] definitions)
     {
         ControlStatements.AddRange(definitions);
+
+        return this;
+    }
+    
+    public BakedEnvironment WithControlStatement(ControlStatementDefinition definition)
+    {
+        ControlStatements.Add(definition);
+
+        return this;
+    }
+    
+    public BakedEnvironment WithControlStatement(string name, int parameters, ControlStatementExecution execution)
+    {
+        ControlStatements.Add(new ControlStatementDefinition(name, parameters, execution));
 
         return this;
     }

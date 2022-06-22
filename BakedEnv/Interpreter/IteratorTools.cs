@@ -14,7 +14,7 @@ public class IteratorTools
         Iterator = iterator;
     }
     
-    private int SkipWhitespace()
+    public int SkipWhitespace()
     {
         Interpreter.AssertReady();
         

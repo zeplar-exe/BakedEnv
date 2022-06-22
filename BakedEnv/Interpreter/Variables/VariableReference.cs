@@ -150,7 +150,10 @@ public class VariableReference
         }
         else
         {
-            Interpreter.Context.Variables.Add(Name, value);
+            if (TryFindVariable(out var variable))
+                variable.Value = value;
+            else
+                Scope.Variables.Add(Name, value);
             
             return true;
         }
