@@ -53,6 +53,18 @@ public abstract class BakedObject : IEquatable<BakedObject>
         return false;
     }
 
+    public virtual bool TryGetIndex(BakedObject key, out BakedObject bakedObject)
+    {
+        bakedObject = new BakedNull();
+        
+        return false;
+    }
+
+    public virtual bool TrySetIndex(BakedObject key, BakedObject value)
+    {
+        return false;
+    }
+
     /// <summary>
     /// Attempt negation of this object.
     /// </summary>

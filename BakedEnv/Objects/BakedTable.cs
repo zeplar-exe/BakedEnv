@@ -50,6 +50,20 @@ public class BakedTable : BakedObject
         return true;
     }
 
+    public override bool TryGetIndex(BakedObject key, out BakedObject bakedObject)
+    {
+        bakedObject = this[key];
+
+        return true;
+    }
+    
+    public override bool TrySetIndex(BakedObject key, BakedObject value)
+    {
+        this[key] = value;
+
+        return true;
+    }
+
     public override int GetHashCode()
     {
         return Dictionary.GetHashCode();
