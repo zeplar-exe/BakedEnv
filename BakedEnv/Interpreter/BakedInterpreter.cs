@@ -213,7 +213,6 @@ public class BakedInterpreter
                     }
                     default: // Variable, invocation, control statement
                     {
-                        var startToken = Iterator.Current;
                         var referenceParser = CreateValueParser();
                         var identifierParseResult = referenceParser.TryParseIdentifier(out var path);
                         
@@ -232,105 +231,9 @@ public class BakedInterpreter
                         {
                             case LexerTokenId.LeftParenthesis:
                             {
-                                if (path.Length == 1 && Environment != null)
-                                {
-                                    var name = path.First().ToString();
-                                    
-                                    foreach (var statement in Environment.ControlStatements)
-                                    {
-                                        if (statement.Name == name)
-                                        {
-                                            var paramParser = CreateParameterParser();
-                                            var controlParameterResult = 
-                                                paramParser.TryParseParameterList(out var controlParameters);
-                                            
-                                            if (!controlParameterResult.Success)
-                                            {
-                                                instruction = new InvalidInstruction(controlParameterResult.Error);
-                                                
-                                                goto Skip;
-                                            }
+                                var invokeParser = CreateInvocationParser(reference);
 
-                                            if (controlParameters.Length != statement.ParameterCount)
-                                            {
-                                                instruction = new InvalidInstruction(new BakedError()); // TODO
-
-                                                goto Skip;
-                                            }
-
-                                            IteratorTools.SkipWhitespaceAndNewlines();
-
-                                            if (!Iterator.Current.Is(LexerTokenId.OpenCurlyBracket))
-                                            {
-                                                instruction = new InvalidInstruction(new BakedError()); // TODO
-
-                                                goto Skip;
-                                            }
-                                            
-                                            State.MoveTo(ParserState.ControlStatementBody);
-
-                                            var instructions = new List<InterpreterInstruction>();
-
-                                            while (true) 
-                                                // TODO: volatile condition
-                                            {
-                                                if (!TryGetNextInstruction(out var controlInstruction))
-                                                {
-                                                    instruction = new InvalidInstruction(new BakedError()); // TODO
-
-                                                    goto Skip;
-                                                }
-                                                
-                                                if (State.Current != ParserState.ControlStatementBody)
-                                                    break;
-                                                
-                                                instructions.Add(controlInstruction);
-                                            }
-
-                                            instruction = new ControlStatementInstruction(
-                                                startToken.Span.Start,
-                                                statement.Execution,
-                                                controlParameters,
-                                                instructions);
-
-                                            goto Skip;
-                                        }
-                                    }
-                                }
-                                
-                                if (!reference.TryGetVariable(out var variable))
-                                {
-                                    instruction = new InvalidInstruction(new BakedError(
-                                        null,
-                                        "Cannot invoke a null value.",
-                                        startToken.Span.Start));
-
-                                    break;
-                                }
-
-                                if (variable.Value is not IBakedCallable callable)
-                                {
-                                    instruction = new InvalidInstruction(new BakedError(
-                                        null,
-                                        "Cannot invoke a non-callable object.",
-                                        startToken.Span.Start));
-
-                                    break;
-                                }
-
-                                var parameterParser = CreateParameterParser();
-                                var parameterResult = parameterParser.TryParseParameterList(out var parameters);
-
-                                if (!parameterResult.Success)
-                                {
-                                    instruction = new InvalidInstruction(parameterResult.Error);
-                                    
-                                    break;
-                                }
-
-                                instruction = new ObjectInvocationInstruction(callable, parameters.ToArray(), Iterator.Current.Span.Start);
-                                
-                                Skip:
+                                instruction = invokeParser.Parse();
                                 
                                 break;
                             }
@@ -417,12 +320,9 @@ public class BakedInterpreter
     {
         return new ProcessorStatementParser(this, Iterator, IteratorTools, ErrorReporter);
     }
-    
-    private enum ParserState
+
+    internal InvocationParser CreateInvocationParser(VariableReference reference)
     {
-        Any,
-        
-        MethodBody,
-        ControlStatementBody,
+        return new InvocationParser(this, Iterator, IteratorTools, State, reference);
     }
 }
