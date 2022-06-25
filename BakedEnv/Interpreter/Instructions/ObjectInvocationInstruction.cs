@@ -22,7 +22,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// <param name="callable">Callable object to invoke.</param>
     /// <param name="parameters">Parameters to use during invocation.</param>
     /// /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public ObjectInvocationInstruction(IBakedCallable callable, BakedObject[] parameters, int sourceIndex = -1) : base(sourceIndex)
+    public ObjectInvocationInstruction(IBakedCallable callable, BakedObject[] parameters, int sourceIndex) : base(sourceIndex)
     {
         Callable = callable;
         Parameters = parameters;

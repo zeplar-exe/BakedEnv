@@ -9,7 +9,7 @@ public class ControlStatementInstruction : InterpreterInstruction
     public BakedObject[] Parameters { get; }
     public IEnumerable<InterpreterInstruction> Instructions { get; }
     
-    public ControlStatementInstruction(int sourceIndex, ControlStatementExecution controlStatement, BakedObject[] parameters, IEnumerable<InterpreterInstruction> instructions) : base(sourceIndex)
+    public ControlStatementInstruction(ControlStatementExecution controlStatement, BakedObject[] parameters, IEnumerable<InterpreterInstruction> instructions, int sourceIndex) : base(sourceIndex)
     {
         ControlStatement = controlStatement;
         Parameters = parameters;

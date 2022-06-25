@@ -80,10 +80,10 @@ internal class InvocationParser
                 }
                 
                 return new ControlStatementInstruction(
-                    startToken.Span.Start,
                     statement.Execution,
                     controlParameters,
-                    instructions);
+                    instructions,
+                    startToken.Span.Start);
             }
         }
 

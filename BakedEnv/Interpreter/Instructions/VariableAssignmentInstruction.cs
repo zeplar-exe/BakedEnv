@@ -23,7 +23,7 @@ public class VariableAssignmentInstruction : InterpreterInstruction
     /// <param name="reference">Reference object for accessing the variable.</param>
     /// <param name="value">The value to assign.a</param>
     /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public VariableAssignmentInstruction(VariableReference reference, BakedObject value, int sourceIndex = -1) : base(sourceIndex)
+    public VariableAssignmentInstruction(VariableReference reference, BakedObject value, int sourceIndex) : base(sourceIndex)
     {
         Reference = reference;
         Value = value;

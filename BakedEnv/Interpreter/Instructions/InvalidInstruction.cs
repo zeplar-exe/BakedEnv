@@ -9,7 +9,7 @@ public class InvalidInstruction : InterpreterInstruction
     /// Error associated with this invalid instruction.
     /// </summary>
     public BakedError AssociatedError { get; }
-    
+
     /// <summary>
     /// Initialize an InvalidInstruction with its associated error.
     /// </summary>
