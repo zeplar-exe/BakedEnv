@@ -62,14 +62,8 @@ public class InteractiveSession : IDisposable
     {
         if (Args.ExitMethod == null) 
             return;
-        
-        var exit = new BakedMethod(Enumerable.Empty<string>())
-        {
-            Instructions =
-            {
-                new ActionInstruction((_, _) => ExitRequested = true)
-            }
-        };
+
+        var exit = new DelegateObject(delegate() { ExitRequested = true; });
 
         targetEnvironment.GlobalVariables.Add(Args.ExitMethod, exit);
     }

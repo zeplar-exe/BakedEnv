@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
@@ -13,15 +14,25 @@ public class Methods
     public void TestMethod()
     {
         var target = 0;
-        var testAction = new ActionInstruction((_, _) => target = 1);
-        var testMethod = new BakedMethod(Array.Empty<string>());
-        testMethod.Instructions.Add(testAction);
+        var del = new DelegateObject(delegate() { target = 1; });
 
-        var environment = new BakedEnvironment().WithVariable("foo", testMethod);
-        
+        var environment = new BakedEnvironment().WithVariable("foo", del);
         var session = environment.CreateSession(new RawStringSource("foo()")).Init();
         session.ExecuteUntilEnd();
         
         Assert.True(target == 1);
+    }
+
+    [Test]
+    public void TestParameterizedMethod()
+    {
+        var target = BigInteger.Zero;
+        var del = new DelegateObject(delegate(BigInteger i) { target = i; });
+
+        var environment = new BakedEnvironment().WithVariable("foo", del);
+        var session = environment.CreateSession(new RawStringSource("foo(5)")).Init();
+        session.ExecuteUntilEnd();
+
+        Assert.True(target == 5);
     }
 }
