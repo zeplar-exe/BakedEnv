@@ -214,6 +214,7 @@ public class BakedInterpreter
                     }
                     default: // Variable, invocation, control statement
                     {
+                        var referenceStart = Iterator.Current;
                         var referenceParser = CreateValueParser();
                         var identifierParseResult = referenceParser.TryParseIdentifier(out var path);
                         
@@ -242,6 +243,7 @@ public class BakedInterpreter
                             {
                                 IteratorTools.SkipWhitespaceAndNewlines();
 
+                                var startToken = Iterator.Current;
                                 var valueParser = CreateValueParser();
                                 var valueParseResult = valueParser.TryParseValue(out var value);
                                 
@@ -250,6 +252,28 @@ public class BakedInterpreter
                                     instruction = new InvalidInstruction(valueParseResult.Error);
 
                                     break;
+                                }
+
+                                if (value is IBakedCallable callable)
+                                {
+                                    if (Iterator.Current.Is(LexerTokenId.LeftParenthesis))
+                                    {
+                                        var paramsParser = CreateParameterParser();
+                                        var paramsResult = paramsParser.TryParseParameterList(out var parameters);
+
+                                        if (!valueParseResult.Success)
+                                        {
+                                            instruction = new InvalidInstruction(paramsResult.Error);
+                                            
+                                            break;
+                                        }
+
+                                        var invocation = new ObjectInvocationInstruction(callable, parameters, startToken.Span.Start);
+
+                                        instruction = new VariableCallableAssignmentInstruction(reference, invocation, referenceStart.Span.Start);
+                                    
+                                        break;
+                                    }
                                 }
 
                                 instruction = new VariableAssignmentInstruction(reference, value, Iterator.Current.Span.Start);

@@ -35,4 +35,16 @@ public class Methods
 
         Assert.True(target == 5);
     }
+
+    [Test]
+    public void TestMethodReturn()
+    {
+        var del = new DelegateObject(delegate() { return "Hello world!"; });
+        
+        var environment = new BakedEnvironment().WithVariable("foo", del);
+        var session = environment.CreateSession(new RawStringSource("a = foo()")).Init();
+        session.ExecuteUntilEnd();
+
+        Assert.True(session.Interpreter.Context.Variables["a"].Value.Equals("Hello world!"));
+    }
 }
