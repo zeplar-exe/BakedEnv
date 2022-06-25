@@ -2,7 +2,7 @@ using BakedEnv.Interpreter.Instructions;
 using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tools;
 
-namespace BakedEnv.Interpreter;
+namespace BakedEnv.Interpreter.Parsers;
 
 internal class ProcessorStatementParser
 {

@@ -4,7 +4,7 @@ using BakedEnv.Objects;
 using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tools;
 
-namespace BakedEnv.Interpreter;
+namespace BakedEnv.Interpreter.Parsers;
 
 internal class ValueParser
 {

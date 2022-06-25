@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter;
+namespace BakedEnv.Interpreter.Parsers;
 
 internal enum ParserState
 {
