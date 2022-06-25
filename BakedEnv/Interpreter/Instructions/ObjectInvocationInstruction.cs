@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Instructions;
@@ -31,6 +32,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// <inheritdoc />
     public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
     {
-        Callable.Invoke(Parameters, interpreter, scope);
+        Callable.Invoke(Parameters, interpreter, new InvocationContext(scope, SourceIndex));
+        // TODO: Get return value in case of assignment
     }
 }

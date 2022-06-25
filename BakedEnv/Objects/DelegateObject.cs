@@ -1,4 +1,6 @@
+using System.Reflection;
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects.Conversion;
 
 namespace BakedEnv.Objects;
@@ -21,12 +23,37 @@ public class DelegateObject : BakedObject, IBakedCallable
         return Delegate;
     }
     
-    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, IBakedScope scope)
+    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, InvocationContext context)
     {
-        var objectParameters = parameters.Select(p => ConversionTable.ToObject(p)).ToArray();
-        var result = Delegate.Method.Invoke(Delegate.Target, objectParameters);
+        try
+        {
+            var objectParameters = parameters.Select(p => ConversionTable.ToObject(p)).ToArray();
+            var result = Delegate.Method.Invoke(Delegate.Target, objectParameters);
 
-        return ConversionTable.ToBakedObject(result);
+            return ConversionTable.ToBakedObject(result);
+        }
+        catch (Exception e)
+        {
+            switch (e)
+            {
+                case ArgumentException args:
+                    interpreter.ReportError(new BakedError(
+                        null,
+                        "Invalid arguments.",
+                        context.SourceIndex));
+                    break;
+                case TargetParameterCountException paramCount:
+                    interpreter.ReportError(new BakedError(
+                        null,
+                        "Expected {} parameters, got {}.",
+                        context.SourceIndex));
+                    break;
+                default:
+                    throw;
+            }
+        }
+
+        return new BakedNull();
     }
 
     public override int GetHashCode()

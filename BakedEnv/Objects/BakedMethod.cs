@@ -1,5 +1,6 @@
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Variables;
 
 namespace BakedEnv.Objects;
@@ -48,14 +49,14 @@ public class BakedMethod : BakedObject, IBakedCallable
     /// <param name="interpreter">The target interpreter.</param>
     /// <param name="scope">The target scope to execute instructions in.</param>
     /// <returns></returns>
-    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, IBakedScope scope)
+    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, InvocationContext context)
     {
         for (var paramIndex = 0; paramIndex < parameters.Length && paramIndex < ParameterNames.Count; paramIndex++)
         {
             var param = parameters[paramIndex];
             var paramName = ParameterNames[paramIndex];
 
-            scope.Variables.Add(new BakedVariable(paramName, param));
+            context.Scope.Variables.Add(new BakedVariable(paramName, param));
         }
         
         foreach (var instruction in Instructions)
@@ -63,7 +64,7 @@ public class BakedMethod : BakedObject, IBakedCallable
             if (instruction is IScriptTermination termination)
                 return termination.ReturnValue;
             
-            instruction.Execute(interpreter, scope);
+            instruction.Execute(interpreter, context.Scope);
         }
 
         return new BakedVoid();
