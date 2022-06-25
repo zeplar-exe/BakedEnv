@@ -32,7 +32,11 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// <inheritdoc />
     public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
     {
-        Callable.Invoke(Parameters, interpreter, new InvocationContext(scope, SourceIndex));
-        // TODO: Get return value in case of assignment
+        ExecuteReturn(interpreter, scope);
+    }
+
+    public BakedObject ExecuteReturn(BakedInterpreter interpreter, IBakedScope scope)
+    {
+        return Callable.Invoke(Parameters, interpreter, new InvocationContext(scope, SourceIndex));
     }
 }
