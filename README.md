@@ -1,5 +1,7 @@
 # BakedEnv
 
+![build](https://github.com/zeplar-exe/BakedEnv/actions/workflows/dotnet.yml/badge.svg)
+
 BakedEnv is a scripting language made in C#, for C#. Designed after Lua, BakedEnv is built for extensibility between C# and
 written scripts.
 
