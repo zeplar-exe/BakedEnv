@@ -6,5 +6,5 @@ namespace BakedEnv.ControlStatements;
 
 public abstract class ControlStatementExecution
 {
-    public abstract BakedObject Execute(BakedInterpreter interpreter, IBakedScope scope, BakedObject[] parameters, IEnumerable<InterpreterInstruction> instructions);
+    public abstract void Execute(BakedInterpreter interpreter, IBakedScope scope, BakedObject[] parameters, IEnumerable<InterpreterInstruction> instructions);
 }
