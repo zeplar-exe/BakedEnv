@@ -13,7 +13,7 @@ public class BakedTable : BakedObject
     {
         get
         {
-            if (!Dictionary.TryGetValue(bakedObject, out var value))
+            if (Dictionary.TryGetValue(bakedObject, out var value))
                 return value!;
 
             return new BakedNull();

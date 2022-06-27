@@ -126,10 +126,10 @@ internal class ValueParser
                     {
                         return keyParse with { Success = false };
                     }
-                    
-                    IteratorTools.SkipWhitespaceAndNewlinesReserved();
 
-                    if (!Iterator.TryMoveNext(out var separator) || !separator.Is(LexerTokenId.Colon))
+                    IteratorTools.SkipWhitespaceAndNewlines();
+
+                    if (!Iterator.Current.Is(LexerTokenId.Colon))
                     {
                         return new TryResult(false,
                             new BakedError(
@@ -142,7 +142,7 @@ internal class ValueParser
                     
                     var valueParse = TryParseValue(out var valueObject);
 
-                    if (!keyParse.Success)
+                    if (!valueParse.Success)
                     {
                         return keyParse with { Success = false };
                     }
@@ -158,8 +158,10 @@ internal class ValueParser
 
                     table[keyValue] = valueObject;
                 }
-                
-                break;
+
+                value = table;
+
+                return new TryResult(true);
             }
         }
 

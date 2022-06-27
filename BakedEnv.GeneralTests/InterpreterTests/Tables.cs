@@ -1,5 +1,7 @@
+using System;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
+using Jammo.ParserTools.Lexing;
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -10,7 +12,7 @@ public class Tables
     [Test]
     public void TestTableDeclaration()
     {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = [ 0: \"Bar\" ]")).Init();
+        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = [ 0 : \"Bar\" ]")).Init();
         session.ExecuteUntilEnd();
 
         var obj = session.Interpreter.Context.Variables["foo"];
