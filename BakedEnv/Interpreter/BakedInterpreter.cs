@@ -243,43 +243,20 @@ public class BakedInterpreter
                             case LexerTokenId.Equals:
                             {
                                 IteratorTools.SkipWhitespaceAndNewlines();
-                                
-                                var valueParser = CreateValueParser();
-                                var valueParseResult = valueParser.TryParseValue(out var value);
-                                
-                                if (!valueParseResult.Success)
-                                {
-                                    instruction = new InvalidInstruction(valueParseResult.Error);
 
+                                var expressionParser = CreateExpressionParser();
+                                var expResult = expressionParser.TryParseExpression(out var expression);
+                                
+                                if (!expResult.Success)
+                                {
+                                    instruction = new InvalidInstruction(expResult.Error);
+                                    
                                     break;
                                 }
-
-                                if (value is IBakedCallable callable)
-                                {
-                                    if (Iterator.Current.Is(LexerTokenId.LeftParenthesis))
-                                    {
-                                        var paramsParser = CreateParameterParser();
-                                        var paramsResult = paramsParser.TryParseParameterList(out var parameters);
-
-                                        if (!valueParseResult.Success)
-                                        {
-                                            instruction = new InvalidInstruction(paramsResult.Error);
-                                            
-                                            break;
-                                        }
-                                        
-                                        instruction = new VariableAssignmentInstruction(
-                                            reference, 
-                                            new InvocationExpression(callable, parameters), 
-                                            referenceStart.Span.Start);
-                                    
-                                        break;
-                                    }
-                                }
-
+                                
                                 instruction = new VariableAssignmentInstruction(
                                     reference, 
-                                    new ValueExpression(value), 
+                                    expression!, 
                                     Iterator.Current.Span.Start);
 
                                 break;
@@ -353,5 +330,10 @@ public class BakedInterpreter
     internal InvocationParser CreateInvocationParser(VariableReference reference)
     {
         return new InvocationParser(this, Iterator, IteratorTools, State, reference);
+    }
+
+    internal ExpressionParser CreateExpressionParser()
+    {
+        return new ExpressionParser(this, Iterator);
     }
 }
