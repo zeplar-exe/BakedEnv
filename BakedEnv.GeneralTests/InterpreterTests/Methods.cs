@@ -45,6 +45,6 @@ public class Methods
         var session = environment.CreateSession(new RawStringSource("a = foo()")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["a"].Value.Equals("Hello world!"));
+        Assert.True(session.TopVariables["a"].Value.Equals("Hello world!"));
     }
 }

@@ -14,7 +14,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("pizza = 1")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["pizza"].Value.Equals(1));
+        Assert.True(session.TopVariables["pizza"].Value.Equals(1));
     }
 
     [Test]
@@ -23,7 +23,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n bar=2")).Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(session.Interpreter.Context.Variables["bar"].Value.Equals(2));
+        Assert.True(session.TopVariables["bar"].Value.Equals(2));
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n foo=2")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["foo"].Value.Equals(2));
+        Assert.True(session.TopVariables["foo"].Value.Equals(2));
     }
     
     [Test]
@@ -57,7 +57,7 @@ public class Variables
         var session = environment.CreateSession(new RawStringSource("a = pizza.foo")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["a"].Value.Equals("bar"));
+        Assert.True(session.TopVariables["a"].Value.Equals("bar"));
     }
 
     public class MockPropertyObject : BakedObject

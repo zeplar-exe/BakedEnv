@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
 namespace BakedEnv;
@@ -17,6 +18,16 @@ public class ScriptSession : IDisposable
     /// Interpreter used by the session.
     /// </summary>
     public BakedInterpreter Interpreter { get; }
+
+    public VariableContainer TopVariables
+    {
+        get
+        {
+            Interpreter.AssertReady();
+            
+            return Interpreter.Context.Variables;
+        }
+    }
     
     /// <summary>
     /// Event which fires before the ScriptSession is disposed. Useful for last-minute cleanup.

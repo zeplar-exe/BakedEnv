@@ -34,7 +34,7 @@ public class ProcessorInstructions
             .Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(session.Interpreter.Context.Variables["Pizza"].Value.Equals("Time"));
+        Assert.True(session.TopVariables["Pizza"].Value.Equals("Time"));
     }
 
     [Test]
@@ -46,7 +46,7 @@ public class ProcessorInstructions
             .Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.Interpreter.Context.Variables["NaN"].Value.Equals(0));
+        Assert.True(session.TopVariables["NaN"].Value.Equals(0));
     }
 
     private class MockStatementHandler : IProcessorStatementHandler
