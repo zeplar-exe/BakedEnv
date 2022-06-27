@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 
@@ -13,26 +15,26 @@ public class VariableAssignmentInstruction : InterpreterInstruction
     /// </summary>
     public VariableReference Reference { get; set; }
     /// <summary>
-    /// The value to assign.
+    /// The expression to assign.
     /// </summary>
-    public BakedObject Value { get; set; }
+    public BakedExpression Expression { get; set; }
 
     /// <summary>
     /// Initialize a VariableAssignmentInstruction with its 
     /// </summary>
     /// <param name="reference">Reference object for accessing the variable.</param>
-    /// <param name="value">The value to assign.a</param>
+    /// <param name="expression">The expression to assign.a</param>
     /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public VariableAssignmentInstruction(VariableReference reference, BakedObject value, int sourceIndex) : base(sourceIndex)
+    public VariableAssignmentInstruction(VariableReference reference, BakedExpression expression, int sourceIndex) : base(sourceIndex)
     {
         Reference = reference;
-        Value = value;
+        Expression = expression;
     }
 
     /// <inheritdoc />
     public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
     {
-        if (!Reference.TrySetVariable(Value))
+        if (!Reference.TrySetVariable(Expression.Evaluate(interpreter, new InvocationContext(scope, SourceIndex))))
         {
             // TODO: ??
         }
