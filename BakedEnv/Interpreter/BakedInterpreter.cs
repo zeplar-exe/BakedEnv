@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Parsers;
 using BakedEnv.Interpreter.Sources;
@@ -267,16 +268,20 @@ public class BakedInterpreter
                                             
                                             break;
                                         }
-
-                                        var invocation = new ObjectInvocationInstruction(callable, parameters, startToken.Span.Start);
-
-                                        instruction = new VariableCallableAssignmentInstruction(reference, invocation, referenceStart.Span.Start);
+                                        
+                                        instruction = new VariableAssignmentInstruction(
+                                            reference, 
+                                            new InvocationExpression(callable, parameters), 
+                                            referenceStart.Span.Start);
                                     
                                         break;
                                     }
                                 }
 
-                                instruction = new VariableAssignmentInstruction(reference, value, Iterator.Current.Span.Start);
+                                instruction = new VariableAssignmentInstruction(
+                                    reference, 
+                                    new ValueExpression(value), 
+                                    Iterator.Current.Span.Start);
 
                                 break;
                             }
