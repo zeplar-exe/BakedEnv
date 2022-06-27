@@ -1,7 +1,4 @@
-using System.Text;
 using BakedEnv.Extensions;
-using BakedEnv.Interpreter;
-using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
 

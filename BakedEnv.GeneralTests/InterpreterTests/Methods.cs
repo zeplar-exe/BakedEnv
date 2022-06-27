@@ -1,6 +1,4 @@
-using System;
 using System.Numerics;
-using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
 using NUnit.Framework;

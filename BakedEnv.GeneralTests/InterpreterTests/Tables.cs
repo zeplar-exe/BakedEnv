@@ -1,7 +1,5 @@
-using System;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
-using Jammo.ParserTools.Lexing;
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
