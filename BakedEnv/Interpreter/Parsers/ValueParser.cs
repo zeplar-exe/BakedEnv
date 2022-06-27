@@ -30,7 +30,7 @@ internal class ValueParser
         
         switch (Iterator.Current.Id)
         {
-            case LexerTokenId.Alphabetic:
+            case LexerTokenId.Alphabetic: // Variable
             case LexerTokenId.AlphaNumeric:
             {
                 var identifierResult = TryParseIdentifier(out var path);
@@ -54,13 +54,13 @@ internal class ValueParser
                         $"'{string.Join(".", path.AsEnumerable())}' does not exist.",
                         startToken.Span.Start));
             }
-            case LexerTokenId.Numeric:
+            case LexerTokenId.Numeric: // Number
             {
                 value = new BakedInteger(Iterator.Current.ToString());
 
                 return new TryResult(true);
             }
-            case LexerTokenId.Quote:
+            case LexerTokenId.Quote: // String
             case LexerTokenId.DoubleQuote:
             {
                 var quoteType = Iterator.Current.Id;
@@ -98,6 +98,68 @@ internal class ValueParser
                 value = new BakedString(builder.ToString());
 
                 return new TryResult(true);
+            }
+            case LexerTokenId.OpenBracket: // Table
+            {
+                var table = new BakedTable();
+                
+                IteratorTools.SkipWhitespaceAndNewlines();
+
+                var valueExpected = false;
+
+                while (!Iterator.Current.Is(LexerTokenId.CloseBracket))
+                {
+                    if (valueExpected)
+                    {
+                        return new TryResult(false,
+                            new BakedError(
+                                null,
+                                "Expected right bracket to close table declaration.",
+                                Iterator.Current.Span.Start));
+                    }
+
+                    IteratorTools.SkipWhitespaceAndNewlinesReserved();
+                    
+                    var keyParse = TryParseValue(out var keyValue);
+
+                    if (!keyParse.Success)
+                    {
+                        return keyParse with { Success = false };
+                    }
+                    
+                    IteratorTools.SkipWhitespaceAndNewlinesReserved();
+
+                    if (!Iterator.TryMoveNext(out var separator) || !separator.Is(LexerTokenId.Colon))
+                    {
+                        return new TryResult(false,
+                            new BakedError(
+                                null,
+                                "Expected a key:value separator (:).",
+                                startToken.Span.Start));
+                    }
+
+                    IteratorTools.SkipWhitespaceAndNewlines();
+                    
+                    var valueParse = TryParseValue(out var valueObject);
+
+                    if (!keyParse.Success)
+                    {
+                        return keyParse with { Success = false };
+                    }
+                    
+                    IteratorTools.SkipWhitespaceAndNewlines();
+                    
+                    if (Iterator.TryMoveNext(out var pairSeparator) && !pairSeparator.Is(LexerTokenId.Comma))
+                    {
+                        valueExpected = true;
+                    }
+                    
+                    IteratorTools.SkipWhitespaceAndNewlines();
+
+                    table[keyValue] = valueObject;
+                }
+                
+                break;
             }
         }
 
