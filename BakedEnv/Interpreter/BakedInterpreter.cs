@@ -20,7 +20,6 @@ public class BakedInterpreter
     private EnumerableIterator<LexerToken>? Iterator { get; set; }
     private IteratorTools? IteratorTools { get; set; }
     private StateMachine<ParserState>? State { get; set; }
-    private IBakedScope? CurrentScope { get; set; }
 
     /// <summary>
     /// The current environment used during interpretation.
@@ -36,7 +35,6 @@ public class BakedInterpreter
     /// Informative property of whether the interpreter is ready for parsing.
     /// </summary>
     [MemberNotNullWhen(true, nameof(Context))]
-    [MemberNotNullWhen(true, nameof(CurrentScope))]
     [MemberNotNullWhen(true, nameof(Iterator))]
     [MemberNotNullWhen(true, nameof(Source))]
     [MemberNotNullWhen(true, nameof(State))]
@@ -72,7 +70,6 @@ public class BakedInterpreter
     /// <exception cref="InvalidOperationException">The source has not been set.</exception>
     /// [MemberNotNullWhen(true, nameof(Context))]
     [MemberNotNullWhen(true, nameof(Context))]
-    [MemberNotNullWhen(true, nameof(CurrentScope))]
     [MemberNotNullWhen(true, nameof(Iterator))]
     [MemberNotNullWhen(true, nameof(Source))]
     [MemberNotNullWhen(true, nameof(State))]
@@ -87,12 +84,11 @@ public class BakedInterpreter
         IteratorTools = new IteratorTools(this, Iterator);
         State = new StateMachine<ParserState>(ParserState.Any);
         Context = new InterpreterContext();
-        CurrentScope = Context;
         IsReady = true;
 
         SourceLocked = true;
     }
-    
+
     /// <summary>
     /// Specify the IBakedSource to be parsed.
     /// </summary>
@@ -130,7 +126,6 @@ public class BakedInterpreter
         Context = null;
         IsReady = false;
         IteratorTools = null;
-        CurrentScope = null;
 
         SourceLocked = false;
     }
@@ -219,9 +214,8 @@ public class BakedInterpreter
                     }
                     default: // Variable, invocation, control statement
                     {
-                        var referenceStart = Iterator.Current;
-                        var referenceParser = CreateValueParser();
-                        var identifierParseResult = referenceParser.TryParseIdentifier(out var path);
+                        var identifierParser = CreateIdentifierParser();
+                        var identifierParseResult = identifierParser.TryParseIdentifier(out var path);
                         
                         if (!identifierParseResult.Success)
                         {
@@ -232,7 +226,7 @@ public class BakedInterpreter
 
                         IteratorTools.SkipWhitespaceAndNewlinesReserved();
                         
-                        var reference = referenceParser.GetVariableReference(path);
+                        var reference = identifierParser.GetVariableReference(path, Context);
 
                         switch (Iterator.Current.Id)
                         {
@@ -304,7 +298,6 @@ public class BakedInterpreter
     /// following with an <see cref="InvalidOperationException"/> if it is not.
     /// </summary>
     [MemberNotNull(nameof(Context))]
-    [MemberNotNull(nameof(CurrentScope))]
     [MemberNotNull(nameof(Iterator))]
     [MemberNotNull(nameof(Source))]
     [MemberNotNull(nameof(State))]
@@ -318,7 +311,7 @@ public class BakedInterpreter
 
     internal ValueParser CreateValueParser()
     {
-        return new ValueParser(this, Iterator, IteratorTools, CurrentScope, ErrorReporter);
+        return new ValueParser(this, Iterator, IteratorTools, Context, ErrorReporter);
     }
     
     internal ParameterParser CreateParameterParser()
@@ -339,5 +332,10 @@ public class BakedInterpreter
     internal ExpressionParser CreateExpressionParser()
     {
         return new ExpressionParser(this, Iterator);
+    }
+
+    internal IdentifierParser CreateIdentifierParser()
+    {
+        return new IdentifierParser(this, ErrorReporter, IteratorTools, Iterator);
     }
 }
