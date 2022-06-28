@@ -70,6 +70,13 @@ public class BakedInterpreter
     /// Initialize the interpreter and reset necessary values.
     /// </summary>
     /// <exception cref="InvalidOperationException">The source has not been set.</exception>
+    /// [MemberNotNullWhen(true, nameof(Context))]
+    [MemberNotNullWhen(true, nameof(Context))]
+    [MemberNotNullWhen(true, nameof(CurrentScope))]
+    [MemberNotNullWhen(true, nameof(Iterator))]
+    [MemberNotNullWhen(true, nameof(Source))]
+    [MemberNotNullWhen(true, nameof(State))]
+    [MemberNotNullWhen(true, nameof(IteratorTools))]
     public void Init()
     {
         if (Source == null)
