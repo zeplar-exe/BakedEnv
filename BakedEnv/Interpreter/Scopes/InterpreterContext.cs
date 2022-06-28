@@ -1,6 +1,6 @@
 using BakedEnv.Interpreter.Variables;
 
-namespace BakedEnv.Interpreter;
+namespace BakedEnv.Interpreter.Scopes;
 
 /// <summary>
 /// The top-level scope of a <see cref="BakedInterpreter"/>.
