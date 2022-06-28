@@ -202,6 +202,10 @@ public class BakedInterpreter
             {
                 switch (Iterator.Current.ToString())
                 {
+                    case "method":
+                    {
+                        break; // TODO
+                    }
                     case "return":
                     {
                         break; // TODO
