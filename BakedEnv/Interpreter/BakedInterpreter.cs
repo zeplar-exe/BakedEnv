@@ -187,16 +187,13 @@ public class BakedInterpreter
             return false;
         }
         
-        if (first.Id is LexerTokenId.Whitespace or LexerTokenId.Newline)
-            IteratorTools.SkipWhitespaceAndNewlines();
+        IteratorTools.SkipWhitespaceAndNewlinesReserved();
 
-        switch (Iterator.Current.Id)
+        switch (first.Id)
         {
             case LexerTokenId.OpenBracket: // Processor statement
             {
-                var parser = CreateProcessorStatementParser();
-
-                instruction = parser.Parse();
+                instruction = CreateProcessorStatementParser().Parse();
                 
                 break;
             }
@@ -205,10 +202,6 @@ public class BakedInterpreter
             {
                 switch (Iterator.Current.ToString())
                 {
-                    case "method":
-                    {
-                        break; // TODO
-                    }
                     case "return":
                     {
                         break; // TODO
@@ -233,18 +226,15 @@ public class BakedInterpreter
                         {
                             case LexerTokenId.LeftParenthesis:
                             {
-                                var invokeParser = CreateInvocationParser(reference);
-
-                                instruction = invokeParser.Parse();
+                                instruction = CreateInvocationParser(reference).Parse();
                                 
                                 break;
                             }
                             case LexerTokenId.Equals:
                             {
                                 IteratorTools.SkipWhitespaceAndNewlines();
-
-                                var expressionParser = CreateExpressionParser();
-                                var expResult = expressionParser.TryParseExpression(out var expression);
+                                
+                                var expResult = CreateExpressionParser().TryParseExpression(out var expression);
                                 
                                 if (!expResult.Success)
                                 {
@@ -283,6 +273,7 @@ public class BakedInterpreter
                     break;
                 }
 
+                // See InvocationParser.ParseControlStatement as to why this is necessary
                 instruction = new EmptyInstruction(Iterator.Current.Span.Start);
 
                 State.MoveLast();

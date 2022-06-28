@@ -71,7 +71,7 @@ internal class InvocationParser
                 {
                     if (!Interpreter.TryGetNextInstruction(out var controlInstruction))
                     {
-                        return new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current)); // TODO
+                        return new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current));
                     }
 
                     if (State.Current != ParserState.ControlStatementBody)
