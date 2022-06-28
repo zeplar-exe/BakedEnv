@@ -28,7 +28,7 @@ internal class ProcessorStatementParser
         if (ErrorReporter.TestUnexpectedTokenType(nameToken, out var nameError,
                 LexerTokenId.Alphabetic, LexerTokenId.AlphaNumeric))
         {
-            return new InvalidInstruction(nameError.Value);
+            return new InvalidInstruction(nameError);
         }
 
         var name = nameToken.ToString();
@@ -40,7 +40,7 @@ internal class ProcessorStatementParser
         if (ErrorReporter.TestUnexpectedTokenType(colonToken, out var colonError, 
                 LexerTokenId.Colon))
         {
-            return new InvalidInstruction(colonError.Value);
+            return new InvalidInstruction(colonError);
         }
                 
         IteratorTools.SkipWhitespaceAndNewlines();

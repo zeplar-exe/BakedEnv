@@ -326,7 +326,7 @@ public class BakedInterpreter
 
     internal InvocationParser CreateInvocationParser(VariableReference reference)
     {
-        return new InvocationParser(this, Iterator, IteratorTools, State, reference);
+        return new InvocationParser(this, ErrorReporter, Iterator, IteratorTools, State, reference);
     }
 
     internal ExpressionParser CreateExpressionParser()

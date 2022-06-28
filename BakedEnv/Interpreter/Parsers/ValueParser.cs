@@ -111,11 +111,9 @@ internal class ValueParser
                 {
                     if (valueExpected)
                     {
-                        return new TryResult(false,
-                            new BakedError(
-                                null,
-                                "Expected right bracket to close table declaration.",
-                                Iterator.Current.Span.Start));
+                        return new TryResult(false, 
+                            ErrorReporter.ReportUnexpectedTokenType(Iterator.Current, 
+                                LexerTokenId.CloseBracket));
                     }
 
                     IteratorTools.SkipWhitespaceAndNewlinesReserved();
@@ -129,13 +127,10 @@ internal class ValueParser
 
                     IteratorTools.SkipWhitespaceAndNewlines();
 
-                    if (!Iterator.Current.Is(LexerTokenId.Colon))
+                    if (ErrorReporter.TestUnexpectedTokenType(Iterator.Current, out var error,
+                            LexerTokenId.Colon))
                     {
-                        return new TryResult(false,
-                            new BakedError(
-                                null,
-                                "Expected a key:value separator (:).",
-                                startToken.Span.Start));
+                        return new TryResult(false, error);
                     }
 
                     IteratorTools.SkipWhitespaceAndNewlines();
@@ -165,11 +160,7 @@ internal class ValueParser
             }
         }
 
-        return new TryResult(false,
-            new BakedError(
-                null,
-                "Expected a value (variable, string, integer, etc).",
-                startToken.Span.Start));
+        return new TryResult(false, ErrorReporter.ReportInvalidValue(startToken));
     }
 
     public TryResult TryParseIdentifier(out LexerToken[] path)
@@ -191,7 +182,7 @@ internal class ValueParser
                     if (ErrorReporter.TestUnexpectedTokenType(next, out var error,
                             LexerTokenId.Alphabetic, LexerTokenId.AlphaNumeric))
                     {
-                        return new TryResult(false, error.Value);
+                        return new TryResult(false, error);
                     }
                     
                     pathList.Add(next);

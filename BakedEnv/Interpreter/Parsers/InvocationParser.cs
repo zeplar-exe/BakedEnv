@@ -9,12 +9,13 @@ namespace BakedEnv.Interpreter.Parsers;
 internal class InvocationParser
 {
     private BakedInterpreter Interpreter { get; }
+    private CommonErrorReporter ErrorReporter { get; }
     private EnumerableIterator<LexerToken> Iterator { get; }
     private IteratorTools IteratorTools { get; }
     private StateMachine<ParserState> State { get; }
     private VariableReference Reference { get; }
     
-    public InvocationParser(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
+    public InvocationParser(BakedInterpreter interpreter, CommonErrorReporter errorReporter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
     {
         Interpreter = interpreter;
         Iterator = iterator;
@@ -55,9 +56,10 @@ internal class InvocationParser
 
                 IteratorTools.SkipWhitespaceAndNewlines();
 
-                if (!Iterator.Current.Is(LexerTokenId.OpenCurlyBracket))
+                if (ErrorReporter.TestUnexpectedTokenType(Iterator.Current, out var error, 
+                        LexerTokenId.OpenCurlyBracket))
                 {
-                    return new InvalidInstruction(new BakedError()); // TODO
+                    return new InvalidInstruction(error);
                 }
 
                 State.MoveTo(ParserState.ControlStatementBody);
@@ -69,7 +71,7 @@ internal class InvocationParser
                 {
                     if (!Interpreter.TryGetNextInstruction(out var controlInstruction))
                     {
-                        return new InvalidInstruction(new BakedError()); // TODO
+                        return new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current)); // TODO
                     }
 
                     if (State.Current != ParserState.ControlStatementBody)
