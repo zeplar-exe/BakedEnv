@@ -2,13 +2,16 @@
 using System.Text;
 using BakedEnv;
 using BakedEnv.CLI;
+using BakedEnv.CLI.Workspaces;
 using BakedEnv.Interpreter.Sources;
 using CommandLine;
 
 var parserResult = Parser.Default.ParseArguments<
     CommandArgs, 
     CommandArgs.ExecuteArgs, 
-    CommandArgs.InteractiveArgs>
+    CommandArgs.InteractiveArgs,
+    CommandArgs.WorkspaceInitArgs,
+    CommandArgs.WorkspaceDelArgs>
     (args);
 
 parserResult.MapResult(
@@ -16,6 +19,8 @@ parserResult.MapResult(
     (CommandArgs.ExecuteArgs options) => ParseExecuteArgs(options),
     (CommandArgs.DebugArgs options) => ParseDebugArgs(options),
     (CommandArgs.InteractiveArgs options) => ParseInteractiveArgs(options),
+    (CommandArgs.WorkspaceInitArgs options) => ParseWorkspaceInitArgs(options),
+    (CommandArgs.WorkspaceDelArgs options) => ParseWorkspaceDelArgs(options),
     _ => 1);
 
 int ParseMainArgs(CommandArgs mainArgs)
@@ -106,4 +111,72 @@ int ParseInteractiveArgs(CommandArgs.InteractiveArgs interactiveArgs)
     using var session = new InteractiveSession(interactiveArgs);
         
     return session.Run();
+}
+
+int ParseWorkspaceInitArgs(CommandArgs.WorkspaceInitArgs initArgs)
+{
+    var workspacePath = Path.Join(Directory.GetCurrentDirectory(), WorkspaceInterface.WorkspaceDirectoryName);
+    
+    if (Directory.Exists(workspacePath))
+    {
+        if (initArgs.Force)
+        {
+            Directory.Delete(workspacePath, true);
+        }
+        else
+        {
+            Console.WriteLine("A BakedEnv workspace already exists in this directory.");
+            
+            return 1;
+        }
+    }
+
+    var directory = Directory.CreateDirectory(workspacePath);
+    directory.Attributes |= FileAttributes.Hidden;
+    
+    var workspace = new WorkspaceInterface();
+
+    workspace.Export(Directory.GetCurrentDirectory());
+    
+    return 0;
+}
+
+int ParseWorkspaceDelArgs(CommandArgs.WorkspaceDelArgs delArgs)
+{
+    var workspacePath = Path.Join(Directory.GetCurrentDirectory(), WorkspaceInterface.WorkspaceDirectoryName);
+
+    if (Directory.Exists(workspacePath))
+    {
+        Directory.Delete(workspacePath, true);
+    }
+    else if (delArgs.Recursive)
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        var name = directory.FullName;
+
+        while (Directory.Exists(name))
+        {
+            name = Path.Join(name, "..");
+            workspacePath = Path.Join(name, WorkspaceInterface.WorkspaceDirectoryName);
+
+            if (Directory.Exists(workspacePath))
+            {
+                Directory.Delete(workspacePath, true);
+
+                return 0;
+            }
+        }
+        
+        Console.WriteLine("A BakedEnv workspace was not found in this directory tree.");
+
+        return 1;
+    }
+    else
+    {
+        Console.WriteLine("A BakedEnv workspace does not exist in this directory.");
+        
+        return 1;
+    }
+    
+    return 0;
 }

@@ -158,5 +158,41 @@ namespace BakedEnv.CLI {
                 return ResourceManager.GetString("InteractiveSilent", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the BakedEnv workspace in this directory..
+        /// </summary>
+        public static string WorkspaceDel {
+            get {
+                return ResourceManager.GetString("WorkspaceDel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recursively climb the directory tree until a BakedEnv workspace is found..
+        /// </summary>
+        public static string WorkspaceDelRecursive {
+            get {
+                return ResourceManager.GetString("WorkspaceDelRecursive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new workspace in the working directory..
+        /// </summary>
+        public static string WorkspaceInit {
+            get {
+                return ResourceManager.GetString("WorkspaceInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If a workspace already exists in the working directory, it is deleted..
+        /// </summary>
+        public static string WorkspaceInitForce {
+            get {
+                return ResourceManager.GetString("WorkspaceInitForce", resourceCulture);
+            }
+        }
     }
 }

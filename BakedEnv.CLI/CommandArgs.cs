@@ -43,4 +43,18 @@ public class CommandArgs
             HelpText = "DebugRawString", ResourceType = typeof(HelpTextResources))]
         public string? RawString { get; set; }
     }
+    
+    [Verb("workspace-init", HelpText = "WorkspaceInit", ResourceType = typeof(HelpTextResources))]
+    public class WorkspaceInitArgs
+    {
+        [Option('f', "force", HelpText = "WorkspaceInitForce", ResourceType = typeof(HelpTextResources))]
+        public bool Force { get; set; }
+    }
+    
+    [Verb("workspace-del", HelpText = "WorkspaceDel", ResourceType = typeof(HelpTextResources))]
+    public class WorkspaceDelArgs
+    {
+        [Option('r', "recursive", HelpText = "WorkspaceDelRecursive", ResourceType = typeof(HelpTextResources))]
+        public bool Recursive { get; set; }
+    }
 }
