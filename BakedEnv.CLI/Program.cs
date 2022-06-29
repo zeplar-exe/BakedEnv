@@ -1,4 +1,4 @@
-﻿using BakedEnv.CLI.CommandArgs;
+using BakedEnv.CLI.CommandArgs;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace BakedEnv.CLI;

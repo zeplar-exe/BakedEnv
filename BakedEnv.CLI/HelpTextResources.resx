@@ -51,4 +51,16 @@
     <data name="DebugRawString" xml:space="preserve">
         <value>Provide a raw string ("abc123") as a debug source.</value>
     </data>
+    <data name="WorkspaceInit" xml:space="preserve">
+        <value>Create a new workspace in the working directory.</value>
+    </data>
+    <data name="WorkspaceInitForce" xml:space="preserve">
+        <value>If a workspace already exists in the working directory, it is deleted.</value>
+    </data>
+    <data name="WorkspaceDel" xml:space="preserve">
+        <value>Delete the BakedEnv workspace in this directory.</value>
+    </data>
+    <data name="WorkspaceDelRecursive" xml:space="preserve">
+        <value>Recursively climb the directory tree until a BakedEnv workspace is found.</value>
+    </data>
 </root>
