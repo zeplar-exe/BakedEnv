@@ -18,6 +18,7 @@ internal class InvocationParser
     public InvocationParser(BakedInterpreter interpreter, CommonErrorReporter errorReporter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
     {
         Interpreter = interpreter;
+        ErrorReporter = errorReporter;
         Iterator = iterator;
         IteratorTools = iteratorTools;
         State = state;
