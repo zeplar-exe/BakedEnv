@@ -3,7 +3,6 @@ using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Parsers;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Interpreter.Variables;
-using Jammo.ParserTools;
 using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tools;
 
@@ -17,7 +16,7 @@ public class BakedInterpreter
 {
     private CommonErrorReporter ErrorReporter { get; set; }
     
-    private EnumerableIterator<LexerToken>? Iterator { get; set; }
+    private InterpreterIterator? Iterator { get; set; }
     private IteratorTools? IteratorTools { get; set; }
     private StateMachine<ParserState>? State { get; set; }
     private IBakedScope? CurrentScope { get; set; }
@@ -76,7 +75,7 @@ public class BakedInterpreter
             throw new InvalidOperationException(
                 $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
         
-        Iterator = new Lexer(Source.EnumerateCharacters()).ToIterator();
+        Iterator = new InterpreterIterator(new Lexer(Source.EnumerateCharacters()));
         IteratorTools = new IteratorTools(this, Iterator);
         State = new StateMachine<ParserState>(ParserState.Any);
         Context = new InterpreterContext();

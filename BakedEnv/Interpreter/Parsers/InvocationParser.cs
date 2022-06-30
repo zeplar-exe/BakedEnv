@@ -9,12 +9,12 @@ namespace BakedEnv.Interpreter.Parsers;
 internal class InvocationParser
 {
     private BakedInterpreter Interpreter { get; }
-    private EnumerableIterator<LexerToken> Iterator { get; }
+    private InterpreterIterator Iterator { get; }
     private IteratorTools IteratorTools { get; }
     private StateMachine<ParserState> State { get; }
     private VariableReference Reference { get; }
     
-    public InvocationParser(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
+    public InvocationParser(BakedInterpreter interpreter, InterpreterIterator iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
     {
         Interpreter = interpreter;
         Iterator = iterator;

@@ -1,17 +1,16 @@
 using BakedEnv.Interpreter.Instructions;
 using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter.Parsers;
 
 internal class ProcessorStatementParser
 {
     private BakedInterpreter Interpreter { get; }
-    private EnumerableIterator<LexerToken> Iterator { get; }
+    private InterpreterIterator Iterator { get; }
     private IteratorTools IteratorTools { get; }
     private CommonErrorReporter ErrorReporter { get; }
     
-    public ProcessorStatementParser(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, CommonErrorReporter errorReporter)
+    public ProcessorStatementParser(BakedInterpreter interpreter, InterpreterIterator iterator, IteratorTools iteratorTools, CommonErrorReporter errorReporter)
     {
         Interpreter = interpreter;
         Iterator = iterator;

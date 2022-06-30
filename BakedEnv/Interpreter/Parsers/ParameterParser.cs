@@ -1,15 +1,14 @@
 using BakedEnv.Objects;
 using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter.Parsers;
 
 internal class ParameterParser
 {
     private BakedInterpreter Interpreter { get; }
-    private EnumerableIterator<LexerToken> Iterator { get; }
+    private InterpreterIterator Iterator { get; }
     
-    public ParameterParser(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator)
+    public ParameterParser(BakedInterpreter interpreter, InterpreterIterator iterator)
     {
         Interpreter = interpreter;
         Iterator = iterator;

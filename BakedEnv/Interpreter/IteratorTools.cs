@@ -1,14 +1,13 @@
 using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter;
 
 public class IteratorTools
 {
     private BakedInterpreter Interpreter { get; }
-    private EnumerableIterator<LexerToken> Iterator { get; }
+    private InterpreterIterator Iterator { get; }
     
-    public IteratorTools(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator)
+    public IteratorTools(BakedInterpreter interpreter, InterpreterIterator iterator)
     {
         Interpreter = interpreter;
         Iterator = iterator;
