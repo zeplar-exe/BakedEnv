@@ -2,19 +2,18 @@ using System.Text;
 using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter.Parsers;
 
 internal class ValueParser
 {
     private BakedInterpreter Interpreter { get; }
-    private EnumerableIterator<LexerToken> Iterator { get; }
+    private InterpreterIterator Iterator { get; }
     private IteratorTools IteratorTools { get; }
     private IBakedScope Scope { get; }
     private CommonErrorReporter ErrorReporter { get; }
     
-    public ValueParser(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, IBakedScope scope, CommonErrorReporter errorReporter)
+    public ValueParser(BakedInterpreter interpreter, InterpreterIterator iterator, IteratorTools iteratorTools, IBakedScope scope, CommonErrorReporter errorReporter)
     {
         Interpreter = interpreter;
         Iterator = iterator;

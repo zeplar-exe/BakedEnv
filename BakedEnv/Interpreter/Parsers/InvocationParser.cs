@@ -9,16 +9,14 @@ namespace BakedEnv.Interpreter.Parsers;
 internal class InvocationParser
 {
     private BakedInterpreter Interpreter { get; }
-    private CommonErrorReporter ErrorReporter { get; }
-    private EnumerableIterator<LexerToken> Iterator { get; }
+    private InterpreterIterator Iterator { get; }
     private IteratorTools IteratorTools { get; }
     private StateMachine<ParserState> State { get; }
     private VariableReference Reference { get; }
     
-    public InvocationParser(BakedInterpreter interpreter, CommonErrorReporter errorReporter, EnumerableIterator<LexerToken> iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
+    public InvocationParser(BakedInterpreter interpreter, InterpreterIterator iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
     {
         Interpreter = interpreter;
-        ErrorReporter = errorReporter;
         Iterator = iterator;
         IteratorTools = iteratorTools;
         State = state;
@@ -57,10 +55,9 @@ internal class InvocationParser
 
                 IteratorTools.SkipWhitespaceAndNewlines();
 
-                if (ErrorReporter.TestUnexpectedTokenType(Iterator.Current, out var error, 
-                        LexerTokenId.OpenCurlyBracket))
+                if (!Iterator.Current.Is(LexerTokenId.OpenCurlyBracket))
                 {
-                    return new InvalidInstruction(error);
+                    return new InvalidInstruction(new BakedError()); // TODO
                 }
 
                 State.MoveTo(ParserState.ControlStatementBody);
@@ -72,7 +69,7 @@ internal class InvocationParser
                 {
                     if (!Interpreter.TryGetNextInstruction(out var controlInstruction))
                     {
-                        return new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current));
+                        return new InvalidInstruction(new BakedError()); // TODO
                     }
 
                     if (State.Current != ParserState.ControlStatementBody)

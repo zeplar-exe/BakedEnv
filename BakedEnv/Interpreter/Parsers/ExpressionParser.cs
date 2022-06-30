@@ -1,16 +1,15 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Objects;
 using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter.Parsers;
 
 internal class ExpressionParser
 {
     public BakedInterpreter Interpreter { get; }
-    public EnumerableIterator<LexerToken> Iterator { get; }
+    public InterpreterIterator Iterator { get; }
 
-    public ExpressionParser(BakedInterpreter interpreter, EnumerableIterator<LexerToken> iterator)
+    public ExpressionParser(BakedInterpreter interpreter, InterpreterIterator iterator)
     {
         Interpreter = interpreter;
         Iterator = iterator;
