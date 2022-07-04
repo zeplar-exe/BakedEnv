@@ -27,30 +27,8 @@ public class DelegateObject : BakedObject, IBakedCallable
     {
         try
         {
-            var delegateParameters = Delegate.Method.GetParameters();
-
-            if (delegateParameters.Length > parameters.Length)
-            {
-                interpreter.ReportError(new BakedError(
-                    null,
-                    $"Expected {delegateParameters.Length} parameters, got {parameters.Length}.",
-                    context.SourceIndex));
-
-                return new BakedNull();
-            }
-
-            var trimmedParams = parameters.Take(delegateParameters.Length).ToArray();
-            var objectParams = new List<object?>();
-
-            for (var i = 0; i < trimmedParams.Length; i++)
-            {
-                var param = trimmedParams[i];
-                var delegateParam = delegateParameters[i];
-                
-                objectParams.Add(ConversionTable.ToObject(param, delegateParam.ParameterType));
-            }
-            
-            var result = Delegate.Method.Invoke(Delegate.Target, objectParams.ToArray());
+            var objectParameters = parameters.Select(p => ConversionTable.ToObject(p)).ToArray();
+            var result = Delegate.Method.Invoke(Delegate.Target, objectParameters);
 
             return ConversionTable.ToBakedObject(result);
         }
@@ -62,6 +40,12 @@ public class DelegateObject : BakedObject, IBakedCallable
                     interpreter.ReportError(new BakedError(
                         null,
                         "Invalid arguments.",
+                        context.SourceIndex));
+                    break;
+                case TargetParameterCountException paramCount:
+                    interpreter.ReportError(new BakedError(
+                        null,
+                        "Expected {} parameters, got {}.",
                         context.SourceIndex));
                     break;
                 default:
