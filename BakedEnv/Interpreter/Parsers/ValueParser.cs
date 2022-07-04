@@ -42,7 +42,7 @@ internal class ValueParser
 
                 return new TryResult(false, 
                     new BakedError(
-                        null, 
+                        ErrorCodes.InvalidVariableOrPath, 
                         $"Variable, variable path, or part of path " + 
                         $"'{string.Join(".", path.AsEnumerable())}' does not exist.",
                         startToken.Span.Start));

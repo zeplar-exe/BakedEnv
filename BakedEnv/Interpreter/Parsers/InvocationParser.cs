@@ -92,7 +92,7 @@ internal class InvocationParser
         if (!Reference.TryGetVariable(out var variable))
         {
             return new InvalidInstruction(new BakedError(
-                null,
+                ErrorCodes.InvokeNull,
                 "Cannot invoke a null value.",
                 startToken.Span.Start));
         }
@@ -100,7 +100,7 @@ internal class InvocationParser
         if (variable.Value is not IBakedCallable callable)
         {
             return new InvalidInstruction(new BakedError(
-                null,
+                ErrorCodes.InvokeNonCallable,
                 "Cannot invoke a non-callable object.",
                 startToken.Span.Start));
         }
