@@ -7,7 +7,8 @@ namespace BakedEnv.CLI;
 [Subcommand(
     typeof(Execute),
     typeof(Interactive),
-    typeof(Debug))]
+    typeof(Debug),
+    typeof(Echo))]
 public class Program
 {
     public static int Main(string[] args) => CommandLineApplication.Execute<Program>(args);
