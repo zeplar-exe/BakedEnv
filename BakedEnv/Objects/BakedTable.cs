@@ -4,6 +4,10 @@ public class BakedTable : BakedObject
 {
     private Dictionary<BakedObject, BakedObject> Dictionary { get; }
 
+    public int Length => Dictionary.Count;
+    public IEnumerable<BakedObject> Keys => Dictionary.Keys;
+    public IEnumerable<BakedObject> Values => Dictionary.Values;
+
     public BakedTable()
     {
         Dictionary = new Dictionary<BakedObject, BakedObject>();
