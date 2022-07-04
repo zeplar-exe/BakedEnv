@@ -6,20 +6,18 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class ExpressionParser
 {
-    public BakedInterpreter Interpreter { get; }
-    public InterpreterIterator Iterator { get; }
+    public InterpreterInternals Internals { get; }
 
-    public ExpressionParser(BakedInterpreter interpreter, InterpreterIterator iterator)
+    public ExpressionParser(InterpreterInternals internals)
     {
-        Interpreter = interpreter;
-        Iterator = iterator;
+        Internals = internals;
     }
     
     public TryResult TryParseExpression(out BakedExpression? expression)
     {
         expression = null;
         
-        var valueParser = Interpreter.CreateValueParser();
+        var valueParser = Internals.Interpreter.CreateValueParser();
         var valueParseResult = valueParser.TryParseValue(out var value);
                                 
         if (!valueParseResult.Success)
@@ -29,9 +27,14 @@ internal class ExpressionParser
 
         if (value is IBakedCallable callable)
         {
-            if (Iterator.Current.Is(LexerTokenId.LeftParenthesis))
+            if (!Internals.Iterator.TryMoveNext(out var next))
             {
-                var paramsParser = Interpreter.CreateParameterParser();
+                return Internals.ErrorReporter.EndOfFileResult(Internals.Iterator.Current);
+            }
+            
+            if (next.Is(LexerTokenId.LeftParenthesis))
+            {
+                var paramsParser = Internals.Interpreter.CreateParameterParser();
                 var paramsResult = paramsParser.TryParseParameterList(out var parameters);
 
                 if (!valueParseResult.Success)

@@ -5,13 +5,11 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class ParameterParser
 {
-    private BakedInterpreter Interpreter { get; }
-    private InterpreterIterator Iterator { get; }
-    
-    public ParameterParser(BakedInterpreter interpreter, InterpreterIterator iterator)
+    private InterpreterInternals Internals { get; }
+
+    public ParameterParser(InterpreterInternals internals)
     {
-        Interpreter = interpreter;
-        Iterator = iterator;
+        Internals = internals;
     }
 
     public TryResult TryParseParameterList(out BakedObject[] parameters)
@@ -19,12 +17,16 @@ internal class ParameterParser
         var list = new List<BakedObject>();
         var valueExpected = true;
 
-        while (Iterator.TryMoveNext(out var next))
+        while (Internals.Iterator.TryMoveNext(out var next))
         {
             switch (next.Id)
             {
                 case LexerTokenId.RightParenthesis:
+                    if (valueExpected && list.Count > 0)
+                        list.Add(new BakedNull());
+                    
                     parameters = list.ToArray();
+                    
                     return new TryResult(true);
                 case LexerTokenId.Comma:
                     if (valueExpected)
@@ -35,29 +37,37 @@ internal class ParameterParser
                 case LexerTokenId.Whitespace:
                 case LexerTokenId.Newline:
                     break;
-                case LexerTokenId.Alphabetic:
-                case LexerTokenId.AlphaNumeric:
-                case LexerTokenId.Numeric:
-                    var valueParser = Interpreter.CreateValueParser();
+                default:
+                    Internals.Iterator.PushCurrent();
+                    var valueParser = Internals.Interpreter.CreateValueParser();
                     var valueResult = valueParser.TryParseValue(out var parameter);
 
                     if (!valueResult.Success)
                     {
                         parameters = Array.Empty<BakedObject>();
 
-                        return valueResult with { Success = false };
+                        return valueResult;
                     }
 
                     list.Add(parameter);
                     valueExpected = false;
 
-                    switch (Iterator.Current.Id)
+                    if (!Internals.Iterator.TryMoveNext(out var token))
+                    {
+                        parameters = Array.Empty<BakedObject>();
+                        
+                        return Internals.ErrorReporter.EndOfFileResult(Internals.Iterator.Current);
+                    }
+
+                    switch (token.Id)
                     {
                         case LexerTokenId.RightParenthesis:
                             parameters = list.ToArray();
+                            
                             return new TryResult(true);
                         case LexerTokenId.Comma:
                             valueExpected = true;
+                            
                             break;
                     }
 
@@ -66,7 +76,10 @@ internal class ParameterParser
         }
 
         parameters = list.ToArray();
+        
+        return Internals.Iterator.AtEnd ? 
+            Internals.ErrorReporter.EndOfFileResult(Internals.Iterator.Current) :
+            new TryResult(true);
 
-        return new TryResult(true);
     }
 }

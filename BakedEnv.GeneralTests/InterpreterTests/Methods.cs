@@ -1,6 +1,7 @@
 using System.Numerics;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
+using Jammo.ParserTools.Lexing;
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -26,6 +27,8 @@ public class Methods
     {
         var target = BigInteger.Zero;
         var del = new DelegateObject(delegate(BigInteger i) { target = i; });
+        
+        // TODO: Right parenthesis after number is ignored? (ParserTools Lexer)
 
         var environment = new BakedEnvironment().WithVariable("foo", del);
         var session = environment.CreateSession(new RawStringSource("foo(5)")).Init();

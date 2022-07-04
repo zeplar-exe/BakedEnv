@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.Parsers;
 using Jammo.ParserTools.Lexing;
 
 namespace BakedEnv.Interpreter;
@@ -11,13 +11,6 @@ internal class CommonErrorReporter
     public CommonErrorReporter(BakedInterpreter interpreter)
     {
         Interpreter = interpreter;
-    }
-
-    public InvalidInstruction CreateInstruction(string? id, string message, int sourceIndex)
-    {
-        var error = Interpreter.ReportError(id, message, sourceIndex);
-
-        return new InvalidInstruction(error);
     }
     
     public bool TestUnexpectedTokenType(LexerToken token, out BakedError error, params LexerTokenId[] expected)
@@ -48,15 +41,20 @@ internal class CommonErrorReporter
     {
         return Interpreter.ReportError(
             null, 
-            "Expected a value (string, number, variable, etc.).",
+            "Expected a value (string, number, variable).",
             token.Span.Start);
     }
-
+    
     public BakedError ReportEndOfFile(LexerToken token)
     {
         return Interpreter.ReportError(
             null,
             "Unexpected end of file.",
             token.Span.End);
+    }
+    
+    public TryResult EndOfFileResult(LexerToken token)
+    {
+        return new TryResult(false, ReportEndOfFile(token));
     }
 }
