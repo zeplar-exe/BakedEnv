@@ -5,51 +5,51 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class ProcessorStatementParser
 {
-    private BakedInterpreter Interpreter { get; }
-    private InterpreterIterator Iterator { get; }
-    private IteratorTools IteratorTools { get; }
-    private CommonErrorReporter ErrorReporter { get; }
+    private InterpreterInternals Internals { get; }
     
-    public ProcessorStatementParser(BakedInterpreter interpreter, InterpreterIterator iterator, IteratorTools iteratorTools, CommonErrorReporter errorReporter)
+    public ProcessorStatementParser(InterpreterInternals internals)
     {
-        Interpreter = interpreter;
-        Iterator = iterator;
-        IteratorTools = iteratorTools;
-        ErrorReporter = errorReporter;
+        Internals = internals;
     }
 
     public InterpreterInstruction Parse()
     {
-        IteratorTools.SkipWhitespaceAndNewlines();
-                
-        var nameToken = Iterator.Current;
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
-        if (ErrorReporter.TestUnexpectedTokenType(nameToken, out var nameError,
+        if (!Internals.Iterator.TryMoveNext(out var nameToken))
+        {
+            return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
+        }
+
+        if (Internals.ErrorReporter.TestUnexpectedTokenType(nameToken, out var nameError,
                 LexerTokenId.Alphabetic, LexerTokenId.AlphaNumeric))
         {
-            return new InvalidInstruction(nameError.Value);
+            return new InvalidInstruction(nameError);
         }
 
         var name = nameToken.ToString();
                 
-        IteratorTools.SkipWhitespaceAndNewlines();
-                
-        var colonToken = Iterator.Current;
-                
-        if (ErrorReporter.TestUnexpectedTokenType(colonToken, out var colonError, 
-                LexerTokenId.Colon))
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+        if (!Internals.Iterator.TryMoveNext(out var colonToken))
         {
-            return new InvalidInstruction(colonError.Value);
+            return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
         }
                 
-        IteratorTools.SkipWhitespaceAndNewlines();
+        if (Internals.ErrorReporter.TestUnexpectedTokenType(colonToken, out var colonError, 
+                LexerTokenId.Colon))
+        {
+            return new InvalidInstruction(colonError);
+        }
+                
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
-        var valueParser = Interpreter.CreateValueParser();
+        var valueParser = Internals.Interpreter.CreateValueParser();
         var parseResult = valueParser.TryParseValue(out var value);
                 
         if (!parseResult.Success)
         {
-            return new InvalidInstruction(ErrorReporter.ReportInvalidValue(nameToken));
+            return new InvalidInstruction(Internals.ErrorReporter.ReportInvalidValue(nameToken));
         }
 
         return new ProcessorStatementInstruction(name, value, nameToken.Span.Start);

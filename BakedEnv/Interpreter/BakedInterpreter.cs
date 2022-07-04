@@ -178,15 +178,20 @@ public class BakedInterpreter
         
         instruction = null;
 
-        if (!Iterator.TryMoveNext(out var first))
-        {
-            return false;
-        }
-        
-        if (first.Id is LexerTokenId.Whitespace or LexerTokenId.Newline)
-            IteratorTools.SkipWhitespaceAndNewlines();
+        IteratorTools.SkipWhitespaceAndNewlinesReserved();
 
-        switch (Iterator.Current.Id)
+        if (!Iterator.TryMoveNext(out var first))
+            return false;
+        
+        var stride = IteratorTools.SkipWhitespaceAndNewlinesReserved();
+
+        if (stride != 0)
+        {
+            if (!Iterator.TryMoveNext(out first))
+                return false;
+        }
+
+        switch (first.Id)
         {
             case LexerTokenId.OpenBracket: // Processor statement
             {
@@ -199,7 +204,7 @@ public class BakedInterpreter
             case LexerTokenId.Alphabetic:
             case LexerTokenId.AlphaNumeric: // 
             {
-                switch (Iterator.Current.ToString())
+                switch (first.ToString())
                 {
                     case "method":
                     {
@@ -211,7 +216,6 @@ public class BakedInterpreter
                     }
                     default: // Variable, invocation, control statement
                     {
-                        var referenceStart = Iterator.Current;
                         var referenceParser = CreateValueParser();
                         var identifierParseResult = referenceParser.TryParseIdentifier(out var path);
                         
@@ -226,7 +230,14 @@ public class BakedInterpreter
                         
                         var reference = referenceParser.GetVariableReference(path);
 
-                        switch (Iterator.Current.Id)
+                        if (!Iterator.TryMoveNext(out var next))
+                        {
+                            instruction = new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current));
+
+                            break;
+                        }
+
+                        switch (next.Id)
                         {
                             case LexerTokenId.LeftParenthesis:
                             {
@@ -310,26 +321,31 @@ public class BakedInterpreter
 
     internal ValueParser CreateValueParser()
     {
-        return new ValueParser(this, Iterator, IteratorTools, CurrentScope, ErrorReporter);
+        return new ValueParser(CreateInternals());
     }
     
     internal ParameterParser CreateParameterParser()
     {
-        return new ParameterParser(this, Iterator);
+        return new ParameterParser(CreateInternals());
     }
 
     internal ProcessorStatementParser CreateProcessorStatementParser()
     {
-        return new ProcessorStatementParser(this, Iterator, IteratorTools, ErrorReporter);
+        return new ProcessorStatementParser(CreateInternals());
     }
 
     internal InvocationParser CreateInvocationParser(VariableReference reference)
     {
-        return new InvocationParser(this, Iterator, IteratorTools, State, reference);
+        return new InvocationParser(CreateInternals(), reference);
     }
 
     internal ExpressionParser CreateExpressionParser()
     {
-        return new ExpressionParser(this, Iterator);
+        return new ExpressionParser(CreateInternals());
+    }
+
+    private InterpreterInternals CreateInternals()
+    {
+        return new InterpreterInternals(this, Iterator, IteratorTools, ErrorReporter, State, Context);
     }
 }

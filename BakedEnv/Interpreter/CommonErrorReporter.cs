@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using BakedEnv.Interpreter.Parsers;
 using Jammo.ParserTools.Lexing;
 
 namespace BakedEnv.Interpreter;
@@ -12,9 +13,9 @@ internal class CommonErrorReporter
         Interpreter = interpreter;
     }
     
-    public bool TestUnexpectedTokenType(LexerToken token, [NotNullWhen(true)] out BakedError? error, params LexerTokenId[] expected)
+    public bool TestUnexpectedTokenType(LexerToken token, out BakedError error, params LexerTokenId[] expected)
     {
-        error = null;
+        error = default;
         
         if (!expected.Any(token.Is))
         {
@@ -42,5 +43,18 @@ internal class CommonErrorReporter
             null, 
             "Expected a value (string, number, variable).",
             token.Span.Start);
+    }
+    
+    public BakedError ReportEndOfFile(LexerToken token)
+    {
+        return Interpreter.ReportError(
+            null,
+            "Unexpected end of file.",
+            token.Span.End);
+    }
+    
+    public TryResult EndOfFileResult(LexerToken token)
+    {
+        return new TryResult(false, ReportEndOfFile(token));
     }
 }

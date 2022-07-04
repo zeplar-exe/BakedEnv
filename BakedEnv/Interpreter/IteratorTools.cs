@@ -23,6 +23,9 @@ public class IteratorTools
         {
             stride += token.Span.Size;
         }
+        
+        if (stride == 0 || !Iterator.AtEnd)
+            Iterator.PushCurrent();
 
         return stride;
     }
@@ -37,6 +40,9 @@ public class IteratorTools
         {
             stride += token.Span.Size;
         }
+        
+        if (stride == 0 || !Iterator.AtEnd)
+            Iterator.PushCurrent();
 
         return stride;
     }
@@ -45,15 +51,27 @@ public class IteratorTools
     {
         Interpreter.AssertReady();
         
-        if (Iterator.Current.Id is not LexerTokenId.Whitespace or LexerTokenId.Newline)
-            return 0;
-        
         var stride = 0;
+        
+        if (Iterator.Started)
+        {
+            if (Iterator.Current.Id is not LexerTokenId.Whitespace or LexerTokenId.Newline)
+            {
+                return 0;
+            }
+            else
+            {
+                stride += Iterator.Current.Span.Size;
+            }
+        }
 
         foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace or LexerTokenId.Newline))
         {
             stride += token.Span.Size;
         }
+        
+        if (stride == 0 || !Iterator.AtEnd)
+            Iterator.PushCurrent();
 
         return stride;
     }

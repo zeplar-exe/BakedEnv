@@ -20,6 +20,11 @@ public class BacklogEnumerable<T> : IEnumerable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
+        while (Backlog.TryPop(out var backlogItem))
+        {
+            yield return backlogItem;
+        }
+        
         foreach (var item in Source)
         {
             while (Backlog.TryPop(out var backlogItem))
@@ -28,6 +33,11 @@ public class BacklogEnumerable<T> : IEnumerable<T>
             }
 
             yield return item;
+        }
+        
+        while (Backlog.TryPop(out var backlogItem))
+        {
+            yield return backlogItem;
         }
     }
 

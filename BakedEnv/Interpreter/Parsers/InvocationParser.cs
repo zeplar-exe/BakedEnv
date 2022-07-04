@@ -8,71 +8,69 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class InvocationParser
 {
-    private BakedInterpreter Interpreter { get; }
-    private InterpreterIterator Iterator { get; }
-    private IteratorTools IteratorTools { get; }
-    private StateMachine<ParserState> State { get; }
+    private InterpreterInternals Internals { get; }
     private VariableReference Reference { get; }
     
-    public InvocationParser(BakedInterpreter interpreter, InterpreterIterator iterator, IteratorTools iteratorTools, StateMachine<ParserState> state, VariableReference reference)
+    public InvocationParser(InterpreterInternals internals, VariableReference reference)
     {
-        Interpreter = interpreter;
-        Iterator = iterator;
-        IteratorTools = iteratorTools;
-        State = state;
+        Internals = internals;
         Reference = reference;
     }
 
     public InterpreterInstruction Parse()
     {
-        var startToken = Iterator.Current;
+        var startToken = Internals.Iterator.Current;
+        var paramParser = Internals.Interpreter.CreateParameterParser();
+        var controlParameterResult =
+            paramParser.TryParseParameterList(out var controlParameters);
         
-        return ParseControlStatement(startToken) ?? ParseInvocation(startToken);
+        if (!controlParameterResult.Success)
+        {
+            return new InvalidInstruction(controlParameterResult.Error);
+        }
+        
+        return ParseControlStatement(startToken, controlParameters) ?? ParseInvocation(startToken, controlParameters);
     }
 
-    private InterpreterInstruction? ParseControlStatement(LexerToken startToken)
+    private InterpreterInstruction? ParseControlStatement(LexerToken startToken, BakedObject[] parameters)
     {
-        if (Reference.Path.Count != 0 || Interpreter.Environment == null)
+        if (Reference.Path.Count != 0 || Internals.Interpreter.Environment == null)
             return null;
 
-        foreach (var statement in Interpreter.Environment.ControlStatements)
+        foreach (var statement in Internals.Interpreter.Environment.ControlStatements)
         {
             if (statement.Name == Reference.Name)
             {
-                var paramParser = Interpreter.CreateParameterParser();
-                var controlParameterResult =
-                    paramParser.TryParseParameterList(out var controlParameters);
-
-                if (!controlParameterResult.Success)
-                {
-                    return new InvalidInstruction(controlParameterResult.Error);
-                }
-
-                if (controlParameters.Length != statement.ParameterCount)
+                if (parameters.Length != statement.ParameterCount)
                 {
                     return new InvalidInstruction(new BakedError()); // TODO
                 }
 
-                IteratorTools.SkipWhitespaceAndNewlines();
+                Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
-                if (!Iterator.Current.Is(LexerTokenId.OpenCurlyBracket))
+                if (!Internals.Iterator.TryMoveNext(out var next))
                 {
-                    return new InvalidInstruction(new BakedError()); // TODO
+                    return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
+                }
+                
+                if (Internals.ErrorReporter.TestUnexpectedTokenType(next, out var error, LexerTokenId.OpenCurlyBracket))
+                {
+                    return new InvalidInstruction(error);
                 }
 
-                State.MoveTo(ParserState.ControlStatementBody);
+                Internals.State.MoveTo(ParserState.ControlStatementBody);
 
                 var instructions = new List<InterpreterInstruction>();
 
                 while (true)
                     // TODO: volatile conditions here
                 {
-                    if (!Interpreter.TryGetNextInstruction(out var controlInstruction))
+                    if (!Internals.Interpreter.TryGetNextInstruction(out var controlInstruction))
                     {
-                        return new InvalidInstruction(new BakedError()); // TODO
+                        return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
                     }
 
-                    if (State.Current != ParserState.ControlStatementBody)
+                    if (Internals.State.Current != ParserState.ControlStatementBody)
                         break;
 
                     instructions.Add(controlInstruction);
@@ -80,7 +78,7 @@ internal class InvocationParser
                 
                 return new ControlStatementInstruction(
                     statement.Execution,
-                    controlParameters,
+                    parameters,
                     instructions,
                     startToken.Span.Start);
             }
@@ -89,7 +87,7 @@ internal class InvocationParser
         return null;
     }
 
-    private InterpreterInstruction ParseInvocation(LexerToken startToken)
+    private InterpreterInstruction ParseInvocation(LexerToken startToken, BakedObject[] parameters)
     {
         if (!Reference.TryGetVariable(out var variable))
         {
@@ -107,14 +105,6 @@ internal class InvocationParser
                 startToken.Span.Start));
         }
 
-        var parameterParser = Interpreter.CreateParameterParser();
-        var parameterResult = parameterParser.TryParseParameterList(out var parameters);
-
-        if (!parameterResult.Success)
-        {
-            return new InvalidInstruction(parameterResult.Error);
-        }
-
-        return new ObjectInvocationInstruction(callable, parameters.ToArray(), Iterator.Current.Span.Start);
+        return new ObjectInvocationInstruction(callable, parameters.ToArray(), startToken.Span.Start);
     }
 }
