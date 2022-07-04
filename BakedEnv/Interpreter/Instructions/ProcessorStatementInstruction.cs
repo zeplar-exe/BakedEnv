@@ -48,7 +48,7 @@ public class ProcessorStatementInstruction : InterpreterInstruction
     private BakedError CreateInvalidStatementError()
     {
         return new BakedError(
-            null,
+            ErrorCodes.UnregisteredProcStatement,
             $"A processor statement by the name of '{Name}' does not exist or has not been registered.",
             SourceIndex);
     }

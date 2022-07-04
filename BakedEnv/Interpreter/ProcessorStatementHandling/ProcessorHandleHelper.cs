@@ -27,7 +27,7 @@ public class ProcessorHandleHelper
     public static BakedError CreateIncorrectValueTypeError(ProcessorStatementInstruction instruction, string typeName)
     {
         return new BakedError(
-            null,
+            ErrorCodes.UnexpectedProcStatementValue,
             $"Expected '{typeName}' value for statement '{instruction.Name}', got '{instruction.Value.GetType().Name}'",
             instruction.SourceIndex);
     }
@@ -44,7 +44,7 @@ public class ProcessorHandleHelper
         var enumValues = string.Join(", ", Enum.GetValues<TExpected>());
 
         return new BakedError(
-            null,
+            ErrorCodes.ExpectedProcStatementEnum,
             $"Expected enum '{enumValues}' for statement '{instruction.Name}', got {instruction.Value.ToString()}",
             instruction.SourceIndex);
     }

@@ -38,14 +38,14 @@ public class DelegateObject : BakedObject, IBakedCallable
             {
                 case ArgumentException args:
                     interpreter.ReportError(new BakedError(
-                        null,
+                        ErrorCodes.InvokeArgumentMismatch,
                         "Invalid arguments.",
                         context.SourceIndex));
                     break;
                 case TargetParameterCountException paramCount:
                     interpreter.ReportError(new BakedError(
-                        null,
-                        "Expected {} parameters, got {}.",
+                        ErrorCodes.InvokeParameterCountMismatch,
+                        $"Expected {Delegate.Method.GetParameters().Length} parameters, got {parameters.Length}.",
                         context.SourceIndex));
                     break;
                 default:
