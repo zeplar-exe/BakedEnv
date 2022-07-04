@@ -5,6 +5,7 @@ namespace BakedEnv.CLI;
 
 [Command("ben")]
 [Subcommand(
+    typeof(Workspace),
     typeof(Execute),
     typeof(Interactive),
     typeof(Debug),
