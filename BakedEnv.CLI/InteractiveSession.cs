@@ -9,14 +9,17 @@ public class InteractiveSession : IDisposable
     private const string LinePrefix = "> ";
     
     private StackSource Source { get; }
-    private CommandArgs.InteractiveArgs Args { get; }
+    
+    public string? ExitMethod { get; }
+    public bool Silent { get; }
     
     public bool ExitRequested { get; set; }
 
-    public InteractiveSession(CommandArgs.InteractiveArgs args)
+    public InteractiveSession(string? exitMethod, bool silent)
     {
         Source = new StackSource();
-        Args = args;
+        ExitMethod = exitMethod;
+        Silent = silent;
     }
     
     public int Run()
@@ -48,7 +51,7 @@ public class InteractiveSession : IDisposable
             if (terminationValue == null)
                 continue;
             
-            if (!Args.Silent)
+            if (!Silent)
                 Console.WriteLine(terminationValue.ToString());
         }
 
@@ -57,12 +60,12 @@ public class InteractiveSession : IDisposable
 
     private void AddExitMethod(BakedEnvironment targetEnvironment)
     {
-        if (Args.ExitMethod == null) 
+        if (ExitMethod == null) 
             return;
 
         var exit = new DelegateObject(delegate() { ExitRequested = true; });
 
-        targetEnvironment.GlobalVariables.Add(Args.ExitMethod, exit);
+        targetEnvironment.GlobalVariables.Add(ExitMethod, exit);
     }
     
     public void Dispose()
