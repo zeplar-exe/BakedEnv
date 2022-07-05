@@ -17,7 +17,7 @@ public class Workspace
         
         public int OnExecute(CommandLineApplication app)
         {
-            var workspacePath = Path.Join(Directory.GetCurrentDirectory(), WorkspaceInterface.WorkspaceDirectoryName);
+            var workspacePath = Path.Join(Directory.GetCurrentDirectory(), WorkspaceInterface.WorkspaceDirectory);
     
             if (Directory.Exists(workspacePath))
             {
@@ -39,6 +39,8 @@ public class Workspace
             var workspace = new WorkspaceInterface();
 
             workspace.Export(Directory.GetCurrentDirectory());
+            
+            Console.WriteLine("Successfully created a BakedEnv workspace.");
     
             return 0;
         }
@@ -52,7 +54,7 @@ public class Workspace
         
         public int OnExecute(CommandLineApplication app)
         {
-            var workspacePath = Path.Join(Directory.GetCurrentDirectory(), WorkspaceInterface.WorkspaceDirectoryName);
+            var workspacePath = Path.Join(Directory.GetCurrentDirectory(), WorkspaceInterface.WorkspaceDirectory);
 
             if (Directory.Exists(workspacePath))
             {
@@ -66,7 +68,7 @@ public class Workspace
                 while (Directory.Exists(name))
                 {
                     name = Path.Join(name, "..");
-                    workspacePath = Path.Join(name, WorkspaceInterface.WorkspaceDirectoryName);
+                    workspacePath = Path.Join(name, WorkspaceInterface.WorkspaceDirectory);
 
                     if (Directory.Exists(workspacePath))
                     {
