@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 using Jammo.ParserTools.Lexing;
 
@@ -12,9 +14,9 @@ internal class ParameterParser
         Internals = internals;
     }
 
-    public TryResult TryParseParameterList(out BakedObject[] parameters)
+    public TryResult TryParseParameterList(out BakedExpression[] parameters)
     {
-        var list = new List<BakedObject>();
+        var list = new List<BakedExpression>();
         var valueExpected = true;
 
         while (Internals.Iterator.TryMoveNext(out var next))
@@ -23,14 +25,14 @@ internal class ParameterParser
             {
                 case LexerTokenId.RightParenthesis:
                     if (valueExpected && list.Count > 0)
-                        list.Add(new BakedNull());
+                        list.Add(new NullExpression());
                     
                     parameters = list.ToArray();
                     
                     return new TryResult(true);
                 case LexerTokenId.Comma:
                     if (valueExpected)
-                        list.Add(new BakedNull());
+                        list.Add(new NullExpression());
 
                     valueExpected = true;
                     break;
@@ -39,14 +41,14 @@ internal class ParameterParser
                     break;
                 default:
                     Internals.Iterator.PushCurrent();
-                    var valueParser = Internals.Interpreter.CreateValueParser();
-                    var valueResult = valueParser.TryParseValue(out var parameter);
+                    var expressionParser = Internals.Interpreter.CreateExpressionParser();
+                    var expressionResult = expressionParser.TryParseExpression(out var parameter);
 
-                    if (!valueResult.Success)
+                    if (!expressionResult.Success)
                     {
-                        parameters = Array.Empty<BakedObject>();
+                        parameters = Array.Empty<BakedExpression>();
 
-                        return valueResult;
+                        return expressionResult;
                     }
 
                     list.Add(parameter);
@@ -54,7 +56,7 @@ internal class ParameterParser
 
                     if (!Internals.Iterator.TryMoveNext(out var token))
                     {
-                        parameters = Array.Empty<BakedObject>();
+                        parameters = Array.Empty<BakedExpression>();
                         
                         return Internals.ErrorReporter.EndOfFileResult(Internals.Iterator.Current);
                     }

@@ -13,9 +13,9 @@ internal class ExpressionParser
         Internals = internals;
     }
     
-    public TryResult TryParseExpression(out BakedExpression? expression)
+    public TryResult TryParseExpression(out BakedExpression expression)
     {
-        expression = null;
+        expression = new NullExpression();
         
         var valueParser = Internals.Interpreter.CreateValueParser();
         var valueParseResult = valueParser.TryParseValue(out var value);

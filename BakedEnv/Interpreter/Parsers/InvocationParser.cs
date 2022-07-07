@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
@@ -32,7 +33,7 @@ internal class InvocationParser
         return ParseControlStatement(startToken, controlParameters) ?? ParseInvocation(startToken, controlParameters);
     }
 
-    private InterpreterInstruction? ParseControlStatement(LexerToken startToken, BakedObject[] parameters)
+    private InterpreterInstruction? ParseControlStatement(LexerToken startToken, BakedExpression[] parameters)
     {
         if (Reference.Path.Count != 0 || Internals.Interpreter.Environment == null)
             return null;
@@ -87,7 +88,7 @@ internal class InvocationParser
         return null;
     }
 
-    private InterpreterInstruction ParseInvocation(LexerToken startToken, BakedObject[] parameters)
+    private InterpreterInstruction ParseInvocation(LexerToken startToken, BakedExpression[] parameters)
     {
         if (!Reference.TryGetVariable(out var variable))
         {
@@ -105,6 +106,6 @@ internal class InvocationParser
                 startToken.Span.Start));
         }
 
-        return new ObjectInvocationInstruction(callable, parameters.ToArray(), startToken.Span.Start);
+        return new ObjectInvocationInstruction(callable, parameters, startToken.Span.Start);
     }
 }

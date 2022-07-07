@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -15,7 +16,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// <summary>
     /// Parameters to use during invocation.
     /// </summary>
-    public BakedObject[] Parameters { get; set; }
+    public BakedExpression[] Parameters { get; set; }
 
     /// <summary>
     /// Initialize an ObjectInvocationInstruction.
@@ -23,7 +24,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// <param name="callable">Callable object to invoke.</param>
     /// <param name="parameters">Parameters to use during invocation.</param>
     /// /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public ObjectInvocationInstruction(IBakedCallable callable, BakedObject[] parameters, int sourceIndex) : base(sourceIndex)
+    public ObjectInvocationInstruction(IBakedCallable callable, BakedExpression[] parameters, int sourceIndex) : base(sourceIndex)
     {
         Callable = callable;
         Parameters = parameters;
@@ -37,6 +38,9 @@ public class ObjectInvocationInstruction : InterpreterInstruction
 
     public BakedObject ExecuteReturn(BakedInterpreter interpreter, IBakedScope scope)
     {
-        return Callable.Invoke(Parameters, interpreter, new InvocationContext(scope, SourceIndex));
+        var context = new InvocationContext(scope, SourceIndex);
+        var parameters = Parameters.Select(p => p.Evaluate(interpreter, context)).ToArray();
+        
+        return Callable.Invoke(parameters, interpreter, new InvocationContext(scope, SourceIndex));
     }
 }

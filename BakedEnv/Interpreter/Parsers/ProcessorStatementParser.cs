@@ -44,14 +44,14 @@ internal class ProcessorStatementParser
                 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
-        var valueParser = Internals.Interpreter.CreateValueParser();
-        var parseResult = valueParser.TryParseValue(out var value);
+        var valueParser = Internals.Interpreter.CreateExpressionParser();
+        var parseResult = valueParser.TryParseExpression(out var expression);
                 
         if (!parseResult.Success)
         {
             return new InvalidInstruction(Internals.ErrorReporter.ReportInvalidValue(nameToken));
         }
 
-        return new ProcessorStatementInstruction(name, value, nameToken.Span.Start);
+        return new ProcessorStatementInstruction(name, expression, nameToken.Span.Start);
     }
 }

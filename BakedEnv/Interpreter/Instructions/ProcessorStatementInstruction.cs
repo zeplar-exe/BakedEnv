@@ -1,4 +1,6 @@
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Instructions;
@@ -16,18 +18,18 @@ public class ProcessorStatementInstruction : InterpreterInstruction
     /// <summary>
     /// The value of this processor statement.
     /// </summary>
-    public BakedObject Value { get; set; }
+    public BakedExpression Expression { get; set; }
     
     /// <summary>
     /// Initialize a ProcessorStatementInstruction.
     /// </summary>
     /// <param name="name">The key/name of this processor statement.</param>
-    /// <param name="value">The value of this processor statement.</param>
-    /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public ProcessorStatementInstruction(string name, BakedObject value, int sourceIndex) : base(sourceIndex)
+    /// <param name="expression">The expressional value of this processor statement.</param>
+    /// <param name="sourceIndex">Source index used internally.</param>
+    public ProcessorStatementInstruction(string name, BakedExpression expression, int sourceIndex) : base(sourceIndex)
     {
         Name = name;
-        Value = value;
+        Expression = expression;
     }
 
     /// <inheritdoc />

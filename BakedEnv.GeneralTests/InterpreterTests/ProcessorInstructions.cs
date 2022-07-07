@@ -1,6 +1,8 @@
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Sources;
 using NUnit.Framework;
 
@@ -22,7 +24,9 @@ public class ProcessorInstructions
         
         processorStatement!.Execute(session.Interpreter);
 
-        Assert.True(processorStatement!.Value.Equals("Cake"));
+        var expression = processorStatement!.Expression;
+        
+        Assert.True(expression is ValueExpression value && value.Value.Equals("Cake"));
     }
     
     [Test]
@@ -53,7 +57,9 @@ public class ProcessorInstructions
     {
         public bool TryHandle(ProcessorStatementInstruction instruction, BakedInterpreter interpreter)
         {
-            interpreter.Context.Variables.Add(instruction.Name, instruction.Value);
+            var context = new InvocationContext(interpreter.Context);
+            
+            interpreter.Context.Variables.Add(instruction.Name, instruction.Expression.Evaluate(interpreter, context));
             
             return true;
         }
