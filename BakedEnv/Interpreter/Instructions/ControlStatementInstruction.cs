@@ -18,11 +18,10 @@ public class ControlStatementInstruction : InterpreterInstruction
         Instructions = instructions;
     }
 
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
+    public override void Execute(InvocationContext context)
     {
-        var context = new InvocationContext(scope, SourceIndex);
-        var parameters = Parameters.Select(p => p.Evaluate(interpreter, context)).ToArray();
+        var parameters = Parameters.Select(p => p.Evaluate(context)).ToArray();
         
-        ControlStatement.Execute(interpreter, scope, parameters, Instructions);
+        ControlStatement.Execute(context, parameters, Instructions);
     }
 }

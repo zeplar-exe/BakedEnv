@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Scopes;
+
 namespace BakedEnv.Interpreter.Instructions;
 
 public class EmptyInstruction : InterpreterInstruction
@@ -7,7 +9,7 @@ public class EmptyInstruction : InterpreterInstruction
         
     }
 
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
+    public override void Execute(InvocationContext context)
     {
         
     }

@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.Scopes;
 
 namespace BakedEnv.Interpreter.ProcessorStatementHandling;
 
@@ -14,5 +15,5 @@ public interface IProcessorStatementHandler
     /// <param name="instruction"></param>
     /// <param name="interpreter">The interpreter targeted by the processor statement.</param>
     /// <returns>Whether the processor statement could be handled.</returns>
-    public bool TryHandle(ProcessorStatementInstruction instruction, BakedInterpreter interpreter);
+    public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context);
 }

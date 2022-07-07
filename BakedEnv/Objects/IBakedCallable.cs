@@ -15,5 +15,5 @@ public interface IBakedCallable
     /// <param name="interpreter">The target interpreter.</param>
     /// <param name="scope">The target scope.</param>
     /// <returns></returns>
-    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, InvocationContext context);
+    public BakedObject Invoke(BakedObject[] parameters, InvocationContext context);
 }

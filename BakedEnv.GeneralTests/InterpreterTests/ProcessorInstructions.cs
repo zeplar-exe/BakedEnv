@@ -55,11 +55,9 @@ public class ProcessorInstructions
 
     private class MockStatementHandler : IProcessorStatementHandler
     {
-        public bool TryHandle(ProcessorStatementInstruction instruction, BakedInterpreter interpreter)
+        public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
         {
-            var context = new InvocationContext(interpreter.Context);
-            
-            interpreter.Context.Variables.Add(instruction.Name, instruction.Expression.Evaluate(interpreter, context));
+            context.Interpreter.Context.Variables.Add(instruction.Name, instruction.Expression.Evaluate(context));
             
             return true;
         }

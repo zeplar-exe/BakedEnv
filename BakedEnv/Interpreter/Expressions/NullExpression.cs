@@ -5,7 +5,7 @@ namespace BakedEnv.Interpreter.Expressions;
 
 public class NullExpression : BakedExpression
 {
-    public override BakedObject Evaluate(BakedInterpreter interpreter, InvocationContext context)
+    public override BakedObject Evaluate(InvocationContext context)
     {
         return new BakedNull();
     }

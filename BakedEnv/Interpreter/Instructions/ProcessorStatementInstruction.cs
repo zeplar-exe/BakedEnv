@@ -33,18 +33,18 @@ public class ProcessorStatementInstruction : InterpreterInstruction
     }
 
     /// <inheritdoc />
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
+    public override void Execute(InvocationContext context)
     {
-        if (interpreter.Environment == null)
+        if (context.Interpreter.Environment == null)
             return;
         
-        foreach (var handler in interpreter.Environment.ProcessorStatementHandlers)
+        foreach (var handler in context.Interpreter.Environment.ProcessorStatementHandlers)
         {
-            if (handler.TryHandle(this, interpreter))
+            if (handler.TryHandle(this, context))
                 return;
         }
         
-        interpreter.ReportError(CreateInvalidStatementError());
+        context.Interpreter.ReportError(CreateInvalidStatementError());
     }
 
     private BakedError CreateInvalidStatementError()

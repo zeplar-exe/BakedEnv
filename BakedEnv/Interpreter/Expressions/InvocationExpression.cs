@@ -14,10 +14,10 @@ public class InvocationExpression : BakedExpression
         Parameters = parameters;
     }
 
-    public override BakedObject Evaluate(BakedInterpreter interpreter, InvocationContext context)
+    public override BakedObject Evaluate(InvocationContext context)
     {
-        var parameters = Parameters.Select(p => p.Evaluate(interpreter, context)).ToArray();
+        var parameters = Parameters.Select(p => p.Evaluate(context)).ToArray();
         
-        return Callable.Invoke(parameters, interpreter, context);
+        return Callable.Invoke(parameters, context);
     }
 }

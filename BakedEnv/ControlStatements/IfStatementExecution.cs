@@ -7,16 +7,16 @@ namespace BakedEnv.ControlStatements;
 
 public class IfStatementExecution : ControlStatementExecution
 {
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope, BakedObject[] parameters,
+    public override void Execute(InvocationContext context, BakedObject[] parameters,
         IEnumerable<InterpreterInstruction> instructions)
     {
-        var statementScope = new BakedScope(scope);
+        var statementScope = new BakedScope(context.Scope);
         
         if (parameters[0].Equals(true))
         {
             foreach (var instruction in instructions)
             {
-                instruction.Execute(interpreter, statementScope);
+                instruction.Execute(context);
             }
         }
     }

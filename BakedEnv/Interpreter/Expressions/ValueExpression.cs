@@ -12,7 +12,7 @@ public class ValueExpression : BakedExpression
         Value = value;
     }
     
-    public override BakedObject Evaluate(BakedInterpreter interpreter, InvocationContext context)
+    public override BakedObject Evaluate(InvocationContext context)
     {
         return Value;
     }

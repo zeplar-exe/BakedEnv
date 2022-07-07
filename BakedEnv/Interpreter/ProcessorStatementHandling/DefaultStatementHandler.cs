@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.Scopes;
 
 namespace BakedEnv.Interpreter.ProcessorStatementHandling;
 
@@ -31,7 +32,7 @@ public class DefaultStatementHandler : IProcessorStatementHandler
     public void DisableStatement(string statement) => Disabled.Add(statement);
 
     /// <inheritdoc />
-    public bool TryHandle(ProcessorStatementInstruction instruction, BakedInterpreter interpreter)
+    public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
     {
         if (Disabled.Contains(instruction.Name))
             return false;

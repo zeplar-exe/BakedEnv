@@ -31,9 +31,9 @@ public class VariableAssignmentInstruction : InterpreterInstruction
     }
 
     /// <inheritdoc />
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
+    public override void Execute(InvocationContext context)
     {
-        if (!Reference.TrySetVariable(Expression.Evaluate(interpreter, new InvocationContext(scope, SourceIndex))))
+        if (!Reference.TrySetVariable(Expression.Evaluate(context)))
         {
             // TODO: ??
         }

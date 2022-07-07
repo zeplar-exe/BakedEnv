@@ -23,7 +23,7 @@ public class DelegateObject : BakedObject, IBakedCallable
         return Delegate;
     }
     
-    public BakedObject Invoke(BakedObject[] parameters, BakedInterpreter interpreter, InvocationContext context)
+    public BakedObject Invoke(BakedObject[] parameters, InvocationContext context)
     {
         try
         {
@@ -37,13 +37,13 @@ public class DelegateObject : BakedObject, IBakedCallable
             switch (e)
             {
                 case ArgumentException args:
-                    interpreter.ReportError(new BakedError(
+                    context.Interpreter.ReportError(new BakedError(
                         null,
                         "Invalid arguments.",
                         context.SourceIndex));
                     break;
                 case TargetParameterCountException paramCount:
-                    interpreter.ReportError(new BakedError(
+                    context.Interpreter.ReportError(new BakedError(
                         null,
                         "Expected {} parameters, got {}.",
                         context.SourceIndex));

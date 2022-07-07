@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Scopes;
+
 namespace BakedEnv.Interpreter.Instructions;
 
 /// <summary>
@@ -24,7 +26,7 @@ public abstract class InterpreterInstruction
     /// <see cref="Execute(BakedEnv.Interpreter.BakedInterpreter, BakedEnv.Interpreter.IBakedScope)"/></remarks>
     public virtual void Execute(BakedInterpreter interpreter)
     {
-        Execute(interpreter, interpreter.Context);
+        Execute(new InvocationContext(interpreter, interpreter.Context, SourceIndex));
     }
 
     /// <summary>
@@ -32,5 +34,5 @@ public abstract class InterpreterInstruction
     /// </summary>
     /// <param name="interpreter">The target interpreter.</param>
     /// <param name="scope">The contextual scope.</param>
-    public abstract void Execute(BakedInterpreter interpreter, IBakedScope scope);
+    public abstract void Execute(InvocationContext context);
 }

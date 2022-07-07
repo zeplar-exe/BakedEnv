@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Scopes;
+
 namespace BakedEnv.Interpreter.Instructions;
 
 /// <summary>
@@ -20,7 +22,7 @@ public class InvalidInstruction : InterpreterInstruction
     }
     
     /// <inheritdoc />
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
+    public override void Execute(InvocationContext context)
     {
         
     }

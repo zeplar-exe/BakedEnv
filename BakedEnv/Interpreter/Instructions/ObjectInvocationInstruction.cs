@@ -31,16 +31,15 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     }
 
     /// <inheritdoc />
-    public override void Execute(BakedInterpreter interpreter, IBakedScope scope)
+    public override void Execute(InvocationContext context)
     {
-        ExecuteReturn(interpreter, scope);
+        ExecuteReturn(context);
     }
 
-    public BakedObject ExecuteReturn(BakedInterpreter interpreter, IBakedScope scope)
+    public BakedObject ExecuteReturn(InvocationContext context)
     {
-        var context = new InvocationContext(scope, SourceIndex);
-        var parameters = Parameters.Select(p => p.Evaluate(interpreter, context)).ToArray();
+        var parameters = Parameters.Select(p => p.Evaluate(context)).ToArray();
         
-        return Callable.Invoke(parameters, interpreter, new InvocationContext(scope, SourceIndex));
+        return Callable.Invoke(parameters, context);
     }
 }

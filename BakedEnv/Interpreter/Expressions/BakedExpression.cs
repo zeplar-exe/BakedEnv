@@ -5,5 +5,5 @@ namespace BakedEnv.Interpreter.Expressions;
 
 public abstract class BakedExpression
 {
-    public abstract BakedObject Evaluate(BakedInterpreter interpreter, InvocationContext context);
+    public abstract BakedObject Evaluate(InvocationContext context);
 }
