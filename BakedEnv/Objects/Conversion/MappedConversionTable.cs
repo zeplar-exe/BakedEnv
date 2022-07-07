@@ -2,7 +2,7 @@
 
 namespace BakedEnv.Objects.Conversion;
 
-public class MappedConversionTable : ConversionTable
+public class MappedConversionTable : IConversionTable
 {
     private Dictionary<(Type, Type), Func<BakedObject, object>> BakedConversion { get; }
     private Dictionary<Type, Func<object, BakedObject>> ObjectConversion { get; }
@@ -11,50 +11,57 @@ public class MappedConversionTable : ConversionTable
     {
         BakedConversion = new Dictionary<(Type, Type), Func<BakedObject, object>>();
         ObjectConversion = new Dictionary<Type, Func<object, BakedObject>>();
+    }
 
+    public static MappedConversionTable Primitive()
+    {
+        var table = new MappedConversionTable();
+        
         #region BakedObject Mappings
 
         // Types smaller than int require double conversion in order to avoid arithmetic overflow
-        MapBakedObject<BakedInteger, sbyte>(i => (sbyte)(int)i.Value);
-        MapBakedObject<BakedInteger, byte>(i => (byte)(int)i.Value);
-        MapBakedObject<BakedInteger, short>(i => (short)(int)i.Value);
-        MapBakedObject<BakedInteger, ushort>(i => (ushort)(int)i.Value);
+        table.MapBakedObject<BakedInteger, sbyte>(i => (sbyte)(int)i.Value);
+        table.MapBakedObject<BakedInteger, byte>(i => (byte)(int)i.Value);
+        table.MapBakedObject<BakedInteger, short>(i => (short)(int)i.Value);
+        table.MapBakedObject<BakedInteger, ushort>(i => (ushort)(int)i.Value);
         
-        MapBakedObject<BakedInteger, int>(i => (int)i.Value);
-        MapBakedObject<BakedInteger, uint>(i => (uint)i.Value);
-        MapBakedObject<BakedInteger, long>(i => (long)i.Value);
-        MapBakedObject<BakedInteger, ulong>(i => (ulong)i.Value);
-        MapBakedObject<BakedInteger, float>(i => (float)i.Value);
-        MapBakedObject<BakedInteger, double>(i => (double)i.Value);
-        MapBakedObject<BakedInteger, decimal>(i => (decimal)i.Value);
-        MapBakedObject<BakedInteger, BigInteger>(i => i.Value);
+        table.MapBakedObject<BakedInteger, int>(i => (int)i.Value);
+        table.MapBakedObject<BakedInteger, uint>(i => (uint)i.Value);
+        table.MapBakedObject<BakedInteger, long>(i => (long)i.Value);
+        table.MapBakedObject<BakedInteger, ulong>(i => (ulong)i.Value);
+        table.MapBakedObject<BakedInteger, float>(i => (float)i.Value);
+        table.MapBakedObject<BakedInteger, double>(i => (double)i.Value);
+        table.MapBakedObject<BakedInteger, decimal>(i => (decimal)i.Value);
+        table.MapBakedObject<BakedInteger, BigInteger>(i => i.Value);
 
-        MapBakedObject<BakedString, string>(s => s.Value);
+        table.MapBakedObject<BakedString, string>(s => s.Value);
         
-        MapBakedObject<BakedBoolean, bool>(b => b.Value);
+        table.MapBakedObject<BakedBoolean, bool>(b => b.Value);
 
         #endregion
 
         #region Object Mappings
 
-        MapObject<sbyte>(s => new BakedInteger(s));
-        MapObject<byte>(s => new BakedInteger(s));
-        MapObject<short>(s => new BakedInteger(s));
-        MapObject<ushort>(s => new BakedInteger(s));
-        MapObject<int>(s => new BakedInteger(s));
-        MapObject<uint>(s => new BakedInteger(s));
-        MapObject<long>(s => new BakedInteger(s));
-        MapObject<ulong>(s => new BakedInteger(s));
-        MapObject<float>(s => new BakedInteger(s));
-        MapObject<double>(s => new BakedInteger(s));
-        MapObject<decimal>(s => new BakedInteger(s));
-        MapObject<BigInteger>(s => new BakedInteger(s));
+        table.MapObject<sbyte>(s => new BakedInteger(s));
+        table.MapObject<byte>(s => new BakedInteger(s));
+        table.MapObject<short>(s => new BakedInteger(s));
+        table.MapObject<ushort>(s => new BakedInteger(s));
+        table.MapObject<int>(s => new BakedInteger(s));
+        table.MapObject<uint>(s => new BakedInteger(s));
+        table.MapObject<long>(s => new BakedInteger(s));
+        table.MapObject<ulong>(s => new BakedInteger(s));
+        table.MapObject<float>(s => new BakedInteger(s));
+        table.MapObject<double>(s => new BakedInteger(s));
+        table.MapObject<decimal>(s => new BakedInteger(s));
+        table.MapObject<BigInteger>(s => new BakedInteger(s));
         
-        MapObject<string>(s => new BakedString(s));
+        table.MapObject<string>(s => new BakedString(s));
         
-        MapObject<bool>(s => new BakedBoolean(s));
+        table.MapObject<bool>(s => new BakedBoolean(s));
 
         #endregion
+
+        return table;
     }
     
     public void MapBakedObject<TBaked, T>(Func<TBaked, T> converter) where TBaked : BakedObject
@@ -67,12 +74,12 @@ public class MappedConversionTable : ConversionTable
         ObjectConversion[typeof(T)] = o => converter.Invoke((T)o);
     }
     
-    public override object? ToObject(BakedObject bakedObject)
+    public object? ToObject(BakedObject bakedObject)
     {
         return bakedObject.GetValue();
     }
 
-    public override object? ToObject(BakedObject bakedObject, Type targetType)
+    public object? ToObject(BakedObject bakedObject, Type targetType)
     {
         if (BakedConversion.TryGetValue((bakedObject.GetType(), targetType), out var converter))
         {
@@ -82,7 +89,7 @@ public class MappedConversionTable : ConversionTable
         return null;
     }
 
-    public override BakedObject ToBakedObject(object? o)
+    public BakedObject ToBakedObject(object? o)
     {
         if (o == null)
             return new BakedNull();

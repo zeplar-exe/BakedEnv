@@ -48,6 +48,6 @@ public class OverflowTests
 
     private object? GetValue(BakedObject bakedObject, Type target)
     {
-        return new MappedConversionTable().ToObject(bakedObject, target);
+        return MappedConversionTable.Primitive().ToObject(bakedObject, target);
     }
 }

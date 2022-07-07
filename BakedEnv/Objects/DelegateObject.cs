@@ -8,11 +8,11 @@ namespace BakedEnv.Objects;
 public class DelegateObject : BakedObject, IBakedCallable
 {
     public Delegate Delegate { get; }
-    public ConversionTable ConversionTable { get; }
+    public IConversionTable ConversionTable { get; }
 
     public DelegateObject(Delegate d) : this(d, new MappedConversionTable()) { }
     
-    public DelegateObject(Delegate d, ConversionTable conversionTable)
+    public DelegateObject(Delegate d, IConversionTable conversionTable)
     {
         Delegate = d;
         ConversionTable = conversionTable;
