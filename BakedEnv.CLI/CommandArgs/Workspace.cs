@@ -32,13 +32,8 @@ public class Workspace
                     return 1;
                 }
             }
-
-            var directory = Directory.CreateDirectory(workspacePath);
-            directory.Attributes |= FileAttributes.Hidden;
-    
-            var workspace = new WorkspaceInterface();
-
-            workspace.Export(Directory.GetCurrentDirectory());
+            
+            WorkspaceInterface.FromDirectory(Directory.GetCurrentDirectory());
             
             Console.WriteLine("Successfully created a BakedEnv workspace.");
     

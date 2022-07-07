@@ -1,0 +1,21 @@
+#def_length [ ASCII ] [ 4 bytes ]
+#def_length [ Int32 ] [ 4 bytes ]
+#def_length [ Int64 ] [ 4 bytes ]
+
+header: [ Type: ASCII, Length: 4 bytes ]: BENW
+json_config_len: [ Type: Int32 ]
+json_config_zip: [ Type: ZIP, Length: json_config_len ]
+
+file_count: [ Type: Int32 ]
+REPEAT(file_count) {
+    file_len: [ Type: Int64 ]
+    file_zip: [ Type: ZIP, Length: file_len ]
+}
+
+library_count [ Type: Int32 ]
+REPEAT(library_count) {
+    library_len [ Type: Int64 ]
+    library_content [ ZIP | DLL, Length: library_len ]
+}
+
+// Format could be used when debugging binary formats
