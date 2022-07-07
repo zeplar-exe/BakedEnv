@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -9,47 +10,81 @@ public class WorkspaceInterface
 {
     public const string WorkspaceDirectory = ".benw";
     public const string GlobalWorkspaceDirectory = ".beng";
+    public const string PackExtension = ".benp";
     public const string ConfigFile = "config.json";
     public const string LibraryDirectory = "lib";
+    
     public static byte[] MagicHeader => Encoding.ASCII.GetBytes("BENW");
-    // need refernece to direcytory its placed in or smthn
-    [JsonIgnore]
-    public List<FileInfo> LibraryAssemblies { get; }
-    public InclusionMode Inclusion { get; set; }
+    public static byte[] DllIdentifier => Encoding.ASCII.GetBytes("DLL");
+    public static byte[] PackIdentifier => Encoding.ASCII.GetBytes("BENP");
+    
+    private string DirectoryPath { get; }
+    
+    public JsonConfig Config { get; }
 
-    public WorkspaceInterface()
+    public IEnumerable<FileInfo> LibraryAssemblies
     {
-        LibraryAssemblies = new List<FileInfo>();
+        get
+        {
+            EnsureStructure(DirectoryPath);
+
+            foreach (var file in Directory.EnumerateFiles(
+                         Path.Join(DirectoryPath, LibraryDirectory), "*", SearchOption.AllDirectories))
+            {
+                yield return new FileInfo(file);
+            }
+        }
+    }
+
+    public IEnumerable<FileInfo> IncludedFiles
+    {
+        get
+        {
+            EnsureStructure(DirectoryPath);
+
+            var ignoreRegex = new Regex(Config.IgnorePattern);
+            
+            foreach (var file in Directory.EnumerateFiles(DirectoryPath, "*", SearchOption.AllDirectories))
+            {
+                var info = new FileInfo(file);
+
+                if (ignoreRegex.IsMatch(info.Name))
+                    continue;
+
+                yield return info;
+            }
+        }
+    }
+
+    private WorkspaceInterface(string directory, JsonConfig config)
+    {
+        DirectoryPath = directory;
+        Config = config;
+    }
+
+    public static WorkspaceInterface FromDirectory(string directory)
+    {
+        var root = Directory.CreateDirectory(directory);
+        var workspaceDirectory = root.CreateSubdirectory(WorkspaceDirectory);
+        workspaceDirectory.Attributes |= FileAttributes.Hidden;
+
+        return FromWorkspaceDirectory(workspaceDirectory.FullName);
     }
     
-    public static WorkspaceInterface FromGlobal()
-    {
-        var userDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var globalDir = Path.Join(userDirectory, GlobalWorkspaceDirectory);
-
-        if (!Directory.Exists(globalDir))
-        {
-            globalDir = Directory.CreateDirectory(Path.Join(userDirectory, GlobalWorkspaceDirectory)).FullName;
-        }
-        
-        return FromWorkspaceDirectory(globalDir);
-    }
-
     public static WorkspaceInterface FromWorkspaceDirectory(string directory)
     {
         EnsureStructure(directory);
         
         var configJson = JObject.Load(new JsonTextReader(File.OpenText(Path.Join(directory, ConfigFile))));
-        var workspace = configJson.ToObject<WorkspaceInterface>() ?? new WorkspaceInterface();
-        
-        
+        var config = configJson.ToObject<JsonConfig>() ?? new JsonConfig();
+        var workspace = new WorkspaceInterface(directory, config);
         
         return workspace;
     }
 
     public static WorkspaceInterface Unpack(string packFile)
     {
-        
+        throw new NotImplementedException();
     }
 
     public void Export(string directory)
@@ -58,7 +93,7 @@ public class WorkspaceInterface
         var libDir = workspaceDir.CreateSubdirectory(LibraryDirectory);
         using var configFile = File.CreateText(Path.Join(workspaceDir.FullName, ConfigFile));
         
-        configFile.Write(CreateJson().ToString());
+        configFile.Write(Config.CreateJson().ToString());
     }
     
     public void Pack(string destinationFile)
@@ -73,22 +108,46 @@ public class WorkspaceInterface
         var writer = new BinaryWriter(stream);
         
         writer.Write(MagicHeader);
-        
-        writer.Write(Compress(CreateJson().ToString()));
 
-        // Write files
+        var compressedConfig = Compress(Config.CreateJson().ToString());
+        writer.Write(compressedConfig.Length);
+        writer.Write(compressedConfig);
+
+        var files = IncludedFiles.ToArray();
         
-        // Write libraries
+        writer.Write(files.Length);
+
+        foreach (var file in files)
+        {
+            writer.Write(file.Length);
+            writer.Write(Compress(File.ReadAllText(file.FullName)));
+        }
+
+        var libraries = LibraryAssemblies.ToArray();
+
+        writer.Write(libraries.Length);
+        
+        foreach (var library in libraries)
+        {
+            switch (library.Extension)
+            {
+                case PackExtension:
+                    writer.Write(PackIdentifier);
+                    break;
+                case ".dll":
+                    writer.Write(DllIdentifier);
+                    break;
+            }
+            
+            writer.Write(library.Length);
+            writer.Write(File.ReadAllBytes(library.FullName));
+        }
     }
 
-    public JObject CreateJson()
+    public void EnsureStructure()
     {
-        dynamic json = new JObject();
-
-        json.InclusionMode = Inclusion;
-
-        return json;
-    } // wtf https://stackoverflow.com/a/18246895/16324801
+        EnsureStructure(DirectoryPath);
+    }
 
     private static void EnsureStructure(string directory)
     {
