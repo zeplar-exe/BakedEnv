@@ -207,11 +207,15 @@ public class BakedInterpreter
             {
                 switch (first.ToString())
                 {
-                    case "method":
+                    case "return":
                     {
                         break; // TODO
                     }
-                    case "return":
+                    case "break":
+                    {
+                        break; // TODO
+                    }
+                    case "continue":
                     {
                         break; // TODO
                     }
