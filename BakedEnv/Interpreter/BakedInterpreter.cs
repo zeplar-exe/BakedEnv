@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Parsers;
 using BakedEnv.Interpreter.Scopes;
@@ -223,19 +224,17 @@ public class BakedInterpreter
                     {
                         Iterator.PushCurrent();
                         
-                        var referenceParser = CreateValueParser();
-                        var identifierParseResult = referenceParser.TryParseIdentifier(out var path);
+                        var topExpressionParser = CreateExpressionParser();
+                        var topExpressionResult = topExpressionParser.TryParseExpression(out var topExpression);
                         
-                        if (!identifierParseResult.Success)
+                        if (!topExpressionResult.Success)
                         {
-                            instruction = new InvalidInstruction(identifierParseResult.Error);
+                            instruction = new InvalidInstruction(topExpressionResult.Error);
 
                             break;
                         }
 
                         IteratorTools.SkipWhitespaceAndNewlinesReserved();
-                        
-                        var reference = referenceParser.GetVariableReference(path);
 
                         if (!Iterator.TryMoveNext(out var next))
                         {
@@ -246,16 +245,15 @@ public class BakedInterpreter
 
                         switch (next.Id)
                         {
-                            case LexerTokenId.LeftParenthesis:
-                            {
-                                var invokeParser = CreateInvocationParser(reference);
-
-                                instruction = invokeParser.Parse();
-                                
-                                break;
-                            }
                             case LexerTokenId.Equals:
                             {
+                                if (topExpression is not VariableExpression variableExpression)
+                                {
+                                    instruction = new InvalidInstruction(new BakedError()); // TODO: Expected variable
+                                    
+                                    break;
+                                }
+                                
                                 IteratorTools.SkipWhitespaceAndNewlines();
 
                                 var expressionParser = CreateExpressionParser();
@@ -269,7 +267,7 @@ public class BakedInterpreter
                                 }
                                 
                                 instruction = new VariableAssignmentInstruction(
-                                    reference, 
+                                    variableExpression.Reference, 
                                     expression, 
                                     Iterator.Current.Span.Start);
 
@@ -277,8 +275,7 @@ public class BakedInterpreter
                             }
                             default:
                             {
-                                instruction = new InvalidInstruction(new BakedError()); // TODO
-
+                                Iterator.PushCurrent();
                                 break;
                             }
                         }
@@ -341,9 +338,9 @@ public class BakedInterpreter
         return new ProcessorStatementParser(CreateInternals());
     }
 
-    internal InvocationParser CreateInvocationParser(VariableReference reference)
+    internal InvocationParser CreateInvocationParser(BakedExpression expression)
     {
-        return new InvocationParser(CreateInternals(), reference);
+        return new InvocationParser(CreateInternals(), expression);
     }
 
     internal ExpressionParser CreateExpressionParser()

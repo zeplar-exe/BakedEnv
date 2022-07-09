@@ -32,6 +32,11 @@ public class InvocationExpression : BakedExpression
 
         if (value is not IBakedCallable callable)
         {
+            context.Interpreter.ReportError(new BakedError(
+                ErrorCodes.InvokeNonCallable,
+                "Cannot invoke a non-callable object.",
+                context.SourceIndex));
+            
             return new BakedNull();
         }
 

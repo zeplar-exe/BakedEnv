@@ -10,12 +10,12 @@ namespace BakedEnv.Interpreter.Parsers;
 internal class InvocationParser
 {
     private InterpreterInternals Internals { get; }
-    private VariableReference Reference { get; }
+    private BakedExpression Expression { get; }
     
-    public InvocationParser(InterpreterInternals internals, VariableReference reference)
+    public InvocationParser(InterpreterInternals internals, BakedExpression expression)
     {
         Internals = internals;
-        Reference = reference;
+        Expression = expression;
     }
 
     public InterpreterInstruction Parse()
@@ -32,23 +32,25 @@ internal class InvocationParser
 
         var instruction = ParseControlStatement(startToken, controlParameters);
 
-        if (instruction == null)
+        if (instruction != null)
         {
-            
+            return instruction;
         }
-        else return instruction;
         
         return ParseInvocation(startToken, controlParameters);
     }
 
     private InterpreterInstruction? ParseControlStatement(LexerToken startToken, BakedExpression[] parameters)
     {
-        if (Reference.Path.Count != 0 || Internals.Interpreter.Environment == null)
+        if (Expression is not VariableExpression variableExpression)
+            return null;
+        
+        if (variableExpression.Reference.Path.Count != 0 || Internals.Interpreter.Environment == null)
             return null;
 
         foreach (var statement in Internals.Interpreter.Environment.ControlStatements)
         {
-            if (statement.Name == Reference.Name)
+            if (statement.Name == variableExpression.Reference.Name)
             {
                 if (parameters.Length != statement.ParameterCount)
                 {
@@ -98,57 +100,51 @@ internal class InvocationParser
 
     private InterpreterInstruction ParseInvocation(LexerToken startToken, BakedExpression[] parameters)
     {
-        if (!Reference.TryGetVariable(out var variable))
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+        if (Internals.Iterator.TryMoveNext(out var bracket))
         {
-            Internals.IteratorTools.SkipWhitespaceAndNewlines();
-
-            if (Internals.Iterator.TryMoveNext(out var bracket))
+            if (bracket.Is(LexerTokenId.OpenCurlyBracket))
             {
-                if (bracket.Is(LexerTokenId.OpenCurlyBracket))
+                if (Expression is not VariableExpression variableExpression)
                 {
-                    Internals.State.MoveTo(ParserState.StatementBody);
-
-                    var instructions = new List<InterpreterInstruction>();
-                    
-                    while (true)
-                        // TODO: volatile conditions here
-                    {
-                        if (!Internals.Interpreter.TryGetNextInstruction(out var controlInstruction))
-                        {
-                            return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
-                        }
-
-                        if (Internals.State.Current != ParserState.StatementBody)
-                            break;
-
-                        instructions.Add(controlInstruction);
-                    }
-
-                    var variables = parameters.OfType<VariableExpression>().ToArray();
-
-                    if (variables.Length != parameters.Length)
-                    {
-                        return new InvalidInstruction(new BakedError()); // TODO: Expected alphanumeric arguments
-                    }
-
-                    var names = variables.Select(v => v.Reference.Name).ToArray();
-                
-                    return new VariableAssignmentInstruction(
-                        Reference,
-                        new ValueExpression(new BakedMethod(names)),
-                        startToken.Span.Start);
+                    return new InvalidInstruction(new BakedError()); // TODO: Expected variable
                 }
+                
+                Internals.State.MoveTo(ParserState.StatementBody);
+
+                var instructions = new List<InterpreterInstruction>();
+                
+                while (true)
+                    // TODO: volatile conditions here
+                {
+                    if (!Internals.Interpreter.TryGetNextInstruction(out var controlInstruction))
+                    {
+                        return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
+                    }
+
+                    if (Internals.State.Current != ParserState.StatementBody)
+                        break;
+
+                    instructions.Add(controlInstruction);
+                }
+
+                var variables = parameters.OfType<VariableExpression>().ToArray();
+
+                if (variables.Length != parameters.Length)
+                {
+                    return new InvalidInstruction(new BakedError()); // TODO: Expected alphanumeric arguments
+                }
+
+                var names = variables.Select(v => v.Reference.Name).ToArray();
+            
+                return new VariableAssignmentInstruction(
+                    variableExpression.Reference,
+                    new ValueExpression(new BakedMethod(names)),
+                    startToken.Span.Start);
             }
         }
 
-        if (variable.Value is not IBakedCallable callable)
-        {
-            return new InvalidInstruction(new BakedError(
-                ErrorCodes.InvokeNonCallable,
-                "Cannot invoke a non-callable object.",
-                startToken.Span.Start));
-        }
-
-        return new ObjectInvocationInstruction(callable, parameters, startToken.Span.Start);
+        return new ObjectInvocationInstruction(Expression, parameters, startToken.Span.Start);
     }
 }

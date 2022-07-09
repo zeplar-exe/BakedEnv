@@ -39,15 +39,15 @@ internal class ExpressionParser
             case LexerTokenId.Alphabetic:
             case LexerTokenId.AlphaNumeric:
             {
+                Internals.Iterator.PushCurrent();
+                
                 if (previous != null)
                 {
                     expression = previous;
                     
-                    break;
+                    return new TryResult(true);
                 }
-                
-                Internals.Iterator.PushCurrent();
-                
+
                 var valueParser = Internals.Interpreter.CreateValueParser();
                 var identifierResult = valueParser.TryParseIdentifier(out var path);
 
@@ -93,15 +93,15 @@ internal class ExpressionParser
             }
             default:
             {
+                Internals.Iterator.PushCurrent();
+                
                 if (previous != null)
                 {
                     expression = previous;
 
-                    break;
+                    return new TryResult(true);
                 }
-                
-                Internals.Iterator.PushCurrent();
-                
+
                 var valueParser = Internals.Interpreter.CreateValueParser();
                 var valueParseResult = valueParser.TryParseValue(out var value);
                                 
