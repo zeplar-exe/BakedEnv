@@ -217,6 +217,8 @@ public class BakedInterpreter
                     }
                     default: // Variable, invocation, control statement
                     {
+                        Iterator.PushCurrent();
+                        
                         var referenceParser = CreateValueParser();
                         var identifierParseResult = referenceParser.TryParseIdentifier(out var path);
                         
@@ -264,7 +266,7 @@ public class BakedInterpreter
                                 
                                 instruction = new VariableAssignmentInstruction(
                                     reference, 
-                                    expression!, 
+                                    expression, 
                                     Iterator.Current.Span.Start);
 
                                 break;
@@ -285,7 +287,7 @@ public class BakedInterpreter
             }
             case LexerTokenId.CloseCurlyBracket:
             {
-                if (State.Current != ParserState.ControlStatementBody)
+                if (State.Current != ParserState.StatementBody)
                 {
                     instruction = new InvalidInstruction(new BakedError()); // TODO
 

@@ -10,7 +10,7 @@ public class DelegateObject : BakedObject, IBakedCallable
     public Delegate Delegate { get; }
     public IConversionTable ConversionTable { get; }
 
-    public DelegateObject(Delegate d) : this(d, new MappedConversionTable()) { }
+    public DelegateObject(Delegate d) : this(d, MappedConversionTable.Primitive()) { }
     
     public DelegateObject(Delegate d, IConversionTable conversionTable)
     {

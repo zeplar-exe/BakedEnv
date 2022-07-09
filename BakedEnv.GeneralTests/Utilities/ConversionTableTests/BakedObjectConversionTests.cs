@@ -119,7 +119,7 @@ public class BakedObjectConversionTests
         if (value == null)
             Assert.Fail();
 
-        return new MappedConversionTable().ToObject(bakedObject, target)!;
+        return value!;
     }
 
     private object? GetValue(BakedObject bakedObject, Type target)

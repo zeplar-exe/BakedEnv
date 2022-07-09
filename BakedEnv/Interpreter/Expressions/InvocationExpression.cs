@@ -5,19 +5,25 @@ namespace BakedEnv.Interpreter.Expressions;
 
 public class InvocationExpression : BakedExpression
 {
-    public IBakedCallable Callable { get; }
+    public BakedExpression Expression { get; }
     public BakedExpression[] Parameters { get; }
 
-    public InvocationExpression(IBakedCallable callable, BakedExpression[] parameters)
+    public InvocationExpression(BakedExpression expression, BakedExpression[] parameters)
     {
-        Callable = callable;
+        Expression = expression;
         Parameters = parameters;
     }
 
     public override BakedObject Evaluate(InvocationContext context)
     {
         var parameters = Parameters.Select(p => p.Evaluate(context)).ToArray();
-        
-        return Callable.Invoke(parameters, context);
+        var value = Expression.Evaluate(context);
+
+        if (value is not IBakedCallable callable)
+        {
+            return new BakedNull();
+        }
+
+        return callable.Invoke(parameters, context);
     }
 }

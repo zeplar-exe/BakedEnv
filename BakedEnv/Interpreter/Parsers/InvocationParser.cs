@@ -29,8 +29,16 @@ internal class InvocationParser
         {
             return new InvalidInstruction(controlParameterResult.Error);
         }
+
+        var instruction = ParseControlStatement(startToken, controlParameters);
+
+        if (instruction == null)
+        {
+            
+        }
+        else return instruction;
         
-        return ParseControlStatement(startToken, controlParameters) ?? ParseInvocation(startToken, controlParameters);
+        return ParseInvocation(startToken, controlParameters);
     }
 
     private InterpreterInstruction? ParseControlStatement(LexerToken startToken, BakedExpression[] parameters)
@@ -59,7 +67,7 @@ internal class InvocationParser
                     return new InvalidInstruction(error);
                 }
 
-                Internals.State.MoveTo(ParserState.ControlStatementBody);
+                Internals.State.MoveTo(ParserState.StatementBody);
 
                 var instructions = new List<InterpreterInstruction>();
 
@@ -71,7 +79,7 @@ internal class InvocationParser
                         return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
                     }
 
-                    if (Internals.State.Current != ParserState.ControlStatementBody)
+                    if (Internals.State.Current != ParserState.StatementBody)
                         break;
 
                     instructions.Add(controlInstruction);
@@ -92,6 +100,46 @@ internal class InvocationParser
     {
         if (!Reference.TryGetVariable(out var variable))
         {
+            Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+            if (Internals.Iterator.TryMoveNext(out var bracket))
+            {
+                if (bracket.Is(LexerTokenId.OpenCurlyBracket))
+                {
+                    Internals.State.MoveTo(ParserState.StatementBody);
+
+                    var instructions = new List<InterpreterInstruction>();
+                    
+                    while (true)
+                        // TODO: volatile conditions here
+                    {
+                        if (!Internals.Interpreter.TryGetNextInstruction(out var controlInstruction))
+                        {
+                            return new InvalidInstruction(Internals.ErrorReporter.ReportEndOfFile(Internals.Iterator.Current));
+                        }
+
+                        if (Internals.State.Current != ParserState.StatementBody)
+                            break;
+
+                        instructions.Add(controlInstruction);
+                    }
+
+                    var variables = parameters.OfType<VariableExpression>().ToArray();
+
+                    if (variables.Length != parameters.Length)
+                    {
+                        return new InvalidInstruction(new BakedError()); // TODO: Expected alphanumeric arguments
+                    }
+
+                    var names = variables.Select(v => v.Reference.Name).ToArray();
+                
+                    return new VariableAssignmentInstruction(
+                        Reference,
+                        new ValueExpression(new BakedMethod(names)),
+                        startToken.Span.Start);
+                }
+            }
+            
             return new InvalidInstruction(new BakedError(
                 ErrorCodes.InvokeNull,
                 "Cannot invoke a null value.",

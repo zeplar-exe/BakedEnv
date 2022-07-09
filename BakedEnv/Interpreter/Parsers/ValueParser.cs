@@ -23,30 +23,6 @@ internal class ValueParser
         
         switch (startToken.Id)
         {
-            case LexerTokenId.Alphabetic: // Variable
-            case LexerTokenId.AlphaNumeric:
-            {
-                var identifierResult = TryParseIdentifier(out var path);
-                
-                if (!identifierResult.Success)
-                    return identifierResult;
-
-                var reference = GetVariableReference(path);
-                
-                if (reference.TryGetVariable(out var variable))
-                {
-                    value = variable.Value;
-                    
-                    return new TryResult(true);
-                }
-
-                return new TryResult(false, 
-                    new BakedError(
-                        ErrorCodes.InvalidVariableOrPath, 
-                        $"Variable, variable path, or part of path " + 
-                        $"'{string.Join(".", path.AsEnumerable())}' does not exist.",
-                        startToken.Span.Start));
-            }
             case LexerTokenId.Numeric: // Number
             {
                 value = new BakedInteger(startToken.ToString());
@@ -179,17 +155,26 @@ internal class ValueParser
     {
         path = Array.Empty<LexerToken>();
 
-        if (Internals.ErrorReporter.TestUnexpectedTokenType(Internals.Iterator.Current, out var currentError,
+        Internals.IteratorTools.SkipWhitespaceAndNewlinesReserved();
+        
+        if (Internals.TestEndOfFile(out var first, out var result))
+        {
+            return result;
+        }
+
+        if (Internals.ErrorReporter.TestUnexpectedTokenType(first, out var currentError,
                 LexerTokenId.Alphabetic, LexerTokenId.AlphaNumeric))
         {
             return new TryResult(false, currentError);
         }
         
-        var pathList = new List<LexerToken> { Internals.Iterator.Current };
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+        
+        var pathList = new List<LexerToken> { first };
 
-        if (!Internals.Iterator.TryMoveNext(out var next))
+        if (Internals.TestEndOfFile(out var next, out result))
         {
-            return Internals.ErrorReporter.EndOfFileResult(Internals.Iterator.Current);
+            return result;
         }
         
         if (next.Is(LexerTokenId.Period))

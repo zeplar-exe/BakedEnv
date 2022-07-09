@@ -12,44 +12,117 @@ internal class ExpressionParser
     {
         Internals = internals;
     }
-    
+
     public TryResult TryParseExpression(out BakedExpression expression)
     {
+        return TryParseExpression(null, out expression);
+    }
+    
+    private TryResult TryParseExpression(BakedExpression? previous, out BakedExpression expression)
+    {
         expression = new NullExpression();
-        
-        var valueParser = Internals.Interpreter.CreateValueParser();
-        var valueParseResult = valueParser.TryParseValue(out var value);
-                                
-        if (!valueParseResult.Success)
+
+        if (Internals.TestEndOfFile(out var first, out var exitResult))
         {
-            return valueParseResult;
-        }
-
-        if (value is IBakedCallable callable)
-        {
-            if (!Internals.Iterator.TryMoveNext(out var next))
+            if (previous != null)
             {
-                return Internals.ErrorReporter.EndOfFileResult(Internals.Iterator.Current);
-            }
-            
-            if (next.Is(LexerTokenId.LeftParenthesis))
-            {
-                var paramsParser = Internals.Interpreter.CreateParameterParser();
-                var paramsResult = paramsParser.TryParseParameterList(out var parameters);
-
-                if (!valueParseResult.Success)
-                {
-                    return paramsResult;
-                }
-
-                expression = new InvocationExpression(callable, parameters);
+                expression = previous;
 
                 return new TryResult(true);
             }
+            
+            return exitResult;
         }
 
-        expression = new ValueExpression(value);
+        switch (first.Id)
+        {
+            case LexerTokenId.Alphabetic:
+            case LexerTokenId.AlphaNumeric:
+            {
+                if (previous != null)
+                {
+                    expression = previous;
+                    
+                    break;
+                }
+                
+                Internals.Iterator.PushCurrent();
+                
+                var valueParser = Internals.Interpreter.CreateValueParser();
+                var identifierResult = valueParser.TryParseIdentifier(out var path);
 
+                if (!identifierResult.Success)
+                {
+                    return identifierResult;
+                }
+
+                var reference = valueParser.GetVariableReference(path);
+                expression = new VariableExpression(reference);
+
+                break;
+            }
+            case LexerTokenId.LeftParenthesis:
+            {
+                Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+                if (previous != null)
+                {
+                    var parameterParser = Internals.Interpreter.CreateParameterParser();
+                    var parameterResult = parameterParser.TryParseParameterList(out var parameters);
+
+                    if (!parameterResult.Success)
+                    {
+                        return parameterResult;
+                    }
+
+                    expression = new InvocationExpression(previous, parameters);
+                    
+                    break;
+                }
+                
+                var expressionResult = TryParseExpression(out var e);
+
+                if (!expressionResult.Success)
+                {
+                    return expressionResult;
+                }
+
+                expression = new ParenthesisExpression(e);
+
+                break;
+            }
+            default:
+            {
+                if (previous != null)
+                {
+                    expression = previous;
+
+                    break;
+                }
+                
+                Internals.Iterator.PushCurrent();
+                
+                var valueParser = Internals.Interpreter.CreateValueParser();
+                var valueParseResult = valueParser.TryParseValue(out var value);
+                                
+                if (!valueParseResult.Success)
+                {
+                    return valueParseResult;
+                }
+                
+                expression = new ValueExpression(value);
+
+                break;
+            }
+        }
+        
+        var tailExpressionResult = TryParseExpression(expression, out expression);
+                
+        if (!tailExpressionResult.Success)
+        {
+            return tailExpressionResult;
+        }
+                
         return new TryResult(true);
     }
 }

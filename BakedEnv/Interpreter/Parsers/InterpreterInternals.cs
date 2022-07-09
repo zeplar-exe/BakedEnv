@@ -1,4 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Interpreter.Variables;
+using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter.Parsers;
@@ -26,5 +28,20 @@ internal class InterpreterInternals
         ErrorReporter = errorReporter;
         State = state;
         Scope = scope;
+    }
+
+    public bool TestEndOfFile([NotNullWhen(false)] out LexerToken? token, out TryResult result)
+    {
+        result = default;
+        
+        var isTrue = false;
+        
+        if (!Iterator.TryMoveNext(out token))
+        {
+            result = ErrorReporter.EndOfFileResult(Iterator.Current);
+            isTrue = true;
+        }
+
+        return isTrue;
     }
 }
