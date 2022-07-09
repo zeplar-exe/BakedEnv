@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -18,6 +19,16 @@ public class InvocationExpression : BakedExpression
     {
         var parameters = Parameters.Select(p => p.Evaluate(context)).ToArray();
         var value = Expression.Evaluate(context);
+
+        if (value is BakedNull)
+        {
+            context.Interpreter.ReportError(new BakedError(
+                ErrorCodes.InvokeNull,
+                "Cannot invoke a null value.",
+                context.SourceIndex));
+
+            return value;
+        }
 
         if (value is not IBakedCallable callable)
         {

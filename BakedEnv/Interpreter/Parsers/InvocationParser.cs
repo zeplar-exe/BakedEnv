@@ -139,11 +139,6 @@ internal class InvocationParser
                         startToken.Span.Start);
                 }
             }
-            
-            return new InvalidInstruction(new BakedError(
-                ErrorCodes.InvokeNull,
-                "Cannot invoke a null value.",
-                startToken.Span.Start));
         }
 
         if (variable.Value is not IBakedCallable callable)
