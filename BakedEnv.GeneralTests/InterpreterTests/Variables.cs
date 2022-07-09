@@ -1,5 +1,4 @@
 using BakedEnv.Interpreter.Sources;
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 using NUnit.Framework;
 
@@ -14,7 +13,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("pizza = 1")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.TopVariables["pizza"].Value.Equals(1));
+        session.AssertInterpreterHasVariable("pizza", 1);
     }
 
     [Test]
@@ -23,7 +22,7 @@ public class Variables
         var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n bar=2")).Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(session.TopVariables["bar"].Value.Equals(2));
+        session.AssertInterpreterHasVariable("bar", 2);
     }
 
     [Test]
@@ -31,22 +30,19 @@ public class Variables
     {
         var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n foo=2")).Init();
         session.ExecuteUntilEnd();
-
-        Assert.True(session.TopVariables["foo"].Value.Equals(2));
+        
+        session.AssertInterpreterHasVariable("foo", 2);
     }
     
     [Test]
     public void TestReadOnlyVariable()
     {
         var environment = new BakedEnvironment()
-            .WithVariable(new BakedVariable("Foo", new BakedInteger(1)) 
-            {
-                IsReadOnly = true 
-            });
+            .WithReadOnlyVariable("Foo", new BakedInteger(1));
         var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(environment.GlobalVariables["Foo"].Value.Equals(1));
+        environment.AssertEnvironmentHasVariable("Foo", 1);
     }
 
     [Test]
@@ -57,7 +53,7 @@ public class Variables
         var session = environment.CreateSession(new RawStringSource("a = pizza.foo")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.TopVariables["a"].Value.Equals("bar"));
+        session.AssertInterpreterHasVariable("a", "bar");
     }
 
     public class MockPropertyObject : BakedObject

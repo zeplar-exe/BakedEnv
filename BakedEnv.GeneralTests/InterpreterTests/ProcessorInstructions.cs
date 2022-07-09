@@ -1,4 +1,3 @@
-using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
@@ -38,7 +37,7 @@ public class ProcessorInstructions
             .Init();
         session.ExecuteUntilEnd();
         
-        Assert.True(session.TopVariables["Pizza"].Value.Equals("Time"));
+        session.AssertInterpreterHasVariable("Pizza", "Time");
     }
 
     [Test]
@@ -50,13 +49,15 @@ public class ProcessorInstructions
             .Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.TopVariables["NaN"].Value.Equals(0));
+        session.AssertInterpreterHasVariable("NaN", 0);
     }
 
     private class MockStatementHandler : IProcessorStatementHandler
     {
         public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
         {
+            context.Interpreter.AssertReady();
+            
             context.Interpreter.Context.Variables.Add(instruction.Name, instruction.Expression.Evaluate(context));
             
             return true;

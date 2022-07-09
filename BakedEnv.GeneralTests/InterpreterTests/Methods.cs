@@ -1,7 +1,6 @@
 using System.Numerics;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Objects;
-using Jammo.ParserTools.Lexing;
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -46,6 +45,6 @@ public class Methods
         var session = environment.CreateSession(new RawStringSource("a = foo()")).Init();
         session.ExecuteUntilEnd();
 
-        Assert.True(session.TopVariables["a"].Value.Equals("Hello world!"));
+        session.AssertInterpreterHasVariable("a", "Hello world!");
     }
 }
