@@ -16,7 +16,7 @@ public class IfStatementExecution : ControlStatementExecution
         {
             foreach (var instruction in instructions)
             {
-                instruction.Execute(context);
+                instruction.Execute(context with { Scope = statementScope });
             }
         }
     }
