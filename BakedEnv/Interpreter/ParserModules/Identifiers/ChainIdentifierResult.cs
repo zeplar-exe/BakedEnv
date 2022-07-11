@@ -1,9 +1,15 @@
+using BakedEnv.Interpreter.Variables;
 using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Identifiers;
 
 internal class ChainIdentifierResult
 {
+    public bool IsComplete { get; }
+    public IEnumerable<LexerToken> AllTokens { get; }
+    public IEnumerable<SingleIdentifierResult> IdentifierNames { get; }
+    public IEnumerable<LexerToken> SeparatorTokens { get; }
+    
     private ChainIdentifierResult(
         bool completed, List<LexerToken> tokens, 
         List<SingleIdentifierResult> identifierNames, 
@@ -15,10 +21,10 @@ internal class ChainIdentifierResult
         SeparatorTokens = separatorTokens;
     }
 
-    public bool IsComplete { get; }
-    public IEnumerable<LexerToken> AllTokens { get; }
-    public IEnumerable<SingleIdentifierResult> IdentifierNames { get; }
-    public IEnumerable<LexerToken> SeparatorTokens { get; }
+    public VariableReference CreateReference(BakedInterpreter interpreter)
+    {
+        return new VariableReference(IdentifierNames.Select(i => i.Identifier), interpreter);
+    }
 
     public class Builder
     {
