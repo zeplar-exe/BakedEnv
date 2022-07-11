@@ -26,9 +26,9 @@ internal class ChainIdentifierParser : ParserModule
                 using var identifierParser = new SingleIdentifierParser(Internals);
                 var identifier = identifierParser.Parse();
 
-                if (string.IsNullOrEmpty(identifier.Identifier))
+                if (identifier.IsEmpty)
                 {
-                    // Invalid identifier
+                    return builder.Build(false);
                 }
 
                 builder.WithName(identifier);
