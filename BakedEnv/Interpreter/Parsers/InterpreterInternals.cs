@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Interpreter.ParserModules;
+using BakedEnv.Interpreter.Scopes;
 using TokenCs;
 
 namespace BakedEnv.Interpreter.Parsers;

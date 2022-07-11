@@ -23,7 +23,7 @@ public abstract class InterpreterInstruction
     /// </summary>
     /// <param name="interpreter">The target interpreter.</param>
     /// <remarks>This overload implicitly passes the interpreter's context to
-    /// <see cref="Execute(BakedEnv.Interpreter.BakedInterpreter, BakedEnv.Interpreter.IBakedScope)"/></remarks>
+    /// <see cref="Execute(BakedEnv.Interpreter.BakedInterpreter, IBakedScope)"/></remarks>
     public virtual void Execute(BakedInterpreter interpreter)
     {
         Execute(new InvocationContext(interpreter, interpreter.Context, SourceIndex));

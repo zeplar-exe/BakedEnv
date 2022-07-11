@@ -1,4 +1,5 @@
 using BakedEnv.Common;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Variables;
 using Jammo.ParserTools.Lexing;
 using Jammo.ParserTools.Tools;
