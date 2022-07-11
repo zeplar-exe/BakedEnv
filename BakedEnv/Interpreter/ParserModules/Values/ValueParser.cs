@@ -19,20 +19,29 @@ internal class ValueParser : ParserModule
         {
             return builder.BuildFailure();
         }
+        
+        Internals.Iterator.PushCurrent();
 
         switch (first.Type)
         {
             case LexerTokenType.Numeric:
             {
-                Internals.Iterator.PushCurrent();
+                using var numericParser = new NumericParser(Internals);
+                var result = numericParser.Parse();
+
+                builder.WithTokens(result.AllTokens);
                 
-                break;
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                return builder.BuildSuccess(result.Value);
             }
+            case LexerTokenType.SingleQuotation:
             case LexerTokenType.DoubleQuotation:
             {
-                Internals.Iterator.PushCurrent();
-
-                var stringParser = new StringParser(Internals);
+                using var stringParser = new StringParser(Internals);
                 var result = stringParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
