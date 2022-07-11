@@ -21,6 +21,15 @@
       <Compile Update="Interpreter\ParserModules\Identifiers\ChainIdentifierResult.cs">
         <DependentUpon>ChainIdentifierParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\Values\NumericParserResult.cs">
+        <DependentUpon>NumericParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Values\StringParserResult.cs">
+        <DependentUpon>StringParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Values\ValueParserResult.cs">
+        <DependentUpon>ValueParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
