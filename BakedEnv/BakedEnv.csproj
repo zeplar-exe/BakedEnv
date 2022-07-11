@@ -14,4 +14,13 @@
       <PackageReference Include="TokenCs" Version="1.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Interpreter\ParserModules\Identifiers\SingleIdentifierResult.cs">
+        <DependentUpon>SingleIdentifierParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Identifiers\ChainIdentifierResult.cs">
+        <DependentUpon>ChainIdentifierParser.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>
