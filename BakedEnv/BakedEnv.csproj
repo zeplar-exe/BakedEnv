@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Jammo.ParserTools" Version="1.8.0" />
+      <PackageReference Include="TokenCs" Version="1.0.0" />
     </ItemGroup>
 
 </Project>
