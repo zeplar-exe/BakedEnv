@@ -1,9 +1,9 @@
-using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
+using BakedEnv.Common;
+using TokenCs;
 
 namespace BakedEnv.Interpreter;
 
-public class InterpreterIterator : EnumerableIterator<LexerToken>
+internal class InterpreterIterator : EnumerableIterator<LexerToken>
 {
     public BacklogEnumerable<LexerToken> Backlog { get; }
 

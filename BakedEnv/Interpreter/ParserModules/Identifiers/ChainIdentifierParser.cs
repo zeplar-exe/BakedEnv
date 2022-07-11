@@ -1,0 +1,58 @@
+using BakedEnv.Interpreter.Parsers;
+using TokenCs;
+
+namespace BakedEnv.Interpreter.ParserModules.Identifiers;
+
+internal class ChainIdentifierParser : ParserModule
+{
+    public ChainIdentifierParser(InterpreterInternals internals) : base(internals)
+    {
+        
+    }
+
+    public ChainIdentifierResult Parse()
+    {
+        var expectIdentifier = true;
+        var builder = new ChainIdentifierResult.Builder();
+        
+        LexerToken? token = null;
+        // Damn, was hoping the else statement would guarantee token is initialized
+
+        while (expectIdentifier || Internals.Iterator.TryMoveNext(out token))
+            // If we're expecting an identifier, we don't need to take the next token
+        {
+            if (expectIdentifier)
+            {
+                using var identifierParser = new SingleIdentifierParser(Internals);
+                var identifier = identifierParser.Parse();
+
+                if (string.IsNullOrEmpty(identifier.Identifier))
+                {
+                    // Invalid identifier
+                }
+
+                builder.WithName(identifier);
+                expectIdentifier = false;
+            }
+            else
+            {
+                if (token!.Type is not LexerTokenType.Period)
+                {
+                    Internals.Iterator.PushCurrent();
+                    
+                    break;
+                }
+
+                builder.WithSeparator(token);
+                expectIdentifier = true;
+            }
+        }
+
+        if (expectIdentifier) // End of file
+        {
+            return builder.Build(false);
+        }
+
+        return builder.Build(true);
+    }
+}
