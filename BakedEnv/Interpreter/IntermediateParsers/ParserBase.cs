@@ -1,12 +1,21 @@
+using BakedEnv.Interpreter.IntermediateParsers.Errors;
+
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 public abstract class ParserBase
 {
-    // Nothing yet, plan to implement a parser tree to keep track of context
+    protected ErrorReporter Error { get; }
+
+    public ParserBase()
+    {
+        Error = new ErrorReporter();
+    }
     
     protected T CreateParser<T>() where T : ParserBase, new()
     {
         var parser = new T();
+        
+        RegisterParser(parser);
 
         return parser;
     }
