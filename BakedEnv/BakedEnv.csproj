@@ -30,6 +30,12 @@
       <Compile Update="Interpreter\ParserModules\Values\ValueParserResult.cs">
         <DependentUpon>ValueParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\Expressions\ExpressionParserResult.cs">
+        <DependentUpon>ExpressionParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Expressions\TailExpressionParserResult.cs">
+        <DependentUpon>TailExpressionParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
