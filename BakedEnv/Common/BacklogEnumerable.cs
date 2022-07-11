@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace BakedEnv.Interpreter;
+namespace BakedEnv.Common;
 
 public class BacklogEnumerable<T> : IEnumerable<T>
 {

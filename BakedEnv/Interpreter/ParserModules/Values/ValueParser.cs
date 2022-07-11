@@ -2,7 +2,7 @@ using BakedEnv.Interpreter.Parsers;
 using BakedEnv.Objects;
 using TokenCs;
 
-namespace BakedEnv.Interpreter.ParserModules.Identifiers;
+namespace BakedEnv.Interpreter.ParserModules.Values;
 
 internal class ValueParser : ParserModule
 {

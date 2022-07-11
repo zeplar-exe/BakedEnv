@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Variables;
