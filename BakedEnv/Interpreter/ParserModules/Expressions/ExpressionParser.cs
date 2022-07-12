@@ -29,7 +29,7 @@ internal class ExpressionParser : ParserModule
             {
                 Internals.Iterator.PushCurrent();
                 
-                using var identifierParser = new ChainIdentifierParser(Internals);
+                var identifierParser = new ChainIdentifierParser(Internals);
                 var result = identifierParser.Parse();
                 
                 builder.WithTokens(result.AllTokens);
@@ -49,7 +49,7 @@ internal class ExpressionParser : ParserModule
             {
                 Internals.Iterator.PushCurrent();
                 
-                using var valueParser = new Values.ValueParser(Internals);
+                var valueParser = new Values.ValueParser(Internals);
                 var result = valueParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
@@ -65,7 +65,7 @@ internal class ExpressionParser : ParserModule
             {
                 Internals.IteratorTools.SkipWhitespaceAndNewlines();
                 
-                using var tailParser = new TailExpressionParser(Internals);
+                var tailParser = new TailExpressionParser(Internals);
                 var result = tailParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
@@ -91,7 +91,7 @@ internal class ExpressionParser : ParserModule
             {
                 Internals.IteratorTools.SkipWhitespaceAndNewlines();
                 
-                using var tailParser = new TailExpressionParser(Internals);
+                var tailParser = new TailExpressionParser(Internals);
                 var result = tailParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
