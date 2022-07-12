@@ -15,9 +15,14 @@ public static class ErrorMessages
 
         return $"Unexpected token. Expected {expectedText}, got '{token.Type}'.";
     }
-
-    public static string InvalidOperation(string operationName, BakedObject value)
+    
+    public static string InvalidUnaryOperation(string operationName, BakedObject value)
     {
         return $"Cannot {operationName} a value of type '{value.GetType().Name}'.";
+    }
+
+    public static string InvalidBinaryOperation(string operationName, BakedObject left, BakedObject right)
+    {
+        return $"Cannot {operationName} a value of type '{right.GetType().Name}' from '{left.GetType().Name}'.";
     }
 }
