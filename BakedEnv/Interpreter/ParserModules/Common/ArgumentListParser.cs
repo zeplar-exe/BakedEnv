@@ -28,51 +28,29 @@ internal class ArgumentListParser : ParserModule
         builder.WithOpening(first);
         
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
+        
+        var expressionParser = new ExpressionListParser(Internals);
+        var result = expressionParser.Parse();
+                    
+        builder.WithExpressionList(result);
 
-        var expectValue = true;
-
-        while (Internals.Iterator.TryMoveNext(out var token))
+        if (!result.IsComplete)
         {
-            switch (token.Type)
-            {
-                case LexerTokenType.RightParenthesis:
-                {
-                    return builder.WithClosing(token).Build(!expectValue);
-                }
-                case LexerTokenType.Comma:
-                {
-                    if (expectValue)
-                    {
-                        return builder.Build(false);
-                    }
-                    
-                    expectValue = true;
-                    
-                    break;
-                }
-                default:
-                {
-                    Internals.Iterator.PushCurrent();
-
-                    var expressionParser = new TailExpressionParser(Internals);
-                    var result = expressionParser.Parse();
-                    
-                    builder.WithTailExpression(result);
-
-                    if (!result.IsComplete)
-                    {
-                        return builder.Build(false);
-                    }
-                    
-                    expectValue = false;
-                    
-                    break;
-                }
-            }
-            
-            Internals.IteratorTools.SkipWhitespaceAndNewlines();
+            return builder.Build(false);
+        }
+        
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+        
+        if (Internals.TestEndOfFile(out var last, out eofResult))
+        {
+            return builder.Build(false);
         }
 
-        return builder.Build(false);
+        if (last.Type != LexerTokenType.RightParenthesis)
+        {
+            return builder.Build(false);
+        }
+
+        return builder.WithClosing(last).Build(true);
     }
 }
