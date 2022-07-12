@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.Expressions.Arithmetic;
 using BakedEnv.Interpreter.ParserModules.Common;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
@@ -77,26 +78,80 @@ internal class TailExpressionParser : ParserModule
             }
             case LexerTokenType.Plus: // Addition
             {
+                var result = Parse();
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                newExpression = new AdditionExpression(previous, result.Expression);
+                
                 break;
             }
             case LexerTokenType.Dash: // Subtraction
             {
+                var result = Parse();
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                newExpression = new SubtractionExpression(previous, result.Expression);
+                
                 break;
             }
             case LexerTokenType.Star: // Multiplication
             {
+                var result = Parse();
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                newExpression = new MultiplicationExpression(previous, result.Expression);
+                
                 break;
             }
             case LexerTokenType.Slash: // Division
             {
+                var result = Parse();
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                newExpression = new DivisionExpression(previous, result.Expression);
+                
                 break;
             }
             case LexerTokenType.Caret: // Exponentiation
             {
+                var result = Parse();
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                newExpression = new ExponentiationExpression(previous, result.Expression);
+                
                 break;
             }
             case LexerTokenType.Percent: // Modulus
             {
+                var result = Parse();
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                newExpression = new ModulusExpression(previous, result.Expression);
+                
                 break;
             }
             default:
