@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.ParserModules.Common;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 
@@ -39,6 +40,8 @@ internal class TailExpressionParser : ParserModule
     
     private ExpressionParserResult ParseTail(BakedExpression previous)
     {
+        BakedExpression newExpression;
+        
         var builder = new ExpressionParserResult.Builder();
         
         if (Internals.TestEndOfFile(out var first, out var eofResult))
@@ -52,6 +55,16 @@ internal class TailExpressionParser : ParserModule
         {
             case LexerTokenType.LeftParenthesis: // Invocation
             {
+                var parameterParser = new ParameterListParser(Internals);
+                var result = parameterParser.Parse();
+
+                builder.WithTokens(result.AllTokens);
+                
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
                 break;
             }
             case LexerTokenType.LeftBracket: // Indexer
@@ -82,8 +95,21 @@ internal class TailExpressionParser : ParserModule
             {
                 break;
             }
+            default:
+            {
+                return builder.BuildSuccess(previous);
+            }
         }
 
-        return builder.BuildFailure();
+        var tailResult = ParseTail(previous);
+
+        if (!tailResult.IsComplete)
+        {
+            return builder.BuildFailure();
+        }
+
+        builder.WithTokens(tailResult.AllTokens);
+
+        return builder.BuildSuccess(tailResult.Expression);
     }
 }
