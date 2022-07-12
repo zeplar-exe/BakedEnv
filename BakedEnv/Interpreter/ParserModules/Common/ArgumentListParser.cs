@@ -4,9 +4,9 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Common;
 
-internal class ParameterListParser : ParserModule
+internal class ArgumentListParser : ParserModule
 {
-    public ParameterListParser(InterpreterInternals internals) : base(internals)
+    public ArgumentListParser(InterpreterInternals internals) : base(internals)
     {
         
     }
