@@ -52,13 +52,14 @@ internal class ParameterListParser : ParserModule
                 {
                     using var expressionParser = new TailExpressionParser(Internals);
                     var result = expressionParser.Parse();
+                    
+                    builder.WithTailExpression(result);
 
                     if (!result.IsComplete)
                     {
                         return builder.Build(false);
                     }
-
-                    builder.WithTailExpression(result);
+                    
                     expectValue = false;
                     
                     break;

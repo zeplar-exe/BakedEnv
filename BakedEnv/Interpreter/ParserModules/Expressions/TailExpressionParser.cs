@@ -103,12 +103,12 @@ internal class TailExpressionParser : ParserModule
 
         var tailResult = ParseTail(previous);
 
+        builder.WithTokens(tailResult.AllTokens);
+        
         if (!tailResult.IsComplete)
         {
             return builder.BuildFailure();
         }
-
-        builder.WithTokens(tailResult.AllTokens);
 
         return builder.BuildSuccess(tailResult.Expression);
     }
