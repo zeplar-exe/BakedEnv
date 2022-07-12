@@ -65,7 +65,7 @@ internal class TailExpressionParser : ParserModule
                     return builder.BuildFailure();
                 }
 
-                var parameters = result.Parameters.Select(p => p.Expression).ToArray();
+                var parameters = result.Expressions.Expressions.Select(p => p.Expression).ToArray();
 
                 newExpression = new InvocationExpression(previous, parameters);
 
