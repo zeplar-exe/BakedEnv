@@ -16,7 +16,7 @@ internal class TailExpressionParser : ParserModule
     {
         var builder = new TailExpressionParserResult.Builder();
 
-        using var expressionParser = new ExpressionParser(Internals);
+        var expressionParser = new ExpressionParser(Internals);
         var result = expressionParser.Parse();
 
         builder.WithTokens(result.AllTokens);

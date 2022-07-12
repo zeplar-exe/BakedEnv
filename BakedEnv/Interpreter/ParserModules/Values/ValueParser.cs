@@ -26,7 +26,7 @@ internal class ValueParser : ParserModule
         {
             case LexerTokenType.Numeric:
             {
-                using var numericParser = new NumericParser(Internals);
+                var numericParser = new NumericParser(Internals);
                 var result = numericParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
@@ -41,7 +41,7 @@ internal class ValueParser : ParserModule
             case LexerTokenType.SingleQuotation:
             case LexerTokenType.DoubleQuotation:
             {
-                using var stringParser = new StringParser(Internals);
+                var stringParser = new StringParser(Internals);
                 var result = stringParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
