@@ -40,7 +40,7 @@ internal class TailExpressionParser : ParserModule
     
     private ExpressionParserResult ParseTail(BakedExpression previous)
     {
-        BakedExpression newExpression;
+        BakedExpression? newExpression = null;
         
         var builder = new ExpressionParserResult.Builder();
         
@@ -64,6 +64,10 @@ internal class TailExpressionParser : ParserModule
                 {
                     return builder.BuildFailure();
                 }
+
+                var parameters = result.Parameters.Select(p => p.Expression).ToArray();
+
+                newExpression = new InvocationExpression(previous, parameters);
 
                 break;
             }
@@ -101,7 +105,7 @@ internal class TailExpressionParser : ParserModule
             }
         }
 
-        var tailResult = ParseTail(previous);
+        var tailResult = ParseTail(newExpression);
 
         builder.WithTokens(tailResult.AllTokens);
         
