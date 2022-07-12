@@ -14,13 +14,18 @@ public class NegateExpression : BakedExpression
 
     public override BakedObject Evaluate(InvocationContext context)
     {
-        if (Expression.Evaluate(context).TryNegate(out var negated))
+        var value = Expression.Evaluate(context);
+        
+        if (value.TryNegate(out var negated))
         {
             return negated;
         }
         else
         {
-            context.Interpreter.ReportError(new BakedError()); // TODO
+            context.Interpreter.ReportError(new BakedError(
+                ErrorCodes.InvalidOperator,
+                ErrorMessages.InvalidOperation("negate", value),
+                context.SourceIndex));
         }
 
         return new BakedNull();

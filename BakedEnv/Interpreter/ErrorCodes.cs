@@ -11,7 +11,7 @@ public static class ErrorCodes
 
     #endregion
     
-    #region Varible Errors
+    #region Variable Errors
 
     public const string InvalidVariableOrPath = "VAR0001";
 
@@ -23,6 +23,20 @@ public static class ErrorCodes
     public const string InvokeNonCallable = "INVK0002";
     public const string InvokeArgumentMismatch = "INVK0003";
     public const string InvokeParameterCountMismatch = "INVK0003";
+
+    #endregion
+
+    #region Token Errors
+
+    public const string InvalidTokenType = "TOK0001";
+    public const string EndOfFile = "TOK0002";
+
+    #endregion
+
+    #region Value Errors
+
+    public const string InvalidValue = "VAL0001";
+    public const string InvalidOperator = "VAL0002";
 
     #endregion
 

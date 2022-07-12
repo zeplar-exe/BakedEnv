@@ -14,11 +14,11 @@ internal class CommonErrorReporter
         Interpreter = interpreter;
     }
     
-    public bool TestUnexpectedTokenType(LexerToken token, out BakedError error, params LexerTokenId[] expected)
+    public bool TestUnexpectedTokenType(LexerToken token, out BakedError error, params LexerTokenType[] expected)
     {
         error = default;
         
-        if (!expected.Any(token.Is))
+        if (expected.All(t => token.Type != t))
         {
             error = ReportUnexpectedTokenType(token, expected);
 
@@ -28,29 +28,27 @@ internal class CommonErrorReporter
         return false;
     }
     
-    public BakedError ReportUnexpectedTokenType(LexerToken token, params LexerTokenId[] expected)
+    public BakedError ReportUnexpectedTokenType(LexerToken token, params LexerTokenType[] expected)
     {
-        var expectedText = string.Join(", ", expected);
-
         return Interpreter.ReportError(
-            null,
-            $"Unexpected token. Expected enum '{expectedText}', got '{token.Id.ToString()}'.",
+            ErrorCodes.InvalidTokenType,
+            ErrorMessages.ExpectedTokenOfType(token, expected),
             token.Span.Start);
     }
 
     public BakedError ReportInvalidValue(LexerToken token)
     {
         return Interpreter.ReportError(
-            null, 
-            "Expected a value (string, number, variable).",
+            ErrorCodes.InvalidValue,
+            ErrorMessages.ValueExpected,
             token.Span.Start);
     }
     
     public BakedError ReportEndOfFile(LexerToken token)
     {
         return Interpreter.ReportError(
-            null,
-            "Unexpected end of file.",
+            ErrorCodes.EndOfFile,
+            ErrorMessages.EndOfFile,
             token.Span.End);
     }
     
