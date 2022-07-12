@@ -36,6 +36,9 @@
       <Compile Update="Interpreter\ParserModules\Expressions\TailExpressionParserResult.cs">
         <DependentUpon>TailExpressionParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\Common\ParameterListParserResult.cs">
+        <DependentUpon>ParameterListParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
