@@ -55,7 +55,7 @@ internal class TailExpressionParser : ParserModule
         {
             case LexerTokenType.LeftParenthesis: // Invocation
             {
-                var parameterParser = new ParameterListParser(Internals);
+                var parameterParser = new ArgumentListParser(Internals);
                 var result = parameterParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
