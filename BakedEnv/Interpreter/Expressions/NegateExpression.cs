@@ -16,18 +16,14 @@ public class NegateExpression : BakedExpression
     {
         var value = Expression.Evaluate(context);
         
-        if (value.TryNegate(out var negated))
-        {
-            return negated;
-        }
-        else
+        if (!value.TryNegate(out var negated))
         {
             context.Interpreter.ReportError(new BakedError(
                 ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidOperation("negate", value),
+                ErrorMessages.InvalidUnaryOperation("negate", value),
                 context.SourceIndex));
         }
 
-        return new BakedNull();
+        return negated;
     }
 }
