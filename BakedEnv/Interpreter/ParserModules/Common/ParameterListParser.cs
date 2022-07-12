@@ -26,6 +26,8 @@ internal class ParameterListParser : ParserModule
         }
 
         builder.WithOpening(first);
+        
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
         var expectValue = true;
 
@@ -50,6 +52,8 @@ internal class ParameterListParser : ParserModule
                 }
                 default:
                 {
+                    Internals.Iterator.PushCurrent();
+
                     using var expressionParser = new TailExpressionParser(Internals);
                     var result = expressionParser.Parse();
                     
@@ -65,6 +69,8 @@ internal class ParameterListParser : ParserModule
                     break;
                 }
             }
+            
+            Internals.IteratorTools.SkipWhitespaceAndNewlines();
         }
 
         return builder.Build(false);

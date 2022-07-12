@@ -21,14 +21,14 @@ internal class ExpressionParser : ParserModule
         {
             return builder.BuildFailure();
         }
-        
-        Internals.Iterator.PushCurrent();
 
         switch (first.Type)
         {
             case LexerTokenType.AlphaNumeric: // Variable
             case LexerTokenType.Underscore:
             {
+                Internals.Iterator.PushCurrent();
+                
                 using var identifierParser = new ChainIdentifierParser(Internals);
                 var result = identifierParser.Parse();
                 
@@ -47,6 +47,8 @@ internal class ExpressionParser : ParserModule
             case LexerTokenType.SingleQuotation: // String
             case LexerTokenType.DoubleQuotation:
             {
+                Internals.Iterator.PushCurrent();
+                
                 using var valueParser = new Values.ValueParser(Internals);
                 var result = valueParser.Parse();
 
@@ -61,6 +63,8 @@ internal class ExpressionParser : ParserModule
             }
             case LexerTokenType.LeftParenthesis: // Parenthesis
             {
+                Internals.IteratorTools.SkipWhitespaceAndNewlines();
+                
                 using var tailParser = new TailExpressionParser(Internals);
                 var result = tailParser.Parse();
 
@@ -85,7 +89,7 @@ internal class ExpressionParser : ParserModule
             }
             case LexerTokenType.Dash: // Unary negation
             {
-                Internals.Iterator.TryMoveNext(out _); // Skip, since it's in the backlog
+                Internals.IteratorTools.SkipWhitespaceAndNewlines();
                 
                 using var tailParser = new TailExpressionParser(Internals);
                 var result = tailParser.Parse();
@@ -96,8 +100,8 @@ internal class ExpressionParser : ParserModule
                 {
                     return builder.BuildFailure();
                 }
-                
-                break;
+
+                return builder.BuildSuccess(new NegateExpression(result.Expression));
             }
         }
 

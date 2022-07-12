@@ -46,6 +46,8 @@ internal class ChainIdentifierParser : ParserModule
                 builder.WithSeparator(token);
                 expectIdentifier = true;
             }
+
+            Internals.IteratorTools.SkipWhitespaceAndNewlines();
         }
 
         if (expectIdentifier) // End of file
