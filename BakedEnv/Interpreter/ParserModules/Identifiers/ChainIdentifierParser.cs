@@ -23,7 +23,7 @@ internal class ChainIdentifierParser : ParserModule
         {
             if (expectIdentifier)
             {
-                using var identifierParser = new SingleIdentifierParser(Internals);
+                var identifierParser = new SingleIdentifierParser(Internals);
                 var identifier = identifierParser.Parse();
 
                 if (identifier.IsEmpty)

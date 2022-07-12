@@ -7,7 +7,6 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class InterpreterInternals
 {
-    public ParserStack ParserStack { get; }
     public BakedInterpreter Interpreter { get; }
     public InterpreterIterator Iterator { get; }
     public IteratorTools IteratorTools { get; }
@@ -16,7 +15,6 @@ internal class InterpreterInternals
     public IBakedScope Scope { get; }
     
     public InterpreterInternals(
-        ParserStack parserStack,
         BakedInterpreter interpreter, 
         InterpreterIterator iterator, 
         IteratorTools iteratorTools, 
@@ -24,7 +22,6 @@ internal class InterpreterInternals
         StateMachine<ParserState> state, 
         IBakedScope scope)
     {
-        ParserStack = parserStack;
         Interpreter = interpreter;
         Iterator = iterator;
         IteratorTools = iteratorTools;

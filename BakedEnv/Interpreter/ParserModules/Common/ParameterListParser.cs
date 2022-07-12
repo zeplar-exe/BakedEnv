@@ -54,7 +54,7 @@ internal class ParameterListParser : ParserModule
                 {
                     Internals.Iterator.PushCurrent();
 
-                    using var expressionParser = new TailExpressionParser(Internals);
+                    var expressionParser = new TailExpressionParser(Internals);
                     var result = expressionParser.Parse();
                     
                     builder.WithTailExpression(result);
