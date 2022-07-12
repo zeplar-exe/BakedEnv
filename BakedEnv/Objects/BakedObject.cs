@@ -70,9 +70,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// </summary>
     /// <param name="result">The negated form of this object.</param>
     /// <returns>Whether the object could be negated.</returns>
-    public virtual bool TryNegate(out BakedObject? result) 
+    public virtual bool TryNegate(out BakedObject result) 
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
@@ -82,9 +82,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to add.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryAdd(BakedObject bakedObject, out BakedObject? result)
+    public virtual bool TryAdd(BakedObject bakedObject, out BakedObject result)
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
@@ -94,9 +94,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to subtract.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TrySubtract(BakedObject bakedObject, out BakedObject? result)
+    public virtual bool TrySubtract(BakedObject bakedObject, out BakedObject result)
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
@@ -106,9 +106,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to multiply with.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryMultiply(BakedObject bakedObject, out BakedObject? result)
+    public virtual bool TryMultiply(BakedObject bakedObject, out BakedObject result)
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
@@ -118,9 +118,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to exponentiate.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryExponent(BakedObject bakedObject, out BakedObject? result)
+    public virtual bool TryExponent(BakedObject bakedObject, out BakedObject result)
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
@@ -130,9 +130,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to divide from.</param>
     /// <param name="result">The mutated result of this object.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryDivide(BakedObject bakedObject, out BakedObject? result)
+    public virtual bool TryDivide(BakedObject bakedObject, out BakedObject result)
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
@@ -142,9 +142,9 @@ public abstract class BakedObject : IEquatable<BakedObject>
     /// <param name="bakedObject">The target object to perform module with.</param>
     /// <param name="result">The modulo result.</param>
     /// <returns>Whether the operation was successful.</returns>
-    public virtual bool TryModulus(BakedObject bakedObject, out BakedObject? result)
+    public virtual bool TryModulus(BakedObject bakedObject, out BakedObject result)
     { 
-        result = null;
+        result = new BakedNull();
         return false;
     }
     
