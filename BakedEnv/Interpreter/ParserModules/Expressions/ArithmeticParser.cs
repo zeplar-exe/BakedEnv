@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.Expressions.Arithmetic;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 
@@ -11,61 +12,49 @@ internal class ArithmeticParser : ParserModule
         
     }
 
-    public BakedExpression Parse()
+    public ArithmeticParserResult ParseFrom(TailExpressionParserResult start)
     {
-        // has to include the expression and operator from before?
+        var builder = new ArithmeticParserResult.Builder();
+        var previous = start;
+        
+        while (true)
+        {
+            if (Internals.TestEndOfFile(out var first, out var eofResult))
+            {
+                return builder.Build(false);
+            }
+    
+            if (!IsArithmetic(first))
+            {
+                Internals.Iterator.PushCurrent();
+                
+                return builder.Build(true);
+            }
+    
+            Internals.IteratorTools.SkipWhitespaceAndNewlines();
+    
+            var expressionParser = new TailExpressionParser(Internals);
+            var result = expressionParser.Parse(ArithmeticInclusionMode.Exclude);
+            
+            if (!result.IsComplete)
+            {
+                return builder.Build(false);
+            }
+
+            builder.WithOperator(new OperatorInfo(first, previous, result));
+
+            previous = result;
+        }
     }
-}
-
-internal class ArithmeticParserResult : ParserModuleResult
-{
-    public bool IsComplete { get; }
-    public IEnumerable<ExpressionParserResult> Expressions { get; }
-    public IEnumerable<LexerToken> Operators { get; }
-
-    public ArithmeticParserResult(
-        bool complete,
-        IEnumerable<LexerToken> allTokens,
-        IEnumerable<ExpressionParserResult> expressions, 
-        IEnumerable<LexerToken> operators) : base(allTokens)
+    
+    private static bool IsArithmetic(LexerToken token)
     {
-        IsComplete = complete;
-        Expressions = expressions;
-        Operators = operators;
-    }
-
-    public class Builder
-    {
-        private List<LexerToken> Tokens { get; }
-        private List<ExpressionParserResult> Expressions { get; }
-        private List<LexerToken> Operators { get; }
-
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-            Expressions = new List<ExpressionParserResult>();
-            Operators = new List<LexerToken>();
-        }
-
-        public Builder WithExpression(ExpressionParserResult result)
-        {
-            Expressions.Add(result);
-            Tokens.AddRange(result.AllTokens);
-
-            return this;
-        }
-
-        public Builder WithOperator(LexerToken token)
-        {
-            Operators.Add(token);
-            Tokens.Add(token);
-
-            return this;
-        }
-
-        public ArithmeticParserResult Build(bool complete)
-        {
-            return new ArithmeticParserResult(complete, Tokens, Expressions, Operators);
-        }
+        return token.Type is
+            LexerTokenType.Plus or
+            LexerTokenType.Dash or
+            LexerTokenType.Star or
+            LexerTokenType.Slash or
+            LexerTokenType.Caret or
+            LexerTokenType.Percent;
     }
 }
