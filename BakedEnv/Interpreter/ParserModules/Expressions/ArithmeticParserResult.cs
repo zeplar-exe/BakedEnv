@@ -26,16 +26,9 @@ internal class ArithmeticParserResult : ParserModuleResult
 
     public BakedExpression CreateExpression()
     {
-        OperatorInfo? previous;
-        
-        foreach (var op in Operators)
-        {
-            
+        var evaluator = new OperatorChainEvaluator(Operators);
 
-            previous = op;
-        }
-
-        return new NullExpression(); // TODO
+        return evaluator.Evaluate();
     }
 
     public class Builder
@@ -58,6 +51,7 @@ internal class ArithmeticParserResult : ParserModuleResult
             Operators.Add(info);
             Expressions.Add(info.Left);
             Expressions.Add(info.Right);
+            OperatorTokens.Add(info.Token);
             Tokens.AddRange(info.AllTokens);
 
             return this;
