@@ -3,14 +3,14 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Common;
 
-internal class ParameterListParserResult : ParserModuleResult
+internal class ArgumentListParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
     public LexerToken OpenParenthesis { get; }
     public LexerToken CloseParenthesis { get; }
     public ExpressionListParserResult Expressions { get; }
 
-    public ParameterListParserResult(
+    public ArgumentListParserResult(
         bool complete,
         IEnumerable<LexerToken> allTokens,
         LexerToken openParenthesis,
@@ -59,9 +59,9 @@ internal class ParameterListParserResult : ParserModuleResult
             return this;
         }
 
-        public ParameterListParserResult Build(bool complete)
+        public ArgumentListParserResult Build(bool complete)
         {
-            return new ParameterListParserResult(complete, Tokens, OpenParenthesis, CloseParenthesis, Expressions);
+            return new ArgumentListParserResult(complete, Tokens, OpenParenthesis, CloseParenthesis, Expressions);
         }
     }
 }

@@ -11,9 +11,9 @@ internal class ArgumentListParser : ParserModule
         
     }
 
-    public ParameterListParserResult Parse()
+    public ArgumentListParserResult Parse()
     {
-        var builder = new ParameterListParserResult.Builder();
+        var builder = new ArgumentListParserResult.Builder();
         
         if (Internals.TestEndOfFile(out var first, out var eofResult))
         {
