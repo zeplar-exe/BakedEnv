@@ -69,7 +69,7 @@ internal class FunctionExpressionParser : ParserModule
             return builder.BuildFailure();
         }
 
-        return builder.BuildSuccess(new BakedMethod(paramsResult.Names));
+        return builder.BuildSuccess(new BakedFunction(paramsResult.Names));
     }
 }
 
@@ -82,11 +82,11 @@ internal class FunctionExpressionParserResult : ParserModuleResult
     public FunctionExpressionParserResult(
         bool declaration, bool complete, 
         IEnumerable<LexerToken> allTokens, 
-        BakedMethod method) : base(allTokens)
+        BakedFunction function) : base(allTokens)
     {
         IsDeclaration = declaration;
         IsComplete = complete;
-        Method = new ValueExpression(method);
+        Method = new ValueExpression(function);
     }
 
     public class Builder
@@ -114,17 +114,17 @@ internal class FunctionExpressionParserResult : ParserModuleResult
 
         public FunctionExpressionParserResult BuildNonDeclaration()
         {
-            return new FunctionExpressionParserResult(false, false, Tokens, BakedMethod.Empty());
+            return new FunctionExpressionParserResult(false, false, Tokens, BakedFunction.Empty());
         }
 
-        public FunctionExpressionParserResult BuildSuccess(BakedMethod method)
+        public FunctionExpressionParserResult BuildSuccess(BakedFunction function)
         {
-            return new FunctionExpressionParserResult(true, true, Tokens, method);
+            return new FunctionExpressionParserResult(true, true, Tokens, function);
         }
 
         public FunctionExpressionParserResult BuildFailure()
         {
-            return new FunctionExpressionParserResult(true, false, Tokens, BakedMethod.Empty());
+            return new FunctionExpressionParserResult(true, false, Tokens, BakedFunction.Empty());
         }
     }
 }

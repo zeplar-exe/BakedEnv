@@ -8,7 +8,7 @@ namespace BakedEnv.Objects;
 /// <summary>
 /// A defined method.
 /// </summary>
-public class BakedMethod : BakedObject, IBakedCallable
+public class BakedFunction : BakedObject, IBakedCallable
 {
     /// <summary>
     /// Expected parameters to use during invocation.
@@ -23,13 +23,13 @@ public class BakedMethod : BakedObject, IBakedCallable
     /// Initialize this method with a set of parameter names.
     /// </summary>
     /// <param name="parameterNames">Parameter names inserted into the execution scope.</param>
-    public BakedMethod(IEnumerable<string> parameterNames)
+    public BakedFunction(IEnumerable<string> parameterNames)
     {
         ParameterNames = parameterNames.ToList();
         Instructions = new List<InterpreterInstruction>();
     }
 
-    public static BakedMethod Empty() => new(Enumerable.Empty<string>());
+    public static BakedFunction Empty() => new(Enumerable.Empty<string>());
 
     /// <inheritdoc />
     /// <remarks>This method returns null as of now. Thus, it is not usable as a parameter in other methods for example.</remarks>
