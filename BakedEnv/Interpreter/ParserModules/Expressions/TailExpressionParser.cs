@@ -10,10 +10,10 @@ internal class TailExpressionParser : ParserModule
 {
     public TailExpressionParser(InterpreterInternals internals) : base(internals)
     {
-        
+
     }
-    
-    public TailExpressionParserResult Parse()
+
+    public TailExpressionParserResult Parse(ArithmeticInclusionMode arithmeticInclusion = ArithmeticInclusionMode.Include)
     {
         var builder = new TailExpressionParserResult.Builder();
 
@@ -21,30 +21,54 @@ internal class TailExpressionParser : ParserModule
         var result = expressionParser.Parse();
 
         builder.WithTokens(result.AllTokens);
-        
+
         if (!result.IsComplete)
         {
             return builder.BuildFailure();
         }
 
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
         var tail = ParseTail(result.Expression);
-        
+
         builder.WithTokens(tail.AllTokens);
-        
+
         if (!tail.IsComplete)
         {
             return builder.BuildFailure();
         }
 
-        return builder.BuildSuccess(tail.Expression);
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+        if (Internals.TestEndOfFile(out var first, out var eofResult))
+        {
+            return builder.BuildFailure();
+        }
+        
+        Internals.Iterator.PushCurrent();
+
+        var expression = tail.Expression;
+        
+        if (arithmeticInclusion == ArithmeticInclusionMode.Include && IsArithmetic(first))
+        {
+            var arithmeticParser = new ArithmeticParser(Internals);
+            var arithmeticResult = arithmeticParser.ParseFrom(tail);
+
+            if (!arithmeticResult.IsComplete)
+            {
+                expression = arithmeticResult.CreateExpression();
+            }
+        }
+        
+        return builder.BuildSuccess(expression);
     }
-    
-    private ExpressionParserResult ParseTail(BakedExpression previous)
+
+    private TailExpressionParserResult ParseTail(BakedExpression previous)
     {
-        BakedExpression? newExpression = null;
-        
-        var builder = new ExpressionParserResult.Builder();
-        
+        BakedExpression? newExpression;
+
+        var builder = new TailExpressionParserResult.Builder();
+
         if (Internals.TestEndOfFile(out var first, out var eofResult))
         {
             return builder.BuildFailure();
@@ -60,7 +84,7 @@ internal class TailExpressionParser : ParserModule
                 var result = parameterParser.Parse();
 
                 builder.WithTokens(result.AllTokens);
-                
+
                 if (!result.IsComplete)
                 {
                     return builder.BuildFailure();
@@ -74,84 +98,16 @@ internal class TailExpressionParser : ParserModule
             }
             case LexerTokenType.LeftBracket: // Indexer
             {
-                break;
-            }
-            case LexerTokenType.Plus: // Addition
-            {
-                var result = Parse();
+                var indexerParser = new IndexerParser(Internals);
+                var result = indexerParser.Parse();
 
                 if (!result.IsComplete)
                 {
                     return builder.BuildFailure();
                 }
 
-                newExpression = new AdditionExpression(previous, result.Expression);
-                
-                break;
-            }
-            case LexerTokenType.Dash: // Subtraction
-            {
-                var result = Parse();
+                newExpression = new IndexExpression(previous, result.Expression.Expression);
 
-                if (!result.IsComplete)
-                {
-                    return builder.BuildFailure();
-                }
-
-                newExpression = new SubtractionExpression(previous, result.Expression);
-                
-                break;
-            }
-            case LexerTokenType.Star: // Multiplication
-            {
-                var result = Parse();
-
-                if (!result.IsComplete)
-                {
-                    return builder.BuildFailure();
-                }
-
-                newExpression = new MultiplicationExpression(previous, result.Expression);
-                
-                break;
-            }
-            case LexerTokenType.Slash: // Division
-            {
-                var result = Parse();
-
-                if (!result.IsComplete)
-                {
-                    return builder.BuildFailure();
-                }
-
-                newExpression = new DivisionExpression(previous, result.Expression);
-                
-                break;
-            }
-            case LexerTokenType.Caret: // Exponentiation
-            {
-                var result = Parse();
-
-                if (!result.IsComplete)
-                {
-                    return builder.BuildFailure();
-                }
-
-                newExpression = new ExponentiationExpression(previous, result.Expression);
-                
-                break;
-            }
-            case LexerTokenType.Percent: // Modulus
-            {
-                var result = Parse();
-
-                if (!result.IsComplete)
-                {
-                    return builder.BuildFailure();
-                }
-
-                newExpression = new ModulusExpression(previous, result.Expression);
-                
                 break;
             }
             default:
@@ -163,7 +119,7 @@ internal class TailExpressionParser : ParserModule
         var tailResult = ParseTail(newExpression);
 
         builder.WithTokens(tailResult.AllTokens);
-        
+
         if (!tailResult.IsComplete)
         {
             return builder.BuildFailure();
@@ -171,4 +127,21 @@ internal class TailExpressionParser : ParserModule
 
         return builder.BuildSuccess(tailResult.Expression);
     }
+    
+    private static bool IsArithmetic(LexerToken token)
+    {
+        return token.Type is
+            LexerTokenType.Plus or
+            LexerTokenType.Dash or
+            LexerTokenType.Star or
+            LexerTokenType.Slash or
+            LexerTokenType.Caret or
+            LexerTokenType.Percent;
+    }
+}
+
+public enum ArithmeticInclusionMode
+{
+    Include,
+    Exclude
 }

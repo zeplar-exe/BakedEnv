@@ -37,7 +37,16 @@
         <DependentUpon>TailExpressionParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Common\ArgumentListParserResult.cs">
-        <DependentUpon>ParameterListParser.cs</DependentUpon>
+        <DependentUpon>ArgumentListParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Common\ExpressionListParserResult.cs">
+        <DependentUpon>ExpressionListParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Expressions\ArithmeticParserResult.cs">
+        <DependentUpon>ArithmeticParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Common\IndexerParserResult.cs">
+        <DependentUpon>IndexerParser.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 
