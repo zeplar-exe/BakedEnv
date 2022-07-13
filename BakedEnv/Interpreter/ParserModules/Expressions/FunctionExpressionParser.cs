@@ -19,7 +19,7 @@ internal class FunctionExpressionParser : ParserModule
     {
         var builder = new FunctionExpressionParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var token, out var eofResult))
+        if (!Internals.Iterator.TryMoveNext(out var token))
         {
             return builder.BuildFailure();
         }
@@ -35,12 +35,10 @@ internal class FunctionExpressionParser : ParserModule
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
         
-        if (Internals.TestEndOfFile(out var next, out eofResult))
+        if (!Internals.Iterator.TryPeekNext(out var next))
         {
             return builder.BuildFailure();
         }
-        
-        Internals.Iterator.PushCurrent();
 
         if (next.Type != LexerTokenType.LeftParenthesis)
         {

@@ -14,7 +14,7 @@ internal class StringParser : ParserModule
     {
         var builder = new StringParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var first, out var eofResult))
+        if (!Internals.Iterator.TryMoveNext(out var first))
         {
             return builder.Build(false);
         }
