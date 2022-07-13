@@ -46,6 +46,13 @@ internal class ArithmeticParserResult : ParserModuleResult
             OperatorTokens = new List<LexerToken>();
         }
 
+        public Builder WithToken(LexerToken token)
+        {
+            Tokens.Add(token);
+
+            return this;
+        }
+
         public Builder WithOperator(OperatorInfo info)
         {
             Operators.Add(info);

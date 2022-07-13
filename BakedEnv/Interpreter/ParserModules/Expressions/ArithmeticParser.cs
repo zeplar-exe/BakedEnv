@@ -16,16 +16,22 @@ internal class ArithmeticParser : ParserModule
     {
         var builder = new ArithmeticParserResult.Builder();
         var previous = start;
+        var operatorCount = 0;
         
         while (true)
         {
-            if (Internals.TestEndOfFile(out var first, out var eofResult))
+            if (!Internals.Iterator.TryMoveNext(out var first))
             {
                 return builder.Build(false);
             }
+
+            builder.WithToken(first);
     
             if (!IsArithmetic(first))
             {
+                if (operatorCount == 0)
+                    return builder.Build(false);
+                
                 Internals.Iterator.PushCurrent();
                 
                 return builder.Build(true);
@@ -42,6 +48,7 @@ internal class ArithmeticParser : ParserModule
             }
 
             builder.WithOperator(new OperatorInfo(first, previous, result));
+            operatorCount++;
 
             previous = result;
         }

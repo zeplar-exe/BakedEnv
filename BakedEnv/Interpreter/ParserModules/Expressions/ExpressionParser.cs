@@ -17,7 +17,7 @@ internal class ExpressionParser : ParserModule
     {
         var builder = new ExpressionParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var first, out var eofResult))
+        if (!Internals.Iterator.TryMoveNext(out var first))
         {
             return builder.BuildFailure();
         }
@@ -75,7 +75,7 @@ internal class ExpressionParser : ParserModule
                     return builder.BuildFailure();
                 }
                 
-                if (Internals.TestEndOfFile(out var end, out eofResult))
+                if (!Internals.Iterator.TryMoveNext(out var end))
                 {
                     return builder.BuildFailure();
                 }

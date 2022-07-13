@@ -15,12 +15,10 @@ internal class ValueParser : ParserModule
     {
         var builder = new ValueParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var first, out var eofResult))
+        if (!Internals.Iterator.TryPeekNext(out var first))
         {
             return builder.BuildFailure();
         }
-        
-        Internals.Iterator.PushCurrent();
 
         switch (first.Type)
         {

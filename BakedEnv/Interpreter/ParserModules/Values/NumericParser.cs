@@ -16,7 +16,7 @@ internal class NumericParser : ParserModule
     {
         var builder = new NumericParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var first, out var eofToken))
+        if (!Internals.Iterator.TryMoveNext(out var first))
         {
             return builder.BuildFailure();
         }

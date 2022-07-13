@@ -15,7 +15,7 @@ internal class ArgumentListParser : ParserModule
     {
         var builder = new ArgumentListParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var first, out var eofResult))
+        if (!Internals.Iterator.TryMoveNext(out var first))
         {
             return builder.Build(false);
         }
@@ -41,7 +41,7 @@ internal class ArgumentListParser : ParserModule
         
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
         
-        if (Internals.TestEndOfFile(out var last, out eofResult))
+        if (!Internals.Iterator.TryPeekNext(out var last))
         {
             return builder.Build(false);
         }
