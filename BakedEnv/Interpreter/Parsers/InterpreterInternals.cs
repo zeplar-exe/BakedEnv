@@ -29,19 +29,4 @@ internal class InterpreterInternals
         State = state;
         Scope = scope;
     }
-
-    public bool TestEndOfFile([NotNullWhen(false)] out LexerToken? token, out TryResult result)
-    {
-        result = default;
-        
-        var isTrue = false;
-        
-        if (!Iterator.TryMoveNext(out token))
-        {
-            result = ErrorReporter.EndOfFileResult(Iterator.Current);
-            isTrue = true;
-        }
-
-        return isTrue;
-    }
 }

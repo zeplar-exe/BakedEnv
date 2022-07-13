@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Common;
 using TokenCs;
 
@@ -17,6 +18,16 @@ internal class InterpreterIterator : EnumerableIterator<LexerToken>
         Backlog = backlog;
     }
 
+    public bool TryPeekNext([NotNullWhen(true)] out LexerToken? token)
+    {
+        if (!TryMoveNext(out token))
+            return false;
+        
+        Backlog.Push(token);
+        
+        return true;
+    }
+    
     public void PushCurrent()
     {
         Backlog.Push(Current);

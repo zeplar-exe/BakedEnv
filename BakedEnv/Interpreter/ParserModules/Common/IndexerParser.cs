@@ -16,7 +16,7 @@ internal class IndexerParser : ParserModule
     {
         var builder = new IndexerParserResult.Builder();
         
-        if (Internals.TestEndOfFile(out var first, out var eofResult))
+        if (!Internals.Iterator.TryMoveNext(out var first))
         {
             return builder.Build(false);
         }
@@ -37,7 +37,7 @@ internal class IndexerParser : ParserModule
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
-        if (Internals.TestEndOfFile(out var token, out eofResult))
+        if (!Internals.Iterator.TryPeekNext(out var token))
         {
             return builder.Build(false);
         }
