@@ -140,7 +140,7 @@ internal class InvocationParser
             
                 return new VariableAssignmentInstruction(
                     variableExpression.Reference,
-                    new ValueExpression(new BakedMethod(names)),
+                    new ValueExpression(new BakedFunction(names)),
                     startToken.Span.Start);
             }
         }
