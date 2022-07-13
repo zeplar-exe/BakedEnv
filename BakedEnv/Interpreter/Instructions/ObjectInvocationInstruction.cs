@@ -14,7 +14,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// </summary>
     public BakedExpression Expression { get; set; }
     /// <summary>
-    /// Parameters to use during invocation.
+    /// NameList to use during invocation.
     /// </summary>
     public BakedExpression[] Parameters { get; set; }
 
@@ -22,7 +22,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// Initialize an ObjectInvocationInstruction.
     /// </summary>
     /// <param name="callable">Callable object to invoke.</param>
-    /// <param name="parameters">Parameters to use during invocation.</param>
+    /// <param name="parameters">NameList to use during invocation.</param>
     /// /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
     public ObjectInvocationInstruction(BakedExpression expression, BakedExpression[] parameters, int sourceIndex) : base(sourceIndex)
     {

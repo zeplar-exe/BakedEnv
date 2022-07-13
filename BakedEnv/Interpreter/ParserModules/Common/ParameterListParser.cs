@@ -13,65 +13,105 @@ internal class ParameterListParser : ParserModule
 
     public ParameterListParserResult Parse()
     {
+        var builder = new ParameterListParserResult.Builder();
         
+        if (!Internals.Iterator.TryMoveNext(out var first))
+        {
+            return builder.Build(false);
+        }
+
+        if (first.Type != LexerTokenType.LeftParenthesis)
+        {
+            return builder.Build(false);
+        }
+
+        builder.WithOpening(first);
+        
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+        
+        var nameParser = new NameListParser(Internals);
+        var result = nameParser.Parse();
+                    
+        builder.WithNameList(result);
+
+        if (!result.IsComplete)
+        {
+            return builder.Build(false);
+        }
+        
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+        
+        if (!Internals.Iterator.TryPeekNext(out var last))
+        {
+            return builder.Build(false);
+        }
+
+        if (last.Type != LexerTokenType.RightParenthesis)
+        {
+            return builder.Build(false);
+        }
+
+        return builder.WithClosing(last).Build(true);
     }
 }
 
 internal class ParameterListParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
-    public IEnumerable<SingleIdentifierResult> Identifiers { get; }
-    public IEnumerable<LexerToken> Separators { get; }
-    public IEnumerable<string> Names => Identifiers.Select(i => i.Identifier);
+    public LexerToken OpenParenthesis { get; }
+    public LexerToken CloseParenthesis { get; }
+    public NameListParserResult NameList { get; }
+    public IEnumerable<string> Names => NameList.Names.Select(i => i.Identifier);
 
     public ParameterListParserResult(
         bool complete,
+        LexerToken openParenthesis,
+        LexerToken closeParenthesis,
         IEnumerable<LexerToken> allTokens,
-        IEnumerable<SingleIdentifierResult> identifiers,
-        IEnumerable<LexerToken> separators) : base(allTokens)
+        NameListParserResult nameList) : base(allTokens)
     {
         IsComplete = complete;
-        Identifiers = identifiers;
-        Separators = separators;
+        OpenParenthesis = openParenthesis;
+        CloseParenthesis = closeParenthesis;
+        NameList = nameList;
     }
 
     public class Builder
     {
         private List<LexerToken> Tokens { get; }
-        private List<SingleIdentifierResult> Identifiers { get; }
-        private List<LexerToken> Separators { get; }
+        private LexerToken OpenParenthesis { get; set; }
+        private LexerToken CloseParenthesis { get; set; }
+        private NameListParserResult NameList { get; set; }
         
         public Builder()
         {
             Tokens = new List<LexerToken>();
-            Identifiers = new List<SingleIdentifierResult>();
-            Separators = new List<LexerToken>();
         }
 
-        public Builder WithIdentifier(SingleIdentifierResult identifier)
+        public Builder WithOpening(LexerToken token)
         {
-            Tokens.AddRange(identifier.AllTokens);
-            Identifiers.Add(identifier);
+            OpenParenthesis = token;
 
             return this;
         }
 
-        public Builder WithSeparator(LexerToken token)
+        public Builder WithClosing(LexerToken token)
         {
-            Tokens.Add(token);
-            Separators.Add(token);
+            CloseParenthesis = token;
 
             return this;
         }
 
-        public ParameterListParserResult BuildSuccess()
+        public Builder WithNameList(NameListParserResult names)
         {
-            return new ParameterListParserResult(true, Tokens, Identifiers, Separators);
+            NameList = names;
+
+            return this;
         }
 
-        public ParameterListParserResult BuildFailure()
+        public ParameterListParserResult Build(bool complete)
         {
-            return new ParameterListParserResult(false, Tokens, Identifiers, Separators);
+            return new ParameterListParserResult(complete, OpenParenthesis, CloseParenthesis, Tokens, NameList);
         }
     }
 }

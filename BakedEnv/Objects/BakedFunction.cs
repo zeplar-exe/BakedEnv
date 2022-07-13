@@ -47,7 +47,7 @@ public class BakedFunction : BakedObject, IBakedCallable
     /// <summary>
     /// Invoke this method.
     /// </summary>
-    /// <param name="parameters">Parameters aligning with the set <see cref="ParameterNames"/>.</param>
+    /// <param name="parameters">NameList aligning with the set <see cref="ParameterNames"/>.</param>
     /// <param name="interpreter">The target interpreter.</param>
     /// <param name="scope">The target scope to execute instructions in.</param>
     /// <returns></returns>
