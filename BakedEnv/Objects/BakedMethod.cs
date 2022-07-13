@@ -29,6 +29,8 @@ public class BakedMethod : BakedObject, IBakedCallable
         Instructions = new List<InterpreterInstruction>();
     }
 
+    public static BakedMethod Empty() => new(Enumerable.Empty<string>());
+
     /// <inheritdoc />
     /// <remarks>This method returns null as of now. Thus, it is not usable as a parameter in other methods for example.</remarks>
     public override object? GetValue()
