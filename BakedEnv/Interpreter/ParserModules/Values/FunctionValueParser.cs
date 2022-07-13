@@ -1,22 +1,23 @@
 using BakedEnv.Interpreter.ParserModules.Common;
+using BakedEnv.Interpreter.ParserModules.Identifiers;
 using BakedEnv.Interpreter.Parsers;
 using BakedEnv.Objects;
 using TokenCs;
 
-namespace BakedEnv.Interpreter.ParserModules.Expressions;
+namespace BakedEnv.Interpreter.ParserModules.Values;
 
-internal class FunctionExpressionParser : ParserModule
+internal class FunctionValueParser : ParserModule
 {
     public const string Keyword = "function";
     
-    public FunctionExpressionParser(InterpreterInternals internals) : base(internals)
+    public FunctionValueParser(InterpreterInternals internals) : base(internals)
     {
         
     }
 
-    public FunctionExpressionParserResult Parse()
+    public FunctionValueParserResult Parse()
     {
-        var builder = new FunctionExpressionParserResult.Builder();
+        var builder = new FunctionValueParserResult.Builder();
         
         if (!Internals.Iterator.TryMoveNext(out var token))
         {
@@ -33,6 +34,16 @@ internal class FunctionExpressionParser : ParserModule
         builder.WithKeyword(token);
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+        var identifierParser = new ChainIdentifierParser(Internals);
+        var identifierResult = identifierParser.Parse();
+
+        builder.WithIdentifier(identifierResult);
+
+        if (!identifierResult.IsComplete)
+        {
+            return builder.BuildFailure();
+        }
         
         if (!Internals.Iterator.TryPeekNext(out var next))
         {

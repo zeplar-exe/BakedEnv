@@ -1,30 +1,35 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.ParserModules.Common;
+using BakedEnv.Interpreter.ParserModules.Identifiers;
 using BakedEnv.Objects;
 using TokenCs;
 
-namespace BakedEnv.Interpreter.ParserModules.Expressions;
+namespace BakedEnv.Interpreter.ParserModules.Values;
 
-internal class FunctionExpressionParserResult : ParserModuleResult
+internal class FunctionValueParserResult : ParserModuleResult
 {
     public bool IsDeclaration { get; }
     public bool IsComplete { get; }
     public LexerToken KeywordToken { get; }
+    public ChainIdentifierResult Identifier { get; }
     public ParameterListParserResult Parameters { get; }
     public InstructionBlockParserResult Block { get; }
     public ValueExpression Function { get; }
     
-    public FunctionExpressionParserResult(
-        bool declaration, bool complete, 
-        IEnumerable<LexerToken> allTokens, 
-        LexerToken keywordToken,
-        ParameterListParserResult parameters,
-        InstructionBlockParserResult block,
+    public FunctionValueParserResult(
+        bool declaration,
+        bool complete, 
+        IEnumerable<LexerToken> allTokens,
+        LexerToken keywordToken, 
+        ChainIdentifierResult identifier, 
+        ParameterListParserResult parameters, 
+        InstructionBlockParserResult block, 
         BakedFunction function) : base(allTokens)
     {
         IsDeclaration = declaration;
-        KeywordToken = keywordToken;
         IsComplete = complete;
+        KeywordToken = keywordToken;
+        Identifier = identifier;
         Parameters = parameters;
         Block = block;
         Function = new ValueExpression(function);
@@ -34,6 +39,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
     {
         private List<LexerToken> Tokens { get; }
         private LexerToken KeywordToken { get; set; }
+        private ChainIdentifierResult Identifier { get; set; }
         private ParameterListParserResult Parameters { get; set; }
         private InstructionBlockParserResult Block { get; set; }
 
@@ -58,6 +64,14 @@ internal class FunctionExpressionParserResult : ParserModuleResult
             return this;
         }
 
+        public Builder WithIdentifier(ChainIdentifierResult identifier)
+        {
+            Tokens.AddRange(identifier.AllTokens);
+            Identifier = identifier;
+
+            return this;
+        }
+
         public Builder WithBlock(InstructionBlockParserResult block)
         {
             Tokens.AddRange(block.AllTokens);
@@ -66,28 +80,28 @@ internal class FunctionExpressionParserResult : ParserModuleResult
             return this;
         }
 
-        public FunctionExpressionParserResult BuildNonDeclaration()
+        public FunctionValueParserResult BuildNonDeclaration()
         {
-            return new FunctionExpressionParserResult(
+            return new FunctionValueParserResult(
                 false, false,
-                Tokens, KeywordToken, 
-                Parameters, Block, BakedFunction.Empty());
+                Tokens, KeywordToken,
+                Identifier, Parameters, Block, BakedFunction.Empty());
         }
 
-        public FunctionExpressionParserResult BuildSuccess(BakedFunction function)
+        public FunctionValueParserResult BuildSuccess(BakedFunction function)
         {
-            return new FunctionExpressionParserResult(
-                true, true, 
-                Tokens, KeywordToken, 
-                Parameters, Block, function);
+            return new FunctionValueParserResult(
+                true, true,
+                Tokens, KeywordToken,
+                Identifier, Parameters, Block, function);
         }
 
-        public FunctionExpressionParserResult BuildFailure()
+        public FunctionValueParserResult BuildFailure()
         {
-            return new FunctionExpressionParserResult(
-                true, false, 
-                Tokens, KeywordToken, 
-                Parameters, Block, BakedFunction.Empty());
+            return new FunctionValueParserResult(
+                true, false,
+                Tokens, KeywordToken,
+                Identifier, Parameters, Block, BakedFunction.Empty());
         }
     }
 }

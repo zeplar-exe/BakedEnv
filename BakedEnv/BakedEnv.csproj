@@ -57,6 +57,9 @@
       <Compile Update="Interpreter\ParserModules\Common\NameListParserResult.cs">
         <DependentUpon>NameListParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\Values\FunctionValueParserResult.cs">
+        <DependentUpon>FunctionValueParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
