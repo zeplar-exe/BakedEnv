@@ -20,7 +20,7 @@ internal class TailExpressionParser : ParserModule
         var expressionParser = new ExpressionParser(Internals);
         var result = expressionParser.Parse();
 
-        builder.WithTokens(result.AllTokens);
+        builder.WithBaseExpression(result);
 
         if (!result.IsComplete)
         {
