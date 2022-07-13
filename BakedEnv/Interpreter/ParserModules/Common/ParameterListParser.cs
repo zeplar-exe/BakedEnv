@@ -61,7 +61,7 @@ internal class ParameterListParserResult : ParserModuleResult
     public LexerToken OpenParenthesis { get; }
     public LexerToken CloseParenthesis { get; }
     public NameListParserResult NameList { get; }
-    public IEnumerable<string> Names => NameList.Names.Select(i => i.Identifier);
+    public IEnumerable<string> Names => NameList.Identifiers.Select(i => i.Identifier);
 
     public ParameterListParserResult(
         bool complete,
