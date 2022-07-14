@@ -20,8 +20,6 @@ public class ControlStatementInstruction : InterpreterInstruction
 
     public override void Execute(InvocationContext context)
     {
-        var parameters = Parameters.Select(p => p.Evaluate(context)).ToArray();
-        
-        ControlStatement.Execute(context, parameters, Instructions);
+        ControlStatement.Execute(context, Parameters, Instructions);
     }
 }
