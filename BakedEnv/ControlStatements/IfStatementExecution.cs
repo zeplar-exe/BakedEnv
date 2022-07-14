@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter;
+using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
@@ -7,12 +8,12 @@ namespace BakedEnv.ControlStatements;
 
 public class IfStatementExecution : ControlStatementExecution
 {
-    public override void Execute(InvocationContext context, BakedObject[] parameters,
+    public override void Execute(InvocationContext context, BakedExpression[] parameters,
         IEnumerable<InterpreterInstruction> instructions)
     {
         var statementScope = new BakedScope(context.Scope);
         
-        if (parameters[0].Equals(true))
+        if (parameters[0].Evaluate(context).Equals(true))
         {
             foreach (var instruction in instructions)
             {
