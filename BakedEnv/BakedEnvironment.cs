@@ -97,13 +97,6 @@ public class BakedEnvironment
 
         return this;
     }
-    
-    public BakedEnvironment WithControlStatement(string name, int parameters, ControlStatementExecution execution)
-    {
-        ControlStatements.Add(new ControlStatementDefinition(name, parameters, execution));
-
-        return this;
-    }
 
     public BakedEnvironment WithOutputWriter(TextWriter? writer)
     {

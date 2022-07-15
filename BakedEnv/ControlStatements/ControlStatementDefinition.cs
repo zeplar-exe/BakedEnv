@@ -1,16 +1,11 @@
+using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.Scopes;
+
 namespace BakedEnv.ControlStatements;
 
-public class ControlStatementDefinition
+public abstract class ControlStatementDefinition
 {
-    public string Name { get; }
-    public int ParameterCount { get; }
-    
-    public ControlStatementExecution Execution { get; } 
-    
-    public ControlStatementDefinition(string name, int parameterCount, ControlStatementExecution execution)
-    {
-        Name = name;
-        ParameterCount = parameterCount;
-        Execution = execution;
-    }
+    public abstract bool Match(string name, int parameterCount);
+    public abstract void Execute(InvocationContext context, BakedExpression[] parameters, IEnumerable<InterpreterInstruction> instructions);
 }

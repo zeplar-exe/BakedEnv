@@ -6,8 +6,13 @@ using BakedEnv.Objects;
 
 namespace BakedEnv.ControlStatements;
 
-public class IfStatementExecution : ControlStatementExecution
+public class IfStatementDefinition : ControlStatementDefinition
 {
+    public override bool Match(string name, int parameterCount)
+    {
+        return name == "if" && parameterCount == 1;
+    }
+
     public override void Execute(InvocationContext context, BakedExpression[] parameters,
         IEnumerable<InterpreterInstruction> instructions)
     {

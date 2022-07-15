@@ -38,6 +38,7 @@ public static class BakedEnvironmentExtensions
     public static BakedEnvironment WithControlFlow(this BakedEnvironment environment)
     {
         return environment
-            .WithControlStatement("if", 1, new IfStatementExecution());
+            .WithControlStatement(new IfStatementDefinition())
+            .WithControlStatement(new WhileStatementDefinition());
     }
 }
