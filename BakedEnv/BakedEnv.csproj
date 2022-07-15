@@ -60,6 +60,9 @@
       <Compile Update="Interpreter\ParserModules\Values\FunctionValueParserResult.cs">
         <DependentUpon>FunctionValueParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\Common\InstructionBlockParserResult.cs">
+        <DependentUpon>InstructionBlockParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
