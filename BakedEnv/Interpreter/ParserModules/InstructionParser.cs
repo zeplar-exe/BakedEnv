@@ -48,13 +48,14 @@ internal class InstructionParser : ParserModule
 
                 if (!expressionResult.IsComplete)
                 {
-                    
+                    // tf is this why is it locked to parenthesis?
                 }
 
                 if (expressionResult.Expression is InvocationExpression invocation)
                 {
-                    return builder.Build(
-                        new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, 0));
+                    var instruction = new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, 0);
+
+                    return builder.Build(true, instruction);
                 }
 
                 break;
@@ -65,10 +66,12 @@ internal class InstructionParser : ParserModule
 
 internal class InstructionParserResult : ParserModuleResult
 {
+    public bool IsSuccess { get; }
     public InterpreterInstruction Instruction { get; }
     
-    public InstructionParserResult(IEnumerable<LexerToken> allTokens, InterpreterInstruction instruction) : base(allTokens)
+    public InstructionParserResult(bool success, IEnumerable<LexerToken> allTokens, InterpreterInstruction instruction) : base(allTokens)
     {
+        IsSuccess = success;
         Instruction = instruction;
     }
 
@@ -93,12 +96,12 @@ internal class InstructionParserResult : ParserModuleResult
 
         public InstructionParserResult BuildInvalid(BakedError error)
         {
-            return Build(new InvalidInstruction(error));
+            return Build(false, new InvalidInstruction(error));
         }
 
-        public InstructionParserResult Build(InterpreterInstruction instruction)
+        public InstructionParserResult Build(bool success, InterpreterInstruction instruction)
         {
-            return new InstructionParserResult(Tokens, instruction);
+            return new InstructionParserResult(success, Tokens, instruction);
         }
     }
 }
