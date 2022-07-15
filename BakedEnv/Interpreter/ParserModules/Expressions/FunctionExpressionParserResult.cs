@@ -33,9 +33,9 @@ internal class FunctionExpressionParserResult : ParserModuleResult
     public class Builder
     {
         private List<LexerToken> Tokens { get; }
-        private LexerToken KeywordToken { get; set; }
-        private ParameterListParserResult Parameters { get; set; }
-        private InstructionBlockParserResult Block { get; set; }
+        private LexerToken? KeywordToken { get; set; }
+        private ParameterListParserResult? Parameters { get; set; }
+        private InstructionBlockParserResult? Block { get; set; }
 
         public Builder()
         {
@@ -68,6 +68,10 @@ internal class FunctionExpressionParserResult : ParserModuleResult
 
         public FunctionExpressionParserResult BuildNonDeclaration()
         {
+            BuilderHelper.EnsurePropertyNotNull(KeywordToken);
+            BuilderHelper.EnsurePropertyNotNull(Parameters);
+            BuilderHelper.EnsurePropertyNotNull(Block);
+            
             return new FunctionExpressionParserResult(
                 false, false,
                 Tokens, KeywordToken, 
@@ -76,6 +80,10 @@ internal class FunctionExpressionParserResult : ParserModuleResult
 
         public FunctionExpressionParserResult BuildSuccess(BakedFunction function)
         {
+            BuilderHelper.EnsurePropertyNotNull(KeywordToken);
+            BuilderHelper.EnsurePropertyNotNull(Parameters);
+            BuilderHelper.EnsurePropertyNotNull(Block);
+            
             return new FunctionExpressionParserResult(
                 true, true, 
                 Tokens, KeywordToken, 
@@ -84,6 +92,10 @@ internal class FunctionExpressionParserResult : ParserModuleResult
 
         public FunctionExpressionParserResult BuildFailure()
         {
+            BuilderHelper.EnsurePropertyNotNull(KeywordToken);
+            BuilderHelper.EnsurePropertyNotNull(Parameters);
+            BuilderHelper.EnsurePropertyNotNull(Block);
+            
             return new FunctionExpressionParserResult(
                 true, false, 
                 Tokens, KeywordToken, 

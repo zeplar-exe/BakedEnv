@@ -24,9 +24,14 @@ internal class IndexerParserResult : ParserModuleResult
     public class Builder
     {
         private List<LexerToken> Tokens { get; }
-        private LexerToken OpenBracket { get; set; }
-        private LexerToken CloseBracket { get; set; }
-        private TailExpressionParserResult Expression { get; set; }
+        private LexerToken? OpenBracket { get; set; }
+        private LexerToken? CloseBracket { get; set; }
+        private TailExpressionParserResult? Expression { get; set; }
+
+        public Builder()
+        {
+            Tokens = new List<LexerToken>();
+        }
 
         public Builder WithOpening(LexerToken token)
         {
@@ -54,6 +59,10 @@ internal class IndexerParserResult : ParserModuleResult
 
         public IndexerParserResult Build(bool complete)
         {
+            BuilderHelper.EnsurePropertyNotNull(OpenBracket);
+            BuilderHelper.EnsurePropertyNotNull(CloseBracket);
+            BuilderHelper.EnsurePropertyNotNull(Expression);
+            
             return new IndexerParserResult(complete, Tokens, OpenBracket, CloseBracket, Expression);
         }
     }

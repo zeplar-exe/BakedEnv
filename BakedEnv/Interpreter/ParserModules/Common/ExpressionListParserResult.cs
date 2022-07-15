@@ -28,6 +28,7 @@ internal class ExpressionListParserResult : ParserModuleResult
 
         public Builder()
         {
+            Tokens = new List<LexerToken>();
             Separators = new List<LexerToken>();
             Expressions = new List<TailExpressionParserResult>();
         }
