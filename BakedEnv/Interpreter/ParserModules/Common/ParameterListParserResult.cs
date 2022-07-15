@@ -61,8 +61,8 @@ internal class ParameterListParserResult : ParserModuleResult
 
         public ParameterListParserResult Build(bool complete)
         {
-            BuilderHelper.EnsurePropertyNotNull(OpenParenthesis);
-            BuilderHelper.EnsurePropertyNotNull(CloseParenthesis);
+            BuilderHelper.EnsureLexerToken(OpenParenthesis, LexerTokenType.LeftParenthesis);
+            BuilderHelper.EnsureLexerToken(CloseParenthesis, LexerTokenType.RightParenthesis);
             BuilderHelper.EnsurePropertyNotNull(NameList);
             
             return new ParameterListParserResult(complete, OpenParenthesis, CloseParenthesis, Tokens, NameList);
