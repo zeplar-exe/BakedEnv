@@ -26,9 +26,9 @@ internal class ArgumentListParserResult : ParserModuleResult
     public class Builder
     {
         private List<LexerToken> Tokens { get; }
-        public LexerToken OpenParenthesis { get; set; }
-        public LexerToken CloseParenthesis { get; set; }
-        private ExpressionListParserResult Expressions { get; set; }
+        public LexerToken? OpenParenthesis { get; set; }
+        public LexerToken? CloseParenthesis { get; set; }
+        private ExpressionListParserResult? Expressions { get; set; }
 
         public Builder()
         {
@@ -61,6 +61,10 @@ internal class ArgumentListParserResult : ParserModuleResult
 
         public ArgumentListParserResult Build(bool complete)
         {
+            BuilderHelper.EnsurePropertyNotNull(OpenParenthesis);
+            BuilderHelper.EnsurePropertyNotNull(CloseParenthesis);
+            BuilderHelper.EnsurePropertyNotNull(Expressions);
+            
             return new ArgumentListParserResult(complete, Tokens, OpenParenthesis, CloseParenthesis, Expressions);
         }
     }

@@ -11,7 +11,7 @@ internal class FunctionValueParserResult : ParserModuleResult
     public bool IsDeclaration { get; }
     public bool IsComplete { get; }
     public LexerToken KeywordToken { get; }
-    public ChainIdentifierResult Identifier { get; }
+    public ChainIdentifierParserResult Identifier { get; }
     public ParameterListParserResult Parameters { get; }
     public InstructionBlockParserResult Block { get; }
     public ValueExpression Function { get; }
@@ -21,7 +21,7 @@ internal class FunctionValueParserResult : ParserModuleResult
         bool complete, 
         IEnumerable<LexerToken> allTokens,
         LexerToken keywordToken, 
-        ChainIdentifierResult identifier, 
+        ChainIdentifierParserResult identifierParser, 
         ParameterListParserResult parameters, 
         InstructionBlockParserResult block, 
         BakedFunction function) : base(allTokens)
@@ -29,7 +29,7 @@ internal class FunctionValueParserResult : ParserModuleResult
         IsDeclaration = declaration;
         IsComplete = complete;
         KeywordToken = keywordToken;
-        Identifier = identifier;
+        Identifier = identifierParser;
         Parameters = parameters;
         Block = block;
         Function = new ValueExpression(function);
@@ -39,7 +39,7 @@ internal class FunctionValueParserResult : ParserModuleResult
     {
         private List<LexerToken> Tokens { get; }
         private LexerToken KeywordToken { get; set; }
-        private ChainIdentifierResult Identifier { get; set; }
+        private ChainIdentifierParserResult Identifier { get; set; }
         private ParameterListParserResult Parameters { get; set; }
         private InstructionBlockParserResult Block { get; set; }
 
@@ -64,10 +64,10 @@ internal class FunctionValueParserResult : ParserModuleResult
             return this;
         }
 
-        public Builder WithIdentifier(ChainIdentifierResult identifier)
+        public Builder WithIdentifier(ChainIdentifierParserResult identifierParser)
         {
-            Tokens.AddRange(identifier.AllTokens);
-            Identifier = identifier;
+            Tokens.AddRange(identifierParser.AllTokens);
+            Identifier = identifierParser;
 
             return this;
         }

@@ -15,11 +15,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Interpreter\ParserModules\Identifiers\SingleIdentifierResult.cs">
-        <DependentUpon>SingleIdentifierParser.cs</DependentUpon>
+      <Compile Update="Interpreter\ParserModules\Identifiers\SingleIdentifierParserResult.cs">
+        <DependentUpon>SingleIdentifierParserParser.cs</DependentUpon>
       </Compile>
-      <Compile Update="Interpreter\ParserModules\Identifiers\ChainIdentifierResult.cs">
-        <DependentUpon>ChainIdentifierParser.cs</DependentUpon>
+      <Compile Update="Interpreter\ParserModules\Identifiers\ChainIdentifierParserResult.cs">
+        <DependentUpon>ChainIdentifierParserParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Values\NumericParserResult.cs">
         <DependentUpon>NumericParser.cs</DependentUpon>

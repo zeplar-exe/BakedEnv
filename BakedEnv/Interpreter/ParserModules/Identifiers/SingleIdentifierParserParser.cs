@@ -10,9 +10,9 @@ internal class SingleIdentifierParser : ParserModule
         
     }
 
-    public SingleIdentifierResult Parse()
+    public SingleIdentifierParserResult Parse()
     {
-        return new SingleIdentifierResult(ParseParts());
+        return new SingleIdentifierParserResult(ParseParts());
     }
     
     private IEnumerable<LexerToken> ParseParts()

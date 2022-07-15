@@ -29,13 +29,6 @@ internal class TailExpressionParserResult : ParserModuleResult
         {
             Tokens = new List<LexerToken>();
         }
-        
-        public Builder WithToken(LexerToken token)
-        {
-            Tokens.Add(token);
-
-            return this;
-        }
 
         public Builder WithBaseExpression(ExpressionParserResult expression)
         {

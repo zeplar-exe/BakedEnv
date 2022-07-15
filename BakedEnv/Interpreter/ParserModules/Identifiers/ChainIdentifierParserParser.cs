@@ -10,10 +10,10 @@ internal class ChainIdentifierParser : ParserModule
         
     }
 
-    public ChainIdentifierResult Parse()
+    public ChainIdentifierParserResult Parse()
     {
         var expectIdentifier = true;
-        var builder = new ChainIdentifierResult.Builder();
+        var builder = new ChainIdentifierParserResult.Builder();
         
         LexerToken? token = null;
         // Damn, was hoping the else statement would guarantee token is initialized
