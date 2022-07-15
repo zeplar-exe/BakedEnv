@@ -26,9 +26,9 @@ internal class ParameterListParserResult : ParserModuleResult
     public class Builder
     {
         private List<LexerToken> Tokens { get; }
-        private LexerToken OpenParenthesis { get; set; }
-        private LexerToken CloseParenthesis { get; set; }
-        private NameListParserResult NameList { get; set; }
+        private LexerToken? OpenParenthesis { get; set; }
+        private LexerToken? CloseParenthesis { get; set; }
+        private NameListParserResult? NameList { get; set; }
         
         public Builder()
         {
@@ -38,6 +38,7 @@ internal class ParameterListParserResult : ParserModuleResult
         public Builder WithOpening(LexerToken token)
         {
             OpenParenthesis = token;
+            Tokens.Add(token);
 
             return this;
         }
@@ -45,6 +46,7 @@ internal class ParameterListParserResult : ParserModuleResult
         public Builder WithClosing(LexerToken token)
         {
             CloseParenthesis = token;
+            Tokens.Add(token);
 
             return this;
         }
@@ -52,12 +54,17 @@ internal class ParameterListParserResult : ParserModuleResult
         public Builder WithNameList(NameListParserResult names)
         {
             NameList = names;
+            Tokens.AddRange(names.AllTokens);
 
             return this;
         }
 
         public ParameterListParserResult Build(bool complete)
         {
+            BuilderHelper.EnsurePropertyNotNull(OpenParenthesis);
+            BuilderHelper.EnsurePropertyNotNull(CloseParenthesis);
+            BuilderHelper.EnsurePropertyNotNull(NameList);
+            
             return new ParameterListParserResult(complete, OpenParenthesis, CloseParenthesis, Tokens, NameList);
         }
     }
