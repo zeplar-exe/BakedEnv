@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="TokenCs" Version="1.0.0" />
+      <PackageReference Include="TokenCs" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>
