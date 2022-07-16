@@ -1,8 +1,9 @@
-using Jammo.ParserTools.Lexing;
+using TokenCs;
+using TokenCs.Extensions;
 
 namespace BakedEnv.Interpreter;
 
-public class IteratorTools
+internal class IteratorTools
 {
     private BakedInterpreter Interpreter { get; }
     private InterpreterIterator Iterator { get; }
@@ -19,12 +20,12 @@ public class IteratorTools
         
         var stride = 0;
 
-        foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace))
+        foreach (var token in Iterator.PeekTakeWhile(IsWhitespace))
         {
-            stride += token.Span.Size;
+            stride += token.Length;
         }
         
-        if (stride == 0 || !Iterator.AtEnd)
+        if (stride == 0 || !Iterator.Ended)
             Iterator.PushCurrent();
 
         return stride;
@@ -36,12 +37,12 @@ public class IteratorTools
         
         var stride = 0;
 
-        foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace or LexerTokenId.Newline))
+        foreach (var token in Iterator.PeekTakeWhile(t => t.IsNewLine() || IsWhitespace(t)))
         {
-            stride += token.Span.Size;
+            stride += token.Length;
         }
         
-        if (stride == 0 || !Iterator.AtEnd)
+        if (stride == 0 || !Iterator.Ended)
             Iterator.PushCurrent();
 
         return stride;
@@ -55,24 +56,27 @@ public class IteratorTools
         
         if (Iterator.Started)
         {
-            if (Iterator.Current.Id is not LexerTokenId.Whitespace or LexerTokenId.Newline)
+            if (Iterator.Current.IsNewLine() || IsWhitespace(Iterator.Current))
             {
                 return 0;
             }
-            else
-            {
-                stride += Iterator.Current.Span.Size;
-            }
+            
+            stride += Iterator.Current.Length;
         }
 
-        foreach (var token in Iterator.TakeWhile(t => t.Id is LexerTokenId.Whitespace or LexerTokenId.Newline))
+        foreach (var token in Iterator.PeekTakeWhile(t => t.IsNewLine() || IsWhitespace(t)))
         {
-            stride += token.Span.Size;
+            stride += token.Length;
         }
         
-        if (stride == 0 || !Iterator.AtEnd)
+        if (stride == 0 || !Iterator.Ended)
             Iterator.PushCurrent();
 
         return stride;
+    }
+
+    private bool IsWhitespace(LexerToken token)
+    {
+        return token.Type is LexerTokenType.Space or LexerTokenType.Tab;
     }
 }
