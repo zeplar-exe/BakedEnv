@@ -7,19 +7,19 @@ namespace BakedEnv.Interpreter.Instructions;
 
 public class ControlStatementInstruction : InterpreterInstruction
 {
-    public ControlStatementExecution ControlStatement { get; }
+    public ControlStatementDefinition StatementDefinition { get; }
     public BakedExpression[] Parameters { get; }
     public IEnumerable<InterpreterInstruction> Instructions { get; }
     
-    public ControlStatementInstruction(ControlStatementExecution controlStatement, BakedExpression[] parameters, IEnumerable<InterpreterInstruction> instructions, int sourceIndex) : base(sourceIndex)
+    public ControlStatementInstruction(ControlStatementDefinition definition, BakedExpression[] parameters, IEnumerable<InterpreterInstruction> instructions, int sourceIndex) : base(sourceIndex)
     {
-        ControlStatement = controlStatement;
+        StatementDefinition = definition;
         Parameters = parameters;
         Instructions = instructions;
     }
 
     public override void Execute(InvocationContext context)
     {
-        ControlStatement.Execute(context, Parameters, Instructions);
+        StatementDefinition.Execute(context, Parameters, Instructions);
     }
 }
