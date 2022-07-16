@@ -32,7 +32,7 @@ internal class ExpressionParser : ParserModule
                 var identifierParser = new ChainIdentifierParser(Internals);
                 var result = identifierParser.Parse();
                 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
 
                 if (!result.IsComplete)
                 {
@@ -71,7 +71,7 @@ internal class ExpressionParser : ParserModule
                 var valueParser = new Values.ValueParser(Internals);
                 var result = valueParser.Parse();
 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
                 
                 if (!result.IsSuccess)
                 {
@@ -87,7 +87,7 @@ internal class ExpressionParser : ParserModule
                 var tailParser = new TailExpressionParser(Internals);
                 var result = tailParser.Parse();
 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
                 
                 if (!result.IsComplete)
                 {
@@ -113,7 +113,7 @@ internal class ExpressionParser : ParserModule
                 var tailParser = new TailExpressionParser(Internals);
                 var result = tailParser.Parse();
 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
                 
                 if (!result.IsComplete)
                 {

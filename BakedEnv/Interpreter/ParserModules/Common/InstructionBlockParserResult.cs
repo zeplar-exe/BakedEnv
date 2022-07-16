@@ -22,23 +22,21 @@ internal class InstructionBlockParserResult : ParserModuleResult
         Instructions = instructions;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private LexerToken? OpenBracket { get; set; }
         private LexerToken? CloseBracket { get; set; }
         private List<InstructionParserResult> Instructions {get;}
 
         public Builder()
         {
-            Tokens = new List<LexerToken>();
             Instructions = new List<InstructionParserResult>();
         }
 
         public Builder WithOpening(LexerToken token)
         {
             OpenBracket = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -46,14 +44,14 @@ internal class InstructionBlockParserResult : ParserModuleResult
         public Builder WithClosing(LexerToken token)
         {
             CloseBracket = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
 
         public Builder WithInstruction(InstructionParserResult instruction)
         {
-            Tokens.AddRange(instruction.AllTokens);
+            AddTokensFrom(instruction);
             Instructions.Add(instruction);
 
             return this;
@@ -62,9 +60,9 @@ internal class InstructionBlockParserResult : ParserModuleResult
         public InstructionBlockParserResult Build(bool complete)
         {
             BuilderHelper.EnsureLexerToken(OpenBracket, LexerTokenType.LeftCurlyBracket);
-            BuilderHelper.EnsureLexerToken(OpenBracket, LexerTokenType.RightCurlyBracket);
+            BuilderHelper.EnsureLexerToken(CloseBracket, LexerTokenType.RightCurlyBracket);
             
-            return new InstructionBlockParserResult(complete, Tokens, OpenBracket, CloseBracket, Instructions);
+            return new InstructionBlockParserResult(complete, AllTokens, OpenBracket, CloseBracket, Instructions);
         }
     }
 }

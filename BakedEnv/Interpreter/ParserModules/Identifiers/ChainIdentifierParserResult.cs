@@ -24,15 +24,13 @@ internal class ChainIdentifierParserResult : ParserModuleResult
         return new VariableReference(IdentifierNames.Select(i => i.Identifier), interpreter);
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private List<SingleIdentifierParserResult> IdentifierNames { get; }
         private List<LexerToken> SeparatorTokens { get; }
 
         public Builder()
         {
-            Tokens = new List<LexerToken>();
             IdentifierNames = new List<SingleIdentifierParserResult>();
             SeparatorTokens = new List<LexerToken>();
         }
@@ -40,7 +38,7 @@ internal class ChainIdentifierParserResult : ParserModuleResult
         public Builder WithName(SingleIdentifierParserResult identifierParser)
         {
             IdentifierNames.Add(identifierParser);
-            Tokens.AddRange(identifierParser.AllTokens);
+            AddTokensFrom(identifierParser);
 
             return this;
         }
@@ -48,14 +46,14 @@ internal class ChainIdentifierParserResult : ParserModuleResult
         public Builder WithSeparator(LexerToken token)
         {
             SeparatorTokens.Add(token);
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
 
         public ChainIdentifierParserResult Build(bool completed)
         {
-            return new ChainIdentifierParserResult(completed, Tokens, IdentifierNames, SeparatorTokens);
+            return new ChainIdentifierParserResult(completed, AllTokens, IdentifierNames, SeparatorTokens);
         }
     }
 }

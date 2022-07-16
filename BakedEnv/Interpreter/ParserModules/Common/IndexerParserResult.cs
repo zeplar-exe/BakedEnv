@@ -21,22 +21,16 @@ internal class IndexerParserResult : ParserModuleResult
         Expression = expression;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private LexerToken? OpenBracket { get; set; }
         private LexerToken? CloseBracket { get; set; }
         private TailExpressionParserResult? Expression { get; set; }
 
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
-
         public Builder WithOpening(LexerToken token)
         {
             OpenBracket = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -44,7 +38,7 @@ internal class IndexerParserResult : ParserModuleResult
         public Builder WithClosing(LexerToken token)
         {
             CloseBracket = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -52,7 +46,7 @@ internal class IndexerParserResult : ParserModuleResult
         public Builder WithExpression(TailExpressionParserResult expression)
         {
             Expression = expression;
-            Tokens.AddRange(expression.AllTokens);
+            AddTokensFrom(expression);
             
             return this;
         }
@@ -63,7 +57,7 @@ internal class IndexerParserResult : ParserModuleResult
             BuilderHelper.EnsurePropertyNotNull(CloseBracket);
             BuilderHelper.EnsurePropertyNotNull(Expression);
             
-            return new IndexerParserResult(complete, Tokens, OpenBracket, CloseBracket, Expression);
+            return new IndexerParserResult(complete, AllTokens, OpenBracket, CloseBracket, Expression);
         }
     }
 }

@@ -31,7 +31,7 @@ internal class TailExpressionParser : ParserModule
 
         var tail = ParseTail(result.Expression);
 
-        builder.WithTokens(tail.AllTokens);
+        builder.AddTokensFrom(tail);
 
         if (!tail.IsComplete)
         {
@@ -79,7 +79,7 @@ internal class TailExpressionParser : ParserModule
                 var parameterParser = new ArgumentListParser(Internals);
                 var result = parameterParser.Parse();
 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
 
                 if (!result.IsComplete)
                 {
@@ -114,7 +114,7 @@ internal class TailExpressionParser : ParserModule
 
         var tailResult = ParseTail(newExpression);
 
-        builder.WithTokens(tailResult.AllTokens);
+        builder.AddTokensFrom(tailResult);
 
         if (!tailResult.IsComplete)
         {

@@ -13,27 +13,26 @@ internal class StringParserResult : ParserModuleResult
         String = s;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private List<LexerToken> ContentTokens { get; }
 
         public Builder()
         {
-            Tokens = new List<LexerToken>();
+            
             ContentTokens = new List<LexerToken>();
         }
 
         public Builder WithQuotation(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
 
         public Builder WithContentToken(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
             ContentTokens.Add(token);
 
             return this;
@@ -41,7 +40,7 @@ internal class StringParserResult : ParserModuleResult
 
         public StringParserResult Build(bool complete)
         {
-            return new StringParserResult(complete, Tokens, string.Join("", ContentTokens.Select(t => t.ToString())));
+            return new StringParserResult(complete, AllTokens, string.Join("", ContentTokens.Select(t => t.ToString())));
         }
     }
 }

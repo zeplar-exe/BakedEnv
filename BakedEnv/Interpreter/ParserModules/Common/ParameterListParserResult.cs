@@ -12,9 +12,9 @@ internal class ParameterListParserResult : ParserModuleResult
 
     public ParameterListParserResult(
         bool complete,
+        IEnumerable<LexerToken> allTokens,
         LexerToken openParenthesis,
         LexerToken closeParenthesis,
-        IEnumerable<LexerToken> allTokens,
         NameListParserResult nameList) : base(allTokens)
     {
         IsComplete = complete;
@@ -23,22 +23,16 @@ internal class ParameterListParserResult : ParserModuleResult
         NameList = nameList;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private LexerToken? OpenParenthesis { get; set; }
         private LexerToken? CloseParenthesis { get; set; }
         private NameListParserResult? NameList { get; set; }
-        
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
 
         public Builder WithOpening(LexerToken token)
         {
             OpenParenthesis = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -46,7 +40,7 @@ internal class ParameterListParserResult : ParserModuleResult
         public Builder WithClosing(LexerToken token)
         {
             CloseParenthesis = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -54,7 +48,7 @@ internal class ParameterListParserResult : ParserModuleResult
         public Builder WithNameList(NameListParserResult names)
         {
             NameList = names;
-            Tokens.AddRange(names.AllTokens);
+            AddTokensFrom(names);
 
             return this;
         }
@@ -65,7 +59,7 @@ internal class ParameterListParserResult : ParserModuleResult
             BuilderHelper.EnsureLexerToken(CloseParenthesis, LexerTokenType.RightParenthesis);
             BuilderHelper.EnsurePropertyNotNull(NameList);
             
-            return new ParameterListParserResult(complete, OpenParenthesis, CloseParenthesis, Tokens, NameList);
+            return new ParameterListParserResult(complete, AllTokens, OpenParenthesis, CloseParenthesis, NameList);
         }
     }
 }

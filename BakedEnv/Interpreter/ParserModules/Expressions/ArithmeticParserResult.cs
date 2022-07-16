@@ -13,8 +13,8 @@ internal class ArithmeticParserResult : ParserModuleResult
 
     public ArithmeticParserResult(
         bool complete,
-        IEnumerable<OperatorInfo> operators,
         IEnumerable<LexerToken> allTokens,
+        IEnumerable<OperatorInfo> operators,
         IEnumerable<TailExpressionParserResult> expressions, 
         IEnumerable<LexerToken> operatorTokens) : base(allTokens)
     {
@@ -31,16 +31,15 @@ internal class ArithmeticParserResult : ParserModuleResult
         return evaluator.Evaluate();
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private List<OperatorInfo> Operators { get; }
         private List<TailExpressionParserResult> Expressions { get; }
         private List<LexerToken> OperatorTokens { get; }
 
         public Builder()
         {
-            Tokens = new List<LexerToken>();
+            
             Operators = new List<OperatorInfo>();
             Expressions = new List<TailExpressionParserResult>();
             OperatorTokens = new List<LexerToken>();
@@ -48,7 +47,7 @@ internal class ArithmeticParserResult : ParserModuleResult
 
         public Builder WithToken(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -59,14 +58,14 @@ internal class ArithmeticParserResult : ParserModuleResult
             Expressions.Add(info.Left);
             Expressions.Add(info.Right);
             OperatorTokens.Add(info.Token);
-            Tokens.AddRange(info.AllTokens);
+            AddTokens(info.AllTokens);
 
             return this;
         }
 
         public ArithmeticParserResult Build(bool complete)
         {
-            return new ArithmeticParserResult(complete, Operators, Tokens, Expressions, OperatorTokens);
+            return new ArithmeticParserResult(complete, AllTokens, Operators, Expressions, OperatorTokens);
         }
     }
 }
