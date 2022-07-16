@@ -1,25 +1,23 @@
-using System.Diagnostics.CodeAnalysis;
-using BakedEnv.Interpreter.ParserModules;
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Scopes;
-using TokenCs;
 
 namespace BakedEnv.Interpreter.Parsers;
 
-internal class InterpreterInternals
+internal class ParserEnvironment
 {
     public BakedInterpreter Interpreter { get; }
     public InterpreterIterator Iterator { get; }
     public IteratorTools IteratorTools { get; }
     public CommonErrorReporter ErrorReporter { get; }
-    public StateMachine<ParserState> State { get; }
+    public EnumNavigator<ParserState> State { get; }
     public IBakedScope Scope { get; }
     
-    public InterpreterInternals(
+    public ParserEnvironment(
         BakedInterpreter interpreter, 
         InterpreterIterator iterator, 
         IteratorTools iteratorTools, 
         CommonErrorReporter errorReporter, 
-        StateMachine<ParserState> state, 
+        EnumNavigator<ParserState> state, 
         IBakedScope scope)
     {
         Interpreter = interpreter;

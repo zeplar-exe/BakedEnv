@@ -9,10 +9,10 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class InvocationParser
 {
-    private InterpreterInternals Internals { get; }
+    private ParserEnvironment Internals { get; }
     private BakedExpression Expression { get; }
     
-    public InvocationParser(InterpreterInternals internals, BakedExpression expression)
+    public InvocationParser(ParserEnvironment internals, BakedExpression expression)
     {
         Internals = internals;
         Expression = expression;

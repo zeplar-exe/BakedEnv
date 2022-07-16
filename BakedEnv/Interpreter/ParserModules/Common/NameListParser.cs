@@ -7,7 +7,7 @@ namespace BakedEnv.Interpreter.ParserModules.Common;
 
 internal class NameListParser : ParserModule
 {
-    public NameListParser(InterpreterInternals internals) : base(internals)
+    public NameListParser(ParserEnvironment internals) : base(internals)
     {
         
     }

@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.ParserModules.Common;
 
 internal class ExpressionListParser : ParserModule
 {
-    public ExpressionListParser(InterpreterInternals internals) : base(internals)
+    public ExpressionListParser(ParserEnvironment internals) : base(internals)
     {
         
     }

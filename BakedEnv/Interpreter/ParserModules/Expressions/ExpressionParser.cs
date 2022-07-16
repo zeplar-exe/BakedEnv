@@ -8,7 +8,7 @@ namespace BakedEnv.Interpreter.ParserModules.Expressions;
 
 internal class ExpressionParser : ParserModule
 {
-    public ExpressionParser(InterpreterInternals internals) : base(internals)
+    public ExpressionParser(ParserEnvironment internals) : base(internals)
     {
         
     }
