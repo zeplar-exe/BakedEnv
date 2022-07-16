@@ -20,15 +20,14 @@ internal class ExpressionListParserResult : ParserModuleResult
         Expressions = expressions;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private List<LexerToken> Separators { get; }
         private List<TailExpressionParserResult> Expressions { get; }
 
         public Builder()
         {
-            Tokens = new List<LexerToken>();
+            
             Separators = new List<LexerToken>();
             Expressions = new List<TailExpressionParserResult>();
         }
@@ -36,7 +35,7 @@ internal class ExpressionListParserResult : ParserModuleResult
         public Builder WithSeparator(LexerToken token)
         {
             Separators.Add(token);
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -44,14 +43,14 @@ internal class ExpressionListParserResult : ParserModuleResult
         public Builder WithTailExpression(TailExpressionParserResult expression)
         {
             Expressions.Add(expression);
-            Tokens.AddRange(expression.AllTokens);
+            AddTokensFrom(expression);
 
             return this;
         }
 
         public ExpressionListParserResult Build(bool complete)
         {
-            return new ExpressionListParserResult(complete, Tokens, Separators, Expressions);
+            return new ExpressionListParserResult(complete, AllTokens, Separators, Expressions);
         }
     }
 }

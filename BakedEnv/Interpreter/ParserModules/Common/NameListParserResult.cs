@@ -20,22 +20,21 @@ internal class NameListParserResult : ParserModuleResult
         Separators = separators;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private List<SingleIdentifierParserResult> Identifiers { get; }
         private List<LexerToken> Separators { get; }
 
         public Builder()
         {
-            Tokens = new List<LexerToken>();
+            
             Identifiers = new List<SingleIdentifierParserResult>();
             Separators = new List<LexerToken>();
         }
 
         public Builder WithIdentifier(SingleIdentifierParserResult identifierParser)
         {
-            Tokens.AddRange(identifierParser.AllTokens);
+            AddTokensFrom(identifierParser);
             Identifiers.Add(identifierParser);
 
             return this;
@@ -43,7 +42,7 @@ internal class NameListParserResult : ParserModuleResult
 
         public Builder WithSeparator(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
             Separators.Add(token);
 
             return this;
@@ -51,7 +50,7 @@ internal class NameListParserResult : ParserModuleResult
 
         public NameListParserResult Build(bool complete)
         {
-            return new NameListParserResult(complete, Tokens, Identifiers, Separators);
+            return new NameListParserResult(complete, AllTokens, Identifiers, Separators);
         }
     }
 }

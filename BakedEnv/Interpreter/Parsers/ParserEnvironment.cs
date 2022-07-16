@@ -10,21 +10,25 @@ internal class ParserEnvironment
     public IteratorTools IteratorTools { get; }
     public CommonErrorReporter ErrorReporter { get; }
     public EnumNavigator<ParserState> State { get; }
-    public IBakedScope Scope { get; }
-    
+    public Queue<BakedError> Errors { get; }
+
     public ParserEnvironment(
         BakedInterpreter interpreter, 
         InterpreterIterator iterator, 
         IteratorTools iteratorTools, 
         CommonErrorReporter errorReporter, 
-        EnumNavigator<ParserState> state, 
-        IBakedScope scope)
+        EnumNavigator<ParserState> state)
     {
         Interpreter = interpreter;
         Iterator = iterator;
         IteratorTools = iteratorTools;
         ErrorReporter = errorReporter;
         State = state;
-        Scope = scope;
+        Errors = new Queue<BakedError>();
+    }
+
+    public void QueueError(BakedError error)
+    {
+        Errors.Enqueue(error);
     }
 }

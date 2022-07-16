@@ -17,37 +17,16 @@ internal class ValueParserResult : ParserModuleResult
         Value = value;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
-
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
-
-        public Builder WithToken(LexerToken token)
-        {
-            Tokens.Add(token);
-
-            return this;
-        }
-
-        public Builder WithTokens(IEnumerable<LexerToken> tokens)
-        {
-            Tokens.AddRange(tokens);
-
-            return this;
-        }
-
         public ValueParserResult BuildSuccess(BakedObject value)
         {
-            return new ValueParserResult(true, Tokens, value);
+            return new ValueParserResult(true, AllTokens, value);
         }
 
         public ValueParserResult BuildFailure()
         {
-            return new ValueParserResult(false, Tokens, new BakedNull());
+            return new ValueParserResult(false, AllTokens, new BakedNull());
         }
     }
 }

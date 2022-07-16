@@ -14,37 +14,24 @@ internal class ExpressionParserResult : ParserModuleResult
         Expression = expression;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
 
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
-        
         public Builder WithToken(LexerToken token)
         {
-            Tokens.Add(token);
-
-            return this;
-        }
-
-        public Builder WithTokens(IEnumerable<LexerToken> tokens)
-        {
-            Tokens.AddRange(tokens);
+            AddToken(token);
 
             return this;
         }
         
         public ExpressionParserResult BuildSuccess(BakedExpression expression)
         {
-            return new ExpressionParserResult(true, Tokens, expression);
+            return new ExpressionParserResult(true, AllTokens, expression);
         }
 
         public ExpressionParserResult BuildFailure()
         {
-            return new ExpressionParserResult(false, Tokens, new NullExpression());
+            return new ExpressionParserResult(false, AllTokens, new NullExpression());
         }
     }
 }

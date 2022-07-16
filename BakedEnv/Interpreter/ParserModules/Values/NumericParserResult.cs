@@ -14,30 +14,24 @@ internal class NumericParserResult : ParserModuleResult
         Value = value;
     }
     
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
-
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
 
         public Builder WithToken(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
 
         public NumericParserResult BuildSuccess(BakedObject value)
         {
-            return new NumericParserResult(true, Tokens, value);
+            return new NumericParserResult(true, AllTokens, value);
         }
         
         public NumericParserResult BuildFailure()
         {
-            return new NumericParserResult(false, Tokens, new BakedNull());
+            return new NumericParserResult(false, AllTokens, new BakedNull());
         }
     }
 }

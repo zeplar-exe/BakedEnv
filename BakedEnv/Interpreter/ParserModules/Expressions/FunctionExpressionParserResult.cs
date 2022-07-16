@@ -30,21 +30,15 @@ internal class FunctionExpressionParserResult : ParserModuleResult
         Function = new ValueExpression(function);
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private LexerToken? KeywordToken { get; set; }
         private ParameterListParserResult? Parameters { get; set; }
         private InstructionBlockParserResult? Block { get; set; }
 
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
-
         public Builder WithKeyword(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
             KeywordToken = token;
 
             return this;
@@ -52,7 +46,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
 
         public Builder WithParameters(ParameterListParserResult parameters)
         {
-            Tokens.AddRange(parameters.AllTokens);
+            AddTokensFrom(parameters);
             Parameters = parameters;
 
             return this;
@@ -60,7 +54,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
 
         public Builder WithBlock(InstructionBlockParserResult block)
         {
-            Tokens.AddRange(block.AllTokens);
+            AddTokensFrom(block);
             Block = block;
 
             return this;
@@ -74,7 +68,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
             
             return new FunctionExpressionParserResult(
                 false, false,
-                Tokens, KeywordToken, 
+                AllTokens, KeywordToken, 
                 Parameters, Block, BakedFunction.Empty());
         }
 
@@ -86,7 +80,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
             
             return new FunctionExpressionParserResult(
                 true, true, 
-                Tokens, KeywordToken, 
+                AllTokens, KeywordToken, 
                 Parameters, Block, function);
         }
 
@@ -98,7 +92,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
             
             return new FunctionExpressionParserResult(
                 true, false, 
-                Tokens, KeywordToken, 
+                AllTokens, KeywordToken, 
                 Parameters, Block, BakedFunction.Empty());
         }
     }

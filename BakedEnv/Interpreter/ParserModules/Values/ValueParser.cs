@@ -27,7 +27,7 @@ internal class ValueParser : ParserModule
                 var numericParser = new NumericParser(Internals);
                 var result = numericParser.Parse();
 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
                 
                 if (!result.IsComplete)
                 {
@@ -42,7 +42,7 @@ internal class ValueParser : ParserModule
                 var stringParser = new StringParser(Internals);
                 var result = stringParser.Parse();
 
-                builder.WithTokens(result.AllTokens);
+                builder.AddTokensFrom(result);
 
                 if (!result.IsComplete)
                 {
