@@ -35,22 +35,16 @@ internal class FunctionValueParserResult : ParserModuleResult
         Function = new ValueExpression(function);
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
-        private LexerToken KeywordToken { get; set; }
-        private ChainIdentifierParserResult Identifier { get; set; }
-        private ParameterListParserResult Parameters { get; set; }
-        private InstructionBlockParserResult Block { get; set; }
-
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
+        private LexerToken? KeywordToken { get; set; }
+        private ChainIdentifierParserResult? Identifier { get; set; }
+        private ParameterListParserResult? Parameters { get; set; }
+        private InstructionBlockParserResult? Block { get; set; }
 
         public Builder WithKeyword(LexerToken token)
         {
-            Tokens.Add(token);
+            AddToken(token);
             KeywordToken = token;
 
             return this;
@@ -58,7 +52,7 @@ internal class FunctionValueParserResult : ParserModuleResult
 
         public Builder WithParameters(ParameterListParserResult parameters)
         {
-            Tokens.AddRange(parameters.AllTokens);
+            AddTokensFrom(parameters);
             Parameters = parameters;
 
             return this;
@@ -66,7 +60,7 @@ internal class FunctionValueParserResult : ParserModuleResult
 
         public Builder WithIdentifier(ChainIdentifierParserResult identifierParser)
         {
-            Tokens.AddRange(identifierParser.AllTokens);
+            AddTokensFrom(identifierParser);
             Identifier = identifierParser;
 
             return this;
@@ -74,7 +68,7 @@ internal class FunctionValueParserResult : ParserModuleResult
 
         public Builder WithBlock(InstructionBlockParserResult block)
         {
-            Tokens.AddRange(block.AllTokens);
+            AddTokensFrom(block);
             Block = block;
 
             return this;
@@ -82,25 +76,40 @@ internal class FunctionValueParserResult : ParserModuleResult
 
         public FunctionValueParserResult BuildNonDeclaration()
         {
+            BuilderHelper.EnsureLexerToken(KeywordToken, LexerTokenType.AlphaNumeric);
+            BuilderHelper.EnsurePropertyNotNull(Identifier);
+            BuilderHelper.EnsurePropertyNotNull(Parameters);
+            BuilderHelper.EnsurePropertyNotNull(Block);
+            
             return new FunctionValueParserResult(
                 false, false,
-                Tokens, KeywordToken,
+                AllTokens, KeywordToken,
                 Identifier, Parameters, Block, BakedFunction.Empty());
         }
 
         public FunctionValueParserResult BuildSuccess(BakedFunction function)
         {
+            BuilderHelper.EnsureLexerToken(KeywordToken, LexerTokenType.AlphaNumeric);
+            BuilderHelper.EnsurePropertyNotNull(Identifier);
+            BuilderHelper.EnsurePropertyNotNull(Parameters);
+            BuilderHelper.EnsurePropertyNotNull(Block);
+            
             return new FunctionValueParserResult(
                 true, true,
-                Tokens, KeywordToken,
+                AllTokens, KeywordToken,
                 Identifier, Parameters, Block, function);
         }
 
         public FunctionValueParserResult BuildFailure()
         {
+            BuilderHelper.EnsureLexerToken(KeywordToken, LexerTokenType.AlphaNumeric);
+            BuilderHelper.EnsurePropertyNotNull(Identifier);
+            BuilderHelper.EnsurePropertyNotNull(Parameters);
+            BuilderHelper.EnsurePropertyNotNull(Block);
+            
             return new FunctionValueParserResult(
                 true, false,
-                Tokens, KeywordToken,
+                AllTokens, KeywordToken,
                 Identifier, Parameters, Block, BakedFunction.Empty());
         }
     }

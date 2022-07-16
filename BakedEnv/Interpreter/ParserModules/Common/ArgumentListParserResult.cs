@@ -23,22 +23,16 @@ internal class ArgumentListParserResult : ParserModuleResult
         Expressions = expressions;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         public LexerToken? OpenParenthesis { get; set; }
         public LexerToken? CloseParenthesis { get; set; }
         private ExpressionListParserResult? Expressions { get; set; }
 
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
-
         public Builder WithOpening(LexerToken token)
         {
             OpenParenthesis = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
@@ -46,14 +40,14 @@ internal class ArgumentListParserResult : ParserModuleResult
         public Builder WithClosing(LexerToken token)
         {
             CloseParenthesis = token;
-            Tokens.Add(token);
+            AddToken(token);
 
             return this;
         }
 
         public Builder WithExpressionList(ExpressionListParserResult result)
         {
-            Tokens.AddRange(result.AllTokens);
+            AddTokensFrom(result);
             Expressions = result;
 
             return this;
@@ -65,7 +59,7 @@ internal class ArgumentListParserResult : ParserModuleResult
             BuilderHelper.EnsurePropertyNotNull(CloseParenthesis);
             BuilderHelper.EnsurePropertyNotNull(Expressions);
             
-            return new ArgumentListParserResult(complete, Tokens, OpenParenthesis, CloseParenthesis, Expressions);
+            return new ArgumentListParserResult(complete, AllTokens, OpenParenthesis, CloseParenthesis, Expressions);
         }
     }
 }

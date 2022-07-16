@@ -20,15 +20,9 @@ internal class TailExpressionParserResult : ParserModuleResult
         Expression = expression;
     }
     
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
         private ExpressionParserResult BaseExpression { get; set; }
-
-        public Builder()
-        {
-            Tokens = new List<LexerToken>();
-        }
 
         public Builder WithBaseExpression(ExpressionParserResult expression)
         {
@@ -36,22 +30,15 @@ internal class TailExpressionParserResult : ParserModuleResult
 
             return this;
         }
-
-        public Builder WithTokens(IEnumerable<LexerToken> tokens)
-        {
-            Tokens.AddRange(tokens);
-
-            return this;
-        }
         
         public TailExpressionParserResult BuildSuccess(BakedExpression expression)
         {
-            return new TailExpressionParserResult(true, Tokens, BaseExpression, expression);
+            return new TailExpressionParserResult(true, AllTokens, BaseExpression, expression);
         }
 
         public TailExpressionParserResult BuildFailure()
         {
-            return new TailExpressionParserResult(false, Tokens, BaseExpression, new NullExpression());
+            return new TailExpressionParserResult(false, AllTokens, BaseExpression, new NullExpression());
         }
     }
 }

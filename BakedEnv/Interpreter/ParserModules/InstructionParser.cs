@@ -78,13 +78,11 @@ internal class InstructionParserResult : ParserModuleResult
         Instruction = instruction;
     }
 
-    public class Builder
+    public class Builder : ResultBuilder
     {
-        private List<LexerToken> Tokens { get; }
-
         public Builder WithModuleResult(ParserModuleResult result)
         {
-            Tokens.AddRange(result.AllTokens);
+            AddTokensFrom(result);
 
             return this;
         }
@@ -104,7 +102,7 @@ internal class InstructionParserResult : ParserModuleResult
 
         public InstructionParserResult Build(bool success, InterpreterInstruction instruction)
         {
-            return new InstructionParserResult(success, Tokens, instruction);
+            return new InstructionParserResult(success, AllTokens, instruction);
         }
     }
 }
