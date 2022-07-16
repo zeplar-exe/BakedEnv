@@ -7,13 +7,13 @@ internal class ExpressionListParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
     public IEnumerable<LexerToken> Separators { get; }
-    public IEnumerable<TailExpressionParserResult> Expressions { get; }
+    public IEnumerable<ExpressionParserResult> Expressions { get; }
     
     public ExpressionListParserResult(
         bool complete, 
         IEnumerable<LexerToken> allTokens, 
         IEnumerable<LexerToken> separators,
-        IEnumerable<TailExpressionParserResult> expressions) : base(allTokens)
+        IEnumerable<ExpressionParserResult> expressions) : base(allTokens)
     {
         IsComplete = complete;
         Separators = separators;
@@ -23,13 +23,13 @@ internal class ExpressionListParserResult : ParserModuleResult
     public class Builder : ResultBuilder
     {
         private List<LexerToken> Separators { get; }
-        private List<TailExpressionParserResult> Expressions { get; }
+        private List<ExpressionParserResult> Expressions { get; }
 
         public Builder()
         {
             
             Separators = new List<LexerToken>();
-            Expressions = new List<TailExpressionParserResult>();
+            Expressions = new List<ExpressionParserResult>();
         }
 
         public Builder WithSeparator(LexerToken token)
@@ -40,7 +40,7 @@ internal class ExpressionListParserResult : ParserModuleResult
             return this;
         }
 
-        public Builder WithTailExpression(TailExpressionParserResult expression)
+        public Builder WithTailExpression(ExpressionParserResult expression)
         {
             Expressions.Add(expression);
             AddTokensFrom(expression);

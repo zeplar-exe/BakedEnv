@@ -8,14 +8,14 @@ internal class ArithmeticParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
     public IEnumerable<OperatorInfo> Operators { get; }
-    public IEnumerable<TailExpressionParserResult> Expressions { get; }
+    public IEnumerable<ExpressionParserResult> Expressions { get; }
     public IEnumerable<LexerToken> OperatorTokens { get; }
 
     public ArithmeticParserResult(
         bool complete,
         IEnumerable<LexerToken> allTokens,
         IEnumerable<OperatorInfo> operators,
-        IEnumerable<TailExpressionParserResult> expressions, 
+        IEnumerable<ExpressionParserResult> expressions, 
         IEnumerable<LexerToken> operatorTokens) : base(allTokens)
     {
         IsComplete = complete;
@@ -34,14 +34,14 @@ internal class ArithmeticParserResult : ParserModuleResult
     public class Builder : ResultBuilder
     {
         private List<OperatorInfo> Operators { get; }
-        private List<TailExpressionParserResult> Expressions { get; }
+        private List<ExpressionParserResult> Expressions { get; }
         private List<LexerToken> OperatorTokens { get; }
 
         public Builder()
         {
             
             Operators = new List<OperatorInfo>();
-            Expressions = new List<TailExpressionParserResult>();
+            Expressions = new List<ExpressionParserResult>();
             OperatorTokens = new List<LexerToken>();
         }
 

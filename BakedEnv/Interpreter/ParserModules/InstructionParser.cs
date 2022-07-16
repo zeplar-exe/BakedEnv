@@ -4,6 +4,7 @@ using BakedEnv.Interpreter.ParserModules.Expressions;
 using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
+using ExpressionParser = BakedEnv.Interpreter.ParserModules.Expressions.ExpressionParser;
 
 namespace BakedEnv.Interpreter.ParserModules;
 
@@ -43,7 +44,7 @@ internal class InstructionParser : ParserModule
             }
             case LexerTokenType.LeftParenthesis:
             {
-                var expressionParser = new TailExpressionParser(Internals);
+                var expressionParser = new ExpressionParser(Internals);
                 var expressionResult = expressionParser.Parse();
 
                 if (!expressionResult.IsComplete)

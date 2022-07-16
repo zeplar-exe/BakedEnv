@@ -12,7 +12,7 @@ internal class ArithmeticParser : ParserModule
         
     }
 
-    public ArithmeticParserResult ParseFrom(TailExpressionParserResult start)
+    public ArithmeticParserResult ParseFrom(ExpressionParserResult start)
     {
         var builder = new ArithmeticParserResult.Builder();
         var previous = start;
@@ -39,7 +39,7 @@ internal class ArithmeticParser : ParserModule
     
             Internals.IteratorTools.SkipWhitespaceAndNewlines();
     
-            var expressionParser = new TailExpressionParser(Internals);
+            var expressionParser = new ExpressionParser(Internals);
             var result = expressionParser.Parse(ArithmeticInclusionMode.Exclude);
             
             if (!result.IsComplete)
