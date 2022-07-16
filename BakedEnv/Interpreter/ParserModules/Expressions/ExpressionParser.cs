@@ -16,19 +16,19 @@ internal class ExpressionParser : ParserModule
     {
         var builder = new ExpressionParserResult.Builder();
 
-        var expressionParser = new ValueExpressionParser(Internals);
-        var result = expressionParser.Parse();
+        var valueParser = new ValueExpressionParser(Internals);
+        var valueResult = valueParser.Parse();
 
-        builder.WithBaseExpression(result);
+        builder.WithBaseExpression(valueResult);
 
-        if (!result.IsComplete)
+        if (!valueResult.IsComplete)
         {
             return builder.BuildFailure();
         }
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
-        var tail = ParseTail(result.Expression);
+        var tail = ParseTail(valueResult.Expression);
 
         builder.AddTokensFrom(tail);
 
@@ -53,16 +53,18 @@ internal class ExpressionParser : ParserModule
 
             if (!arithmeticResult.IsComplete)
             {
-                expression = arithmeticResult.CreateExpression();
+                return builder.BuildFailure();
             }
+            
+            expression = arithmeticResult.CreateExpression();
         }
         
-        return builder.BuildSuccess(expression);
+        return builder.WithChain(tail.Chain).WithChainExpression(expression).BuildSuccess(expression);
     }
 
     private ExpressionParserResult ParseTail(BakedExpression previous)
     {
-        BakedExpression? newExpression;
+        BakedExpression newExpression;
 
         var builder = new ExpressionParserResult.Builder();
 
@@ -111,9 +113,9 @@ internal class ExpressionParser : ParserModule
             }
         }
 
-        var tailResult = ParseTail(newExpression);
+        builder.WithChainExpression(newExpression);
 
-        builder.AddTokensFrom(tailResult);
+        var tailResult = ParseTail(newExpression);
 
         if (!tailResult.IsComplete)
         {
