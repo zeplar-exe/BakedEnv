@@ -27,7 +27,22 @@ internal class InterpreterIterator : EnumerableIterator<LexerToken>
         
         return true;
     }
-    
+
+    public IEnumerable<LexerToken> PeekTakeWhile(Func<LexerToken, bool> predicate)
+    {
+        while (TryMoveNext(out var token))
+        {
+            if (!predicate.Invoke(token))
+            {
+                Backlog.Push(token);
+                
+                yield break;
+            }
+
+            yield return token;
+        }
+    }
+
     public void PushCurrent()
     {
         Backlog.Push(Current);
