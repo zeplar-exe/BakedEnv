@@ -1,7 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Instructions;
 

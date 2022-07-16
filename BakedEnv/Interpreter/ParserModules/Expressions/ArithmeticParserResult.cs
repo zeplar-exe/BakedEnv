@@ -1,5 +1,4 @@
 using BakedEnv.Interpreter.Expressions;
-using BakedEnv.Interpreter.Expressions.Arithmetic;
 using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Expressions;

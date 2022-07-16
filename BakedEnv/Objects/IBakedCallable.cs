@@ -1,4 +1,3 @@
-using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 
 namespace BakedEnv.Objects;

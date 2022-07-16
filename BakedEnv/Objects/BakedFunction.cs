@@ -1,4 +1,3 @@
-using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Variables;
