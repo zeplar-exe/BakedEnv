@@ -20,7 +20,7 @@ internal class InstructionParser : ParserModule
         
         if (!Internals.Iterator.TryPeekNext(out var first))
         {
-            return builder.EndOfFile(0); // TODO: LexerToken needs StartIndex, Length, EndIndex
+            return builder.EndOfFile(Internals.Iterator.Current.EndIndex);
         }
 
         switch (first.Type)
@@ -48,12 +48,15 @@ internal class InstructionParser : ParserModule
 
                 if (!expressionResult.IsComplete)
                 {
-                    // tf is this why is it locked to parenthesis?
+                    return builder.BuildInvalid(new BakedError());
                 }
 
                 if (expressionResult.Expression is InvocationExpression invocation)
-                {
-                    var instruction = new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, 0);
+                {// tf is this why is it locked to parenthesis?
+                    var instruction = new ObjectInvocationInstruction(
+                        invocation.Expression, 
+                        invocation.Parameters, 
+                        0);
 
                     return builder.Build(true, instruction);
                 }
