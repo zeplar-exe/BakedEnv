@@ -41,6 +41,25 @@ internal class ExpressionParser : ParserModule
 
                 var reference = result.CreateReference(Internals.Interpreter);
 
+                if (reference.Path.Count == 0)
+                {
+                    if (reference.Name == FunctionExpressionParser.Keyword)
+                    {
+                        var functionParser = new FunctionExpressionParser(Internals);
+                        var functionResult = functionParser.Parse();
+
+                        if (functionResult.IsDeclaration)
+                        {
+                            if (!functionResult.IsComplete)
+                            {
+                                return builder.BuildFailure();
+                            }
+
+                            return builder.BuildSuccess(functionResult.Function);
+                        }
+                    }
+                }
+                
                 return builder.BuildSuccess(new VariableExpression(reference));
             }
             case LexerTokenType.Numeric: // Integer/Decimal
