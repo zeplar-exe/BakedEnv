@@ -7,7 +7,7 @@ namespace BakedEnv.Interpreter.ParserModules.Expressions;
 
 internal class ArithmeticParser : ParserModule
 {
-    public ArithmeticParser(InterpreterInternals internals) : base(internals)
+    public ArithmeticParser(ParserEnvironment internals) : base(internals)
     {
         
     }

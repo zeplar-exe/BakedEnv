@@ -10,7 +10,7 @@ internal class FunctionValueParser : ParserModule
 {
     public const string Keyword = "function";
     
-    public FunctionValueParser(InterpreterInternals internals) : base(internals)
+    public FunctionValueParser(ParserEnvironment internals) : base(internals)
     {
         
     }

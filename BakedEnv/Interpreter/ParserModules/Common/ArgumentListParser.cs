@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.ParserModules.Common;
 
 internal class ArgumentListParser : ParserModule
 {
-    public ArgumentListParser(InterpreterInternals internals) : base(internals)
+    public ArgumentListParser(ParserEnvironment internals) : base(internals)
     {
         
     }

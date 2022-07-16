@@ -4,9 +4,9 @@ namespace BakedEnv.Interpreter.ParserModules;
 
 internal abstract class ParserModule
 {
-    protected InterpreterInternals Internals { get; }
+    protected ParserEnvironment Internals { get; }
 
-    public ParserModule(InterpreterInternals internals)
+    public ParserModule(ParserEnvironment internals)
     {
         Internals = internals;
     }

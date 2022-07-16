@@ -7,9 +7,9 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class ParameterParser
 {
-    private InterpreterInternals Internals { get; }
+    private ParserEnvironment Internals { get; }
 
-    public ParameterParser(InterpreterInternals internals)
+    public ParameterParser(ParserEnvironment internals)
     {
         Internals = internals;
     }
