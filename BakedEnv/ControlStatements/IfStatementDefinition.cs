@@ -1,8 +1,6 @@
-using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Objects;
 
 namespace BakedEnv.ControlStatements;
 

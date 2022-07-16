@@ -1,6 +1,5 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.ParserModules.Identifiers;
-using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 
