@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Interpreter.Parsers;
-using Jammo.ParserTools.Lexing;
 using TokenCs;
 
 namespace BakedEnv.Interpreter;
@@ -33,7 +31,7 @@ internal class CommonErrorReporter
         return Interpreter.ReportError(
             ErrorCodes.InvalidTokenType,
             ErrorMessages.ExpectedTokenOfType(token, expected),
-            token.Span.Start);
+            token.StartIndex);
     }
 
     public BakedError ReportInvalidValue(LexerToken token)
@@ -41,7 +39,7 @@ internal class CommonErrorReporter
         return Interpreter.ReportError(
             ErrorCodes.InvalidValue,
             ErrorMessages.ValueExpected,
-            token.Span.Start);
+            token.StartIndex);
     }
     
     public BakedError ReportEndOfFile(LexerToken token)
@@ -49,7 +47,7 @@ internal class CommonErrorReporter
         return Interpreter.ReportError(
             ErrorCodes.EndOfFile,
             ErrorMessages.EndOfFile,
-            token.Span.End);
+            token.StartIndex);
     }
     
     public TryResult EndOfFileResult(LexerToken token)
