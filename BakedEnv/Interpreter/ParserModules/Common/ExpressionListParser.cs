@@ -1,6 +1,7 @@
 using BakedEnv.Interpreter.ParserModules.Expressions;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
+using ExpressionParser = BakedEnv.Interpreter.ParserModules.Expressions.ExpressionParser;
 
 namespace BakedEnv.Interpreter.ParserModules.Common;
 
@@ -42,7 +43,7 @@ internal class ExpressionListParser : ParserModule
                         return builder.Build(true);
                     }
 
-                    var expressionParser = new TailExpressionParser(Internals);
+                    var expressionParser = new ExpressionParser(Internals);
                     var result = expressionParser.Parse();
                     
                     builder.WithTailExpression(result);

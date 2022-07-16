@@ -4,7 +4,7 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Expressions;
 
-internal record OperatorInfo(LexerToken Token, TailExpressionParserResult Left, TailExpressionParserResult Right)
+internal record OperatorInfo(LexerToken Token, ExpressionParserResult Left, ExpressionParserResult Right)
 {
     public IEnumerable<LexerToken> AllTokens
     {
