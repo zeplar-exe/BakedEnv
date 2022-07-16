@@ -1,9 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
-using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
 
 namespace BakedEnv.Interpreter.Parsers;
 

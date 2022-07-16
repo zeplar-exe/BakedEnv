@@ -1,6 +1,4 @@
 using BakedEnv.Interpreter.Expressions;
-using BakedEnv.Objects;
-using Jammo.ParserTools.Lexing;
 
 namespace BakedEnv.Interpreter.Parsers;
 
