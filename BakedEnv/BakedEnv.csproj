@@ -65,8 +65,4 @@
       </Compile>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Keywords" />
-    </ItemGroup>
-
 </Project>
