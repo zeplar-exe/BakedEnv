@@ -5,9 +5,9 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class ProcessorStatementParser
 {
-    private InterpreterInternals Internals { get; }
+    private ParserEnvironment Internals { get; }
     
-    public ProcessorStatementParser(InterpreterInternals internals)
+    public ProcessorStatementParser(ParserEnvironment internals)
     {
         Internals = internals;
     }

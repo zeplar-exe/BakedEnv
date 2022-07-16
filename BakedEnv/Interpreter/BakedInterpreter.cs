@@ -348,8 +348,8 @@ public class BakedInterpreter
         return new ExpressionParser(CreateInternals());
     }
 
-    private InterpreterInternals CreateInternals()
+    private ParserEnvironment CreateInternals()
     {
-        return new InterpreterInternals(this, Iterator, IteratorTools, ErrorReporter, State, Context);
+        return new ParserEnvironment(this, Iterator, IteratorTools, ErrorReporter, State, Context);
     }
 }

@@ -8,7 +8,7 @@ namespace BakedEnv.Interpreter.ParserModules.Expressions;
 
 internal class TailExpressionParser : ParserModule
 {
-    public TailExpressionParser(InterpreterInternals internals) : base(internals)
+    public TailExpressionParser(ParserEnvironment internals) : base(internals)
     {
 
     }

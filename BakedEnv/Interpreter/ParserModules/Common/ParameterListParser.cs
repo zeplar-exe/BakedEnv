@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.ParserModules.Common;
 
 internal class ParameterListParser : ParserModule
 {
-    public ParameterListParser(InterpreterInternals internals) : base(internals)
+    public ParameterListParser(ParserEnvironment internals) : base(internals)
     {
         
     }

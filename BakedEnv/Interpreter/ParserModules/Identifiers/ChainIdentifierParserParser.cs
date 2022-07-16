@@ -5,7 +5,7 @@ namespace BakedEnv.Interpreter.ParserModules.Identifiers;
 
 internal class ChainIdentifierParser : ParserModule
 {
-    public ChainIdentifierParser(InterpreterInternals internals) : base(internals)
+    public ChainIdentifierParser(ParserEnvironment internals) : base(internals)
     {
         
     }

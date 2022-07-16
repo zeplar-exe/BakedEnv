@@ -9,7 +9,7 @@ namespace BakedEnv.Interpreter.ParserModules;
 
 internal class InstructionParser : ParserModule
 {
-    public InstructionParser(InterpreterInternals internals) : base(internals)
+    public InstructionParser(ParserEnvironment internals) : base(internals)
     {
         
     }

@@ -5,7 +5,7 @@ namespace BakedEnv.Interpreter.ParserModules.Identifiers;
 
 internal class SingleIdentifierParser : ParserModule
 {
-    public SingleIdentifierParser(InterpreterInternals internals) : base(internals)
+    public SingleIdentifierParser(ParserEnvironment internals) : base(internals)
     {
         
     }

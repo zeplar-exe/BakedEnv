@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.ParserModules.Values;
 
 internal class ValueParser : ParserModule
 {
-    public ValueParser(InterpreterInternals internals) : base(internals)
+    public ValueParser(ParserEnvironment internals) : base(internals)
     {
         
     }

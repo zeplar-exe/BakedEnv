@@ -7,9 +7,9 @@ namespace BakedEnv.Interpreter.Parsers;
 
 internal class ValueParser
 {
-    private InterpreterInternals Internals { get; }
+    private ParserEnvironment Internals { get; }
     
-    public ValueParser(InterpreterInternals internals)
+    public ValueParser(ParserEnvironment internals)
     {
         Internals = internals;
     }
