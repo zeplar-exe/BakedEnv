@@ -1,5 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
+using BakedEnv.Interpreter.ParserModules.Functions;
 using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
@@ -28,7 +29,7 @@ internal class InstructionParser : ParserModule
             case LexerTokenType.AlphaNumeric:
             case LexerTokenType.Underscore:
             {
-                var functionParser = new FunctionValueParser(Internals);
+                var functionParser = new FunctionDeclarationParser(Internals);
                 var functionResult = functionParser.Parse();
 
                 if (functionResult.IsDeclaration)

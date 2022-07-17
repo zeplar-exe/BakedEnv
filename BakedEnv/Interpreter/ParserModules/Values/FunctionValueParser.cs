@@ -1,5 +1,4 @@
 using BakedEnv.Interpreter.ParserModules.Common;
-using BakedEnv.Interpreter.ParserModules.Identifiers;
 using BakedEnv.Interpreter.Parsers;
 using BakedEnv.Objects;
 using TokenCs;
@@ -34,16 +33,6 @@ internal class FunctionValueParser : ParserModule
         builder.WithKeyword(token);
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
-
-        var identifierParser = new ChainIdentifierParser(Internals);
-        var identifierResult = identifierParser.Parse();
-
-        builder.WithIdentifier(identifierResult);
-
-        if (!identifierResult.IsComplete)
-        {
-            return builder.BuildFailure();
-        }
         
         if (!Internals.Iterator.TryPeekNext(out var next))
         {
