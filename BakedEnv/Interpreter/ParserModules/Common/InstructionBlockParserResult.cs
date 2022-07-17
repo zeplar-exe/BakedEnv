@@ -7,7 +7,7 @@ internal class InstructionBlockParserResult : ParserModuleResult
     public bool IsComplete { get; }
     public LexerToken OpenBracket { get; }
     public LexerToken CloseBracket { get; }
-    public IEnumerable<InstructionParserResult> Instructions { get; }
+    public InstructionParserResult[] Instructions { get; }
 
     public InstructionBlockParserResult(
         bool complete, 
@@ -19,7 +19,7 @@ internal class InstructionBlockParserResult : ParserModuleResult
         IsComplete = complete;
         OpenBracket = openBracket;
         CloseBracket = closeBracket;
-        Instructions = instructions;
+        Instructions = instructions.ToArray();
     }
 
     public class Builder : ResultBuilder

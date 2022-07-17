@@ -7,7 +7,7 @@ internal class ExpressionParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
     public ValueExpressionParserResult BaseValueExpression { get; }
-    public IEnumerable<BakedExpression> Chain { get; }
+    public BakedExpression[] Chain { get; }
     public BakedExpression Expression { get; }
     
     public ExpressionParserResult(
@@ -19,7 +19,7 @@ internal class ExpressionParserResult : ParserModuleResult
     {
         IsComplete = complete;
         BaseValueExpression = baseValueExpression;
-        Chain = chain;
+        Chain = chain.ToArray();
         Expression = expression;
     }
     
