@@ -27,6 +27,24 @@ internal class ValueExpressionParser : ParserModule
             case LexerTokenType.AlphaNumeric: // Variable
             case LexerTokenType.Underscore:
             {
+                if (first.ToString() == FunctionValueParser.Keyword)
+                {
+                    var functionParser = new FunctionValueParser(Internals);
+                    var functionResult = functionParser.Parse();
+
+                    if (functionResult.IsDeclaration)
+                    {
+                        if (!functionResult.IsComplete)
+                        {
+                            return builder.BuildFailure();
+                        }
+
+                        var expression = new ValueExpression(functionResult.Function);
+                        
+                        return builder.BuildSuccess(expression);
+                    }
+                }
+
                 Internals.Iterator.PushCurrent();
                 
                 var identifierParser = new ChainIdentifierParser(Internals);
@@ -41,25 +59,6 @@ internal class ValueExpressionParser : ParserModule
 
                 var reference = result.CreateReference(Internals.Interpreter);
 
-                if (reference.Path.Count == 0)
-                {
-                    if (reference.Name == FunctionValueParser.Keyword)
-                    {
-                        var functionParser = new FunctionValueParser(Internals);
-                        var functionResult = functionParser.Parse();
-
-                        if (functionResult.IsDeclaration)
-                        {
-                            if (!functionResult.IsComplete)
-                            {
-                                return builder.BuildFailure();
-                            }
-
-                            return builder.BuildSuccess(functionResult.Function);
-                        }
-                    }
-                }
-                
                 return builder.BuildSuccess(new VariableExpression(reference));
             }
             case LexerTokenType.Numeric: // Integer/Decimal
@@ -73,7 +72,7 @@ internal class ValueExpressionParser : ParserModule
 
                 builder.AddTokensFrom(result);
                 
-                if (!result.IsSuccess)
+                if (!result.IsComplete)
                 {
                     return builder.BuildFailure();
                 }
