@@ -54,16 +54,28 @@ public class BakedTable : BakedObject
         return true;
     }
 
-    public override bool TryGetIndex(BakedObject key, out BakedObject bakedObject)
+    public override bool TryGetIndex(BakedObject[] key, out BakedObject bakedObject)
     {
-        bakedObject = this[key];
+        bakedObject = new BakedNull();
+        
+        if (key.Length > 0)
+        {
+            return false;
+        }
+        
+        bakedObject = this[key[0]];
 
         return true;
     }
     
-    public override bool TrySetIndex(BakedObject key, BakedObject value)
+    public override bool TrySetIndex(BakedObject[] key, BakedObject value)
     {
-        this[key] = value;
+        if (key.Length > 0)
+        {
+            return false;
+        }
+        
+        this[key[0]] = value;
 
         return true;
     }
