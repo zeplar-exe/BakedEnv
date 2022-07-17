@@ -95,7 +95,7 @@ internal class ExpressionParser : ParserModule
             }
             case LexerTokenType.LeftBracket: // Indexer
             {
-                var indexerParser = new IndexerParser(Internals);
+                var indexerParser = new ArrayParser(Internals);
                 var result = indexerParser.Parse();
 
                 if (!result.IsComplete)
@@ -103,7 +103,10 @@ internal class ExpressionParser : ParserModule
                     return builder.BuildFailure();
                 }
 
-                newExpression = new IndexExpression(previous, result.Expression.Expression);
+                newExpression = new IndexExpression(previous, 
+                    result.Expressions
+                        .Select(e => e.Expression)
+                        .ToArray());
 
                 break;
             }

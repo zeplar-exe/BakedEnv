@@ -5,15 +5,15 @@ namespace BakedEnv.Interpreter.ParserModules.Values;
 
 internal class ValueParserResult : ParserModuleResult
 {
-    public bool IsSuccess { get; }
+    public bool IsComplete { get; }
     public BakedObject Value { get; }
 
     public ValueParserResult(
-        bool isSuccess, 
+        bool complete, 
         IEnumerable<LexerToken> allTokens, 
         BakedObject value) : base(allTokens)
     {
-        IsSuccess = isSuccess;
+        IsComplete = complete;
         Value = value;
     }
 

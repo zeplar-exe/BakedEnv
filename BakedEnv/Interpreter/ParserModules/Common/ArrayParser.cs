@@ -4,16 +4,16 @@ using ExpressionParser = BakedEnv.Interpreter.ParserModules.Expressions.Expressi
 
 namespace BakedEnv.Interpreter.ParserModules.Common;
 
-internal class IndexerParser : ParserModule
+internal class ArrayParser : ParserModule
 {
-    public IndexerParser(ParserEnvironment internals) : base(internals)
+    public ArrayParser(ParserEnvironment internals) : base(internals)
     {
         
     }
 
-    public IndexerParserResult Parse()
+    public ArrayParserResult Parse()
     {
-        var builder = new IndexerParserResult.Builder();
+        var builder = new ArrayParserResult.Builder();
         
         if (!Internals.Iterator.TryMoveNext(out var first))
         {
