@@ -6,8 +6,8 @@ namespace BakedEnv.Interpreter.ParserModules.Common;
 internal class NameListParserResult : ParserModuleResult
 {
     public bool IsComplete {get;}
-    public IEnumerable<SingleIdentifierParserResult> Identifiers { get; }
-    public IEnumerable<LexerToken> Separators { get; }
+    public SingleIdentifierParserResult[] Identifiers { get; }
+    public LexerToken[] Separators { get; }
 
     public NameListParserResult(
         bool complete, 
@@ -16,8 +16,8 @@ internal class NameListParserResult : ParserModuleResult
         IEnumerable<LexerToken> separators) : base(allTokens)
     {
         IsComplete = complete;
-        Identifiers = identifiers;
-        Separators = separators;
+        Identifiers = identifiers.ToArray();
+        Separators = separators.ToArray();
     }
 
     public class Builder : ResultBuilder

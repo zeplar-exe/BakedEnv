@@ -13,12 +13,12 @@ internal class ArrayParserResult : ParserModuleResult
     public ArrayParserResult(bool complete, IEnumerable<LexerToken> allTokens, 
         LexerToken openBracket,
         LexerToken closeBracket, 
-        ExpressionParserResult[] expressions) : base(allTokens)
+        IEnumerable<ExpressionParserResult> expressions) : base(allTokens)
     {
         IsComplete = complete;
         OpenBracket = openBracket;
         CloseBracket = closeBracket;
-        Expressions = expressions;
+        Expressions = expressions.ToArray();
     }
 
     public class Builder : ResultBuilder
@@ -61,7 +61,7 @@ internal class ArrayParserResult : ParserModuleResult
             BuilderHelper.EnsurePropertyNotNull(OpenBracket);
             BuilderHelper.EnsurePropertyNotNull(CloseBracket);
             
-            return new ArrayParserResult(complete, AllTokens, OpenBracket, CloseBracket, Expressions.ToArray());
+            return new ArrayParserResult(complete, AllTokens, OpenBracket, CloseBracket, Expressions);
         }
     }
 }
