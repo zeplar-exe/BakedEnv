@@ -12,7 +12,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
     public LexerToken KeywordToken { get; }
     public ParameterListParserResult Parameters { get; }
     public InstructionBlockParserResult Block { get; }
-    public ValueExpression Function { get; }
+    public BakedFunction Function { get; }
     
     public FunctionExpressionParserResult(
         bool declaration, bool complete, 
@@ -27,7 +27,7 @@ internal class FunctionExpressionParserResult : ParserModuleResult
         IsComplete = complete;
         Parameters = parameters;
         Block = block;
-        Function = new ValueExpression(function);
+        Function = function;
     }
 
     public class Builder : ResultBuilder

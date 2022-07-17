@@ -31,10 +31,10 @@
         <DependentUpon>ValueParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Expressions\ValueExpressionParserResult.cs">
-        <DependentUpon>ExpressionParser.cs</DependentUpon>
+        <DependentUpon>ValueExpressionParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Expressions\ExpressionParserResult.cs">
-        <DependentUpon>TailExpressionParser.cs</DependentUpon>
+        <DependentUpon>ExpressionParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Common\ArgumentListParserResult.cs">
         <DependentUpon>ArgumentListParser.cs</DependentUpon>
@@ -45,7 +45,7 @@
       <Compile Update="Interpreter\ParserModules\Expressions\ArithmeticParserResult.cs">
         <DependentUpon>ArithmeticParser.cs</DependentUpon>
       </Compile>
-      <Compile Update="Interpreter\ParserModules\Common\IndexerParserResult.cs">
+      <Compile Update="Interpreter\ParserModules\Common\ArrayParserResult.cs">
         <DependentUpon>IndexerParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Expressions\FunctionExpressionParserResult.cs">
@@ -65,6 +65,9 @@
       </Compile>
       <Compile Update="Interpreter\ParserModules\InstructionParserResult.cs">
         <DependentUpon>InstructionParser.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interpreter\ParserModules\Common\KeyValueParserResult.cs">
+        <DependentUpon>KeyValueParser.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 
