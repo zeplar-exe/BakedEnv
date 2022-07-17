@@ -3,29 +3,34 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Common;
 
-internal class IndexerParserResult : ParserModuleResult
+internal class ArrayParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
     public LexerToken OpenBracket { get; }
     public LexerToken CloseBracket { get; }
-    public ExpressionParserResult Expression { get; }
+    public ExpressionParserResult[] Expressions { get; }
 
-    public IndexerParserResult(bool complete, IEnumerable<LexerToken> allTokens, 
+    public ArrayParserResult(bool complete, IEnumerable<LexerToken> allTokens, 
         LexerToken openBracket,
         LexerToken closeBracket, 
-        ExpressionParserResult expression) : base(allTokens)
+        ExpressionParserResult[] expressions) : base(allTokens)
     {
         IsComplete = complete;
         OpenBracket = openBracket;
         CloseBracket = closeBracket;
-        Expression = expression;
+        Expressions = expressions;
     }
 
     public class Builder : ResultBuilder
     {
         private LexerToken? OpenBracket { get; set; }
         private LexerToken? CloseBracket { get; set; }
-        private ExpressionParserResult? Expression { get; set; }
+        private List<ExpressionParserResult> Expressions { get; set; }
+
+        public Builder()
+        {
+            Expressions = new List<ExpressionParserResult>();
+        }
 
         public Builder WithOpening(LexerToken token)
         {
@@ -45,19 +50,18 @@ internal class IndexerParserResult : ParserModuleResult
 
         public Builder WithExpression(ExpressionParserResult expression)
         {
-            Expression = expression;
+            Expressions.Add(expression);
             AddTokensFrom(expression);
             
             return this;
         }
 
-        public IndexerParserResult Build(bool complete)
+        public ArrayParserResult Build(bool complete)
         {
             BuilderHelper.EnsurePropertyNotNull(OpenBracket);
             BuilderHelper.EnsurePropertyNotNull(CloseBracket);
-            BuilderHelper.EnsurePropertyNotNull(Expression);
             
-            return new IndexerParserResult(complete, AllTokens, OpenBracket, CloseBracket, Expression);
+            return new ArrayParserResult(complete, AllTokens, OpenBracket, CloseBracket, Expressions.ToArray());
         }
     }
 }
