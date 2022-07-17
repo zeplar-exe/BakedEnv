@@ -27,9 +27,6 @@
       <Compile Update="Interpreter\ParserModules\Values\StringParserResult.cs">
         <DependentUpon>StringParser.cs</DependentUpon>
       </Compile>
-      <Compile Update="Interpreter\ParserModules\Values\ValueParserResult.cs">
-        <DependentUpon>ValueParser.cs</DependentUpon>
-      </Compile>
       <Compile Update="Interpreter\ParserModules\Expressions\ValueExpressionParserResult.cs">
         <DependentUpon>ValueExpressionParser.cs</DependentUpon>
       </Compile>
@@ -44,9 +41,6 @@
       </Compile>
       <Compile Update="Interpreter\ParserModules\Expressions\ArithmeticParserResult.cs">
         <DependentUpon>ArithmeticParser.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Interpreter\ParserModules\Common\ArrayParserResult.cs">
-        <DependentUpon>IndexerParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Common\ParameterListParserResult.cs">
         <DependentUpon>ParameterListParser.cs</DependentUpon>

@@ -4,9 +4,9 @@ public class BakedArray : BakedObject
 {
     private BakedObject[] Values { get; }
 
-    public BakedArray(BakedObject[] values)
+    public BakedArray(IEnumerable<BakedObject> values)
     {
-        Values = values;
+        Values = values.ToArray();
     }
     
     public override object? GetValue()

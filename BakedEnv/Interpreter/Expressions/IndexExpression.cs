@@ -8,10 +8,10 @@ public class IndexExpression : BakedExpression
     public BakedExpression Target { get; }
     public BakedExpression[] Values { get; }
     
-    public IndexExpression(BakedExpression target, BakedExpression[] values)
+    public IndexExpression(BakedExpression target, IEnumerable<BakedExpression> values)
     {
         Target = target;
-        Values = values;
+        Values = values.ToArray();
     }
     
     public override BakedObject Evaluate(InvocationContext context)
@@ -19,7 +19,7 @@ public class IndexExpression : BakedExpression
         var target = Target.Evaluate(context);
         var values = Values.Select(v => v.Evaluate(context));
         
-        if (!target.TryGetIndex(values, out var output))
+        if (!target.TryGetIndex(values.ToArray(), out var output))
         {
             context.Interpreter.ReportError(new BakedError(
                 ErrorCodes.InvalidOperator,
