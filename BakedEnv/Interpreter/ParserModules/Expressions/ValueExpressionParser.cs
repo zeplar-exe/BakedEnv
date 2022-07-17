@@ -24,6 +24,8 @@ internal class ValueExpressionParser : ParserModule
         {
             return builder.BuildFailure();
         }
+        
+        Internals.Iterator.PushCurrent();
 
         switch (first.Type)
         {
@@ -48,8 +50,6 @@ internal class ValueExpressionParser : ParserModule
                     }
                 }
 
-                Internals.Iterator.PushCurrent();
-                
                 var identifierParser = new ChainIdentifierParser(Internals);
                 var result = identifierParser.Parse();
                 
@@ -81,8 +81,6 @@ internal class ValueExpressionParser : ParserModule
             case LexerTokenType.SingleQuotation: // String
             case LexerTokenType.DoubleQuotation:
             {
-                Internals.Iterator.PushCurrent();
-                
                 var stringParser = new StringParser(Internals);
                 var result = stringParser.Parse();
 
@@ -101,8 +99,8 @@ internal class ValueExpressionParser : ParserModule
             {
                 Internals.IteratorTools.SkipWhitespaceAndNewlines();
                 
-                var tailParser = new ExpressionParser(Internals);
-                var result = tailParser.Parse();
+                var expressionParser = new ExpressionParser(Internals);
+                var result = expressionParser.Parse();
 
                 builder.AddTokensFrom(result);
                 
@@ -133,7 +131,10 @@ internal class ValueExpressionParser : ParserModule
                     return builder.BuildFailure();
                 }
 
-                var values = arrayResult.Expressions.Select(e => e.Expression);
+                var values = arrayResult
+                    .ExpressionList
+                    .Expressions
+                    .Select(e => e.Expression);
                 var expression = new ArrayExpression(values);
 
                 return builder.BuildSuccess(expression);
@@ -148,8 +149,15 @@ internal class ValueExpressionParser : ParserModule
                     return builder.BuildFailure();
                 }
 
-                var keys = tableResult.KeyValuePairs.Select(p => p.Key.Expression);
-                var values = tableResult.KeyValuePairs.Select(p => p.Value.Expression);
+                var keys = new List<BakedExpression>();
+                var values = new List<BakedExpression>();
+
+                foreach (var pair in tableResult.KeyValuePairs)
+                {
+                    keys.Add(pair.Key.Expression);
+                    values.Add(pair.Value.Expression);
+                }
+                
                 var expression = new TableExpression(keys, values);
 
                 return builder.BuildSuccess(expression);
@@ -158,8 +166,8 @@ internal class ValueExpressionParser : ParserModule
             {
                 Internals.IteratorTools.SkipWhitespaceAndNewlines();
                 
-                var tailParser = new ExpressionParser(Internals);
-                var result = tailParser.Parse();
+                var expressionParser = new ExpressionParser(Internals);
+                var result = expressionParser.Parse();
 
                 builder.AddTokensFrom(result);
                 

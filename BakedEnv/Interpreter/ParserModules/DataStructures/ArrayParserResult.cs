@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.ParserModules.Common;
 using BakedEnv.Interpreter.ParserModules.Expressions;
 using TokenCs;
 
@@ -8,29 +10,24 @@ internal class ArrayParserResult : ParserModuleResult
     public bool IsComplete { get; }
     public LexerToken OpenBracket { get; }
     public LexerToken CloseBracket { get; }
-    public ExpressionParserResult[] Expressions { get; }
+    public ExpressionListParserResult ExpressionList { get; }
 
     public ArrayParserResult(bool complete, IEnumerable<LexerToken> allTokens, 
         LexerToken openBracket,
         LexerToken closeBracket, 
-        IEnumerable<ExpressionParserResult> expressions) : base(allTokens)
+        ExpressionListParserResult expressionList) : base(allTokens)
     {
         IsComplete = complete;
         OpenBracket = openBracket;
         CloseBracket = closeBracket;
-        Expressions = expressions.ToArray();
+        ExpressionList = expressionList;
     }
 
     public class Builder : ResultBuilder
     {
         private LexerToken? OpenBracket { get; set; }
         private LexerToken? CloseBracket { get; set; }
-        private List<ExpressionParserResult> Expressions { get; set; }
-
-        public Builder()
-        {
-            Expressions = new List<ExpressionParserResult>();
-        }
+        private ExpressionListParserResult? Expressions { get; set; }
 
         public Builder WithOpening(LexerToken token)
         {
@@ -48,18 +45,19 @@ internal class ArrayParserResult : ParserModuleResult
             return this;
         }
 
-        public Builder WithExpression(ExpressionParserResult expression)
+        public Builder WithExpressions(ExpressionListParserResult expressions)
         {
-            Expressions.Add(expression);
-            AddTokensFrom(expression);
+            Expressions = expressions;
+            AddTokensFrom(expressions);
             
             return this;
         }
 
         public ArrayParserResult Build(bool complete)
         {
-            BuilderHelper.EnsurePropertyNotNull(OpenBracket);
-            BuilderHelper.EnsurePropertyNotNull(CloseBracket);
+            BuilderHelper.EnsureLexerToken(OpenBracket, LexerTokenType.LeftBracket);
+            BuilderHelper.EnsureLexerToken(CloseBracket, LexerTokenType.RightBracket);
+            BuilderHelper.EnsurePropertyNotNull(Expressions);
             
             return new ArrayParserResult(complete, AllTokens, OpenBracket, CloseBracket, Expressions);
         }

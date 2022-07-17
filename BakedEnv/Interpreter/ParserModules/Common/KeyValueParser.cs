@@ -25,6 +25,8 @@ internal class KeyValueParser : ParserModule
             return builder.Build(false);
         }
 
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
         if (!Internals.Iterator.TryMoveNext(out var next))
         {
             return builder.Build(false);
@@ -36,6 +38,8 @@ internal class KeyValueParser : ParserModule
         }
 
         builder.WithSeparator(next);
+        
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
         
         expressionResult = expressionParser.Parse();
 

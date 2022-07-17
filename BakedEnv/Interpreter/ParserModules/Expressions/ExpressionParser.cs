@@ -105,9 +105,10 @@ internal class ExpressionParser : ParserModule
                 }
 
                 newExpression = new IndexExpression(previous, 
-                    result.Expressions
-                        .Select(e => e.Expression)
-                        .ToArray());
+                    result
+                        .ExpressionList
+                        .Expressions
+                        .Select(e => e.Expression));
 
                 break;
             }
