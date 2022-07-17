@@ -6,8 +6,8 @@ namespace BakedEnv.Interpreter.ParserModules.Identifiers;
 internal class ChainIdentifierParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
-    public IEnumerable<SingleIdentifierParserResult> IdentifierNames { get; }
-    public IEnumerable<LexerToken> SeparatorTokens { get; }
+    public SingleIdentifierParserResult[] IdentifierNames { get; }
+    public LexerToken[] SeparatorTokens { get; }
     
     private ChainIdentifierParserResult(
         bool completed, IEnumerable<LexerToken> tokens, 
@@ -15,8 +15,8 @@ internal class ChainIdentifierParserResult : ParserModuleResult
         IEnumerable<LexerToken> separatorTokens) : base(tokens)
     {
         IsComplete = completed;
-        IdentifierNames = identifierNames;
-        SeparatorTokens = separatorTokens;
+        IdentifierNames = identifierNames.ToArray();
+        SeparatorTokens = separatorTokens.ToArray();
     }
 
     public VariableReference CreateReference(BakedInterpreter interpreter)

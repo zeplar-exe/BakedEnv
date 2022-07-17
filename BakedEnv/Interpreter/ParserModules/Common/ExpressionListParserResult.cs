@@ -6,8 +6,8 @@ namespace BakedEnv.Interpreter.ParserModules.Common;
 internal class ExpressionListParserResult : ParserModuleResult
 {
     public bool IsComplete { get; }
-    public IEnumerable<LexerToken> Separators { get; }
-    public IEnumerable<ExpressionParserResult> Expressions { get; }
+    public LexerToken[] Separators { get; }
+    public ExpressionParserResult[] Expressions { get; }
     
     public ExpressionListParserResult(
         bool complete, 
@@ -16,8 +16,8 @@ internal class ExpressionListParserResult : ParserModuleResult
         IEnumerable<ExpressionParserResult> expressions) : base(allTokens)
     {
         IsComplete = complete;
-        Separators = separators;
-        Expressions = expressions;
+        Separators = separators.ToArray();
+        Expressions = expressions.ToArray();
     }
 
     public class Builder : ResultBuilder

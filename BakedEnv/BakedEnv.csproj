@@ -57,6 +57,9 @@
       <Compile Update="Interpreter\ParserModules\Common\KeyValueParserResult.cs">
         <DependentUpon>KeyValueParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\DataStructures\ArrayParserResult.cs">
+        <DependentUpon>ArrayParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
