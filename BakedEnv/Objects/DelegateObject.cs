@@ -1,4 +1,5 @@
 using System.Reflection;
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects.Conversion;
@@ -27,7 +28,14 @@ public class DelegateObject : BakedObject, IBakedCallable
     {
         try
         {
-            var objectParameters = parameters.Select(p => ConversionTable.ToObject(p)).ToArray();
+            var delegateParameters = Delegate.Method.GetParameters();
+            var objectParameters = parameters.Select((p, i) =>
+            {
+                if (i >= delegateParameters.Length)
+                    throw new TargetParameterCountException();
+
+                return ConversionTable.ToObject(p, delegateParameters[i].ParameterType);;
+            }).ToArray();
             var result = Delegate.Method.Invoke(Delegate.Target, objectParameters);
 
             return ConversionTable.ToBakedObject(result);

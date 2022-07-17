@@ -73,32 +73,35 @@ public class MappedConversionTable : IConversionTable
     {
         ObjectConversion[typeof(T)] = o => converter.Invoke((T)o);
     }
-    
-    public object? ToObject(BakedObject bakedObject)
-    {
-        return bakedObject.GetValue();
-    }
 
-    public object? ToObject(BakedObject bakedObject, Type targetType)
+    public bool TryToObject(BakedObject bakedObject, Type targetType, out object? result)
     {
+        result = null;
+        
         if (BakedConversion.TryGetValue((bakedObject.GetType(), targetType), out var converter))
         {
-            return converter.Invoke(bakedObject);
+            result = converter.Invoke(bakedObject);
+
+            return true;
         }
 
-        return null;
+        return false;
     }
 
-    public BakedObject ToBakedObject(object? o)
+    public bool TryToBakedObject(object? o, out BakedObject result)
     {
+        result = new BakedNull();
+        
         if (o == null)
-            return new BakedNull();
+            return true;
         
         if (ObjectConversion.TryGetValue(o.GetType(), out var converter))
         {
-            return converter.Invoke(o);
+            result = converter.Invoke(o);
+
+            return true;
         }
 
-        return new BakedNull();
+        return false;
     }
 }
