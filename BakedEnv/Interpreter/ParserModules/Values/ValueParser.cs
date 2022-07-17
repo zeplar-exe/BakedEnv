@@ -26,9 +26,9 @@ internal class ValueParser : ParserModule
         {
             case LexerTokenType.AlphaNumeric: // Function
             {
-                if (first.ToString() == FunctionExpressionParser.Keyword)
+                if (first.ToString() == FunctionValueParser.Keyword)
                 {
-                    var functionParser = new FunctionExpressionParser(Internals);
+                    var functionParser = new FunctionValueParser(Internals);
                     var functionResult = functionParser.Parse();
 
                     if (functionResult.IsDeclaration)

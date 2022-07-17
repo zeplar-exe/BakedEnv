@@ -48,17 +48,11 @@
       <Compile Update="Interpreter\ParserModules\Common\ArrayParserResult.cs">
         <DependentUpon>IndexerParser.cs</DependentUpon>
       </Compile>
-      <Compile Update="Interpreter\ParserModules\Expressions\FunctionExpressionParserResult.cs">
-        <DependentUpon>FunctionExpressionParser.cs</DependentUpon>
-      </Compile>
       <Compile Update="Interpreter\ParserModules\Common\ParameterListParserResult.cs">
         <DependentUpon>ParameterListParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Common\NameListParserResult.cs">
         <DependentUpon>NameListParser.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Interpreter\ParserModules\Values\FunctionValueParserResult.cs">
-        <DependentUpon>FunctionValueParser.cs</DependentUpon>
       </Compile>
       <Compile Update="Interpreter\ParserModules\Common\InstructionBlockParserResult.cs">
         <DependentUpon>InstructionBlockParser.cs</DependentUpon>

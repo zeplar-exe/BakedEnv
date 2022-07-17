@@ -1,5 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.ParserModules.Identifiers;
+using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 
@@ -42,9 +43,9 @@ internal class ValueExpressionParser : ParserModule
 
                 if (reference.Path.Count == 0)
                 {
-                    if (reference.Name == FunctionExpressionParser.Keyword)
+                    if (reference.Name == FunctionValueParser.Keyword)
                     {
-                        var functionParser = new FunctionExpressionParser(Internals);
+                        var functionParser = new FunctionValueParser(Internals);
                         var functionResult = functionParser.Parse();
 
                         if (functionResult.IsDeclaration)
