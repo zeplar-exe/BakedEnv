@@ -1,7 +1,10 @@
 using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.ParserModules.Common;
+using BakedEnv.Interpreter.ParserModules.DataStructures;
 using BakedEnv.Interpreter.ParserModules.Identifiers;
 using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
+using BakedEnv.Objects;
 using TokenCs;
 
 namespace BakedEnv.Interpreter.ParserModules.Expressions;
@@ -62,13 +65,9 @@ internal class ValueExpressionParser : ParserModule
                 return builder.BuildSuccess(new VariableExpression(reference));
             }
             case LexerTokenType.Numeric: // Integer/Decimal
-            case LexerTokenType.SingleQuotation: // String
-            case LexerTokenType.DoubleQuotation:
             {
-                Internals.Iterator.PushCurrent();
-                
-                var valueParser = new Values.ValueParser(Internals);
-                var result = valueParser.Parse();
+                var numericParser = new NumericParser(Internals);
+                var result = numericParser.Parse();
 
                 builder.AddTokensFrom(result);
                 
@@ -78,6 +77,25 @@ internal class ValueExpressionParser : ParserModule
                 }
 
                 return builder.BuildSuccess(new ValueExpression(result.Value));
+            }
+            case LexerTokenType.SingleQuotation: // String
+            case LexerTokenType.DoubleQuotation:
+            {
+                Internals.Iterator.PushCurrent();
+                
+                var stringParser = new StringParser(Internals);
+                var result = stringParser.Parse();
+
+                builder.AddTokensFrom(result);
+
+                if (!result.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+                
+                var str = new BakedString(result.String);
+
+                return builder.BuildSuccess(new ValueExpression(str));
             }
             case LexerTokenType.LeftParenthesis: // Parenthesis
             {
@@ -104,6 +122,37 @@ internal class ValueExpressionParser : ParserModule
                 }
 
                 return builder.BuildSuccess(new ParenthesisExpression(result.Expression));
+            }
+            case LexerTokenType.LeftBracket:
+            {
+                var arrayParser = new ArrayParser(Internals);
+                var arrayResult = arrayParser.Parse();
+
+                if (!arrayResult.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                var values = arrayResult.Expressions.Select(e => e.Expression);
+                var expression = new ArrayExpression(values);
+
+                return builder.BuildSuccess(expression);
+            }
+            case LexerTokenType.LeftCurlyBracket:
+            {
+                var tableParser = new TableParser(Internals);
+                var tableResult = tableParser.Parse();
+
+                if (!tableResult.IsComplete)
+                {
+                    return builder.BuildFailure();
+                }
+
+                var keys = tableResult.KeyValuePairs.Select(p => p.Key.Expression);
+                var values = tableResult.KeyValuePairs.Select(p => p.Value.Expression);
+                var expression = new TableExpression(keys, values);
+
+                return builder.BuildSuccess(expression);
             }
             case LexerTokenType.Dash: // Unary negation
             {

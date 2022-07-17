@@ -2,7 +2,7 @@ using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 using ExpressionParser = BakedEnv.Interpreter.ParserModules.Expressions.ExpressionParser;
 
-namespace BakedEnv.Interpreter.ParserModules.Common;
+namespace BakedEnv.Interpreter.ParserModules.DataStructures;
 
 internal class ArrayParser : ParserModule
 {

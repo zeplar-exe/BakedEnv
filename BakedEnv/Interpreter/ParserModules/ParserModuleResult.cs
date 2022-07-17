@@ -4,11 +4,11 @@ namespace BakedEnv.Interpreter.ParserModules;
 
 internal class ParserModuleResult
 {
-    public IEnumerable<LexerToken> AllTokens { get; }
+    public LexerToken[] AllTokens { get; }
 
     public ParserModuleResult(IEnumerable<LexerToken> allTokens)
     {
-        AllTokens = allTokens;
+        AllTokens = allTokens.ToArray();
     }
 
     internal abstract class ResultBuilder
