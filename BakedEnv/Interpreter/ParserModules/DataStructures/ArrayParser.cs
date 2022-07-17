@@ -1,3 +1,4 @@
+using BakedEnv.Interpreter.ParserModules.Common;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 using ExpressionParser = BakedEnv.Interpreter.ParserModules.Expressions.ExpressionParser;
@@ -29,10 +30,10 @@ internal class ArrayParser : ParserModule
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
         
-        var expressionParser = new ExpressionParser(Internals);
+        var expressionParser = new ExpressionListParser(Internals);
         var result = expressionParser.Parse();
 
-        builder.WithExpression(result);
+        builder.WithExpressions(result);
 
         Internals.IteratorTools.SkipWhitespaceAndNewlines();
 
