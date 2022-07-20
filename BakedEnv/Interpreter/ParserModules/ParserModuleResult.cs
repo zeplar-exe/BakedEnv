@@ -5,6 +5,7 @@ namespace BakedEnv.Interpreter.ParserModules;
 internal class ParserModuleResult
 {
     public LexerToken[] AllTokens { get; }
+    public int SourceIndex => AllTokens.FirstOrDefault()?.StartIndex ?? -1;
 
     public ParserModuleResult(IEnumerable<LexerToken> allTokens)
     {

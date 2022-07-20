@@ -1,6 +1,7 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ParserModules.Functions;
+using BakedEnv.Interpreter.ParserModules.Misc;
 using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
 using TokenCs;
@@ -24,46 +25,22 @@ internal class InstructionParser : ParserModule
             return builder.EndOfFile(Internals.Iterator.Current.EndIndex);
         }
 
-        switch (first.Type)
+        if (IsProcessorStatementStarter(first))
         {
-            case LexerTokenType.AlphaNumeric:
-            case LexerTokenType.Underscore:
-            {
-                var functionParser = new FunctionDeclarationParser(Internals);
-                var functionResult = functionParser.Parse();
+            var processorParser = new ProcessorParser(Internals);
+            var processorResult = processorParser.Parse();
+            
+            var instruction = new ProcessorStatementInstruction(
+                processorResult.KeyValuePair.Key.Expression,
+                processorResult.KeyValuePair.Value.Expression,
+                processorResult.SourceIndex);
 
-                if (functionResult.IsDeclaration)
-                {
-                    if (!functionResult.IsComplete)
-                    {
-                        return builder.BuildInvalid(new BakedError()); // TODO: ModuleResults return errors
-                    }
-                }
-                
-                break;
-            }
-            case LexerTokenType.LeftParenthesis:
-            {
-                var expressionParser = new ExpressionParser(Internals);
-                var expressionResult = expressionParser.Parse();
-
-                if (!expressionResult.IsComplete)
-                {
-                    return builder.BuildInvalid(new BakedError());
-                }
-
-                if (expressionResult.Expression is InvocationExpression invocation)
-                {// tf is this why is it locked to parenthesis?
-                    var instruction = new ObjectInvocationInstruction(
-                        invocation.Expression, 
-                        invocation.Parameters, 
-                        0);
-
-                    return builder.Build(true, instruction);
-                }
-
-                break;
-            }
+            return builder.Build(true, instruction);
         }
+    }
+
+    private bool IsProcessorStatementStarter(LexerToken token)
+    {
+        return token.Type is LexerTokenType.LeftBracket;
     }
 }
