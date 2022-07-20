@@ -13,6 +13,8 @@ internal class ProcessorParser : ParserModule
 
     public ProcessorParserResult Parse()
     {
+        var builder = new ProcessorParserResult.Builder();
+        
         if (!Internals.Iterator.TryMoveNext(out var first))
         {
             return builder.Build(false);
@@ -50,18 +52,5 @@ internal class ProcessorParser : ParserModule
         }
 
         return builder.WithClosing(closing).Build(true);
-    }
-}
-
-internal class ProcessorParserResult : ParserModuleResult
-{
-    public ProcessorParserResult(IEnumerable<LexerToken> allTokens) : base(allTokens)
-    {
-        
-    }
-
-    public class Builder : ResultBuilder
-    {
-        
     }
 }

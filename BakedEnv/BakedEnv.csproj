@@ -60,6 +60,9 @@
       <Compile Update="Interpreter\ParserModules\DataStructures\ArrayParserResult.cs">
         <DependentUpon>ArrayParser.cs</DependentUpon>
       </Compile>
+      <Compile Update="Interpreter\ParserModules\Misc\ProcessorParserResult.cs">
+        <DependentUpon>ProcessorParser.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
