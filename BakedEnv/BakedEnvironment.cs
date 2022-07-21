@@ -3,6 +3,7 @@ using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Sources;
 using BakedEnv.Interpreter.Variables;
+using BakedEnv.Keywords;
 using BakedEnv.Objects;
 
 namespace BakedEnv;
@@ -21,6 +22,8 @@ public class BakedEnvironment
     /// Processor statement handlers.
     /// </summary>
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
+
+    public List<KeywordDefinition> Keywords { get; }
     
     public List<ControlStatementDefinition> ControlStatements { get; }
 
@@ -35,6 +38,7 @@ public class BakedEnvironment
     {
         GlobalVariables = new VariableContainer();
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
+        Keywords = new List<KeywordDefinition>();
         ControlStatements = new List<ControlStatementDefinition>();
         VariableReferenceOrder = new List<VariableReferenceType>();
     }
