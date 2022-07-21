@@ -1,0 +1,53 @@
+{
+  "TOKN": {
+    "1000": {
+      "name": "EarlyEndOfFile",
+      "short": "The IBakedSource ending was reached unexpectedly.",
+      "long": ""
+    },
+    "1001": {
+      "name": "UnexpectedTokenType",
+      "short": "A token of type '{expected_type}' was expected, got '{actual_type}'.",
+      "long": ""
+    }
+  },
+  
+  "PRST": {
+    "1000": {
+      "name": "UnregisteredProcessorStatement",
+      "short": "A handler for this processor statement's key or value has not been registered.",
+      "long": "Processor statements will error on execution if no processor statement handler reports successful handling."
+    }
+  },
+  
+  "VAR": {
+    "1000": {
+      "name": "InvalidLocalVariable",
+      "short": "A variable by this name ({name}) does not existing in the current scope, its ancestors, or globals.",
+      "long": ""
+    },
+    "1001": {
+      "name": "InvalidVariablePath",
+      "short": "'{path_part}' does not contain an object by the name '{null_part}.",
+      "long": "Operations regarding pathed variables will fail if any part of the path is null when accessed."
+    }
+  },
+  
+  "INVK": {
+    "1000": {
+      "name": "NullInvocation",
+      "short": "A null value cannot be invoked.",
+      "long": ""
+    },
+    "1001": {
+      "name": "NonCallableInvocation",
+      "short": "A non-callable object cannot be invoked.",
+      "long": "BakedObjects that don't implement IBakedCallable cannot be invoked."
+    },
+    "1002": {
+      "name": "InvocationArgumentMismatch",
+      "short": "This invocation expected ({args}) and received ({actual_args}).",
+      "long": ""
+    }
+  }
+}
