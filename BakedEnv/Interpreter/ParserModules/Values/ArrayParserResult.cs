@@ -1,9 +1,7 @@
-using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.ParserModules.Common;
-using BakedEnv.Interpreter.ParserModules.Expressions;
 using TokenCs;
 
-namespace BakedEnv.Interpreter.ParserModules.DataStructures;
+namespace BakedEnv.Interpreter.ParserModules.Values;
 
 internal class ArrayParserResult : ParserModuleResult
 {
