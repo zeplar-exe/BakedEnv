@@ -97,7 +97,12 @@ internal class InstructionParser : ParserModule
                         }
                         case IndexExpression indexExpression:
                         {
-                            
+                            var assignment = new IndexAssignmentInstruction(
+                                indexExpression.Target, indexExpression.Values,
+                                assignmentValue.Expression,
+                                expressionResult.SourceIndex);
+
+                            return builder.Build(true, assignment);
                         }
                     }
                 }
