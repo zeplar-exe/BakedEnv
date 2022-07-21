@@ -1,7 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ParserModules.Expressions;
-using BakedEnv.Interpreter.ParserModules.Functions;
 using BakedEnv.Interpreter.ParserModules.Misc;
 using BakedEnv.Interpreter.ParserModules.Values;
 using BakedEnv.Interpreter.Parsers;
@@ -61,51 +60,77 @@ internal class InstructionParser : ParserModule
     {
         var expression = expressionResult.Expression;
         
+        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+        if (!Internals.Iterator.TryPeekNext(out var next))
+        {
+            return EOF;
+        }
+        
         switch (expression)
         {
             case VariableExpression:
             case IndexExpression:
             {
-                Internals.IteratorTools.SkipWhitespaceAndNewlines();
-
-                if (!Internals.Iterator.TryPeekNext(out var next))
+                switch (next.Type)
                 {
-                    return EOF;
+                    case LexerTokenType.Equals:
+                    {
+                        Internals.IteratorTools.SkipWhitespaceAndNewlines();
+
+                        var assignmentValueParser = new ExpressionParser(Internals);
+                        var assignmentValue = assignmentValueParser.Parse();
+
+                        if (!assignmentValue.IsComplete)
+                        {
+                            return Incomplete Instruction
+                        }
+
+                        switch (expression)
+                        {
+                            case VariableExpression variableExpression:
+                            {
+                                var assignment = new VariableAssignmentInstruction(
+                                    variableExpression.Reference, assignmentValue.Expression,
+                                    expressionResult.SourceIndex);
+
+                                return builder.Build(true, assignment);
+                            }
+                            case IndexExpression indexExpression:
+                            {
+                                var assignment = new IndexAssignmentInstruction(
+                                    indexExpression.Target, indexExpression.Values,
+                                    assignmentValue.Expression,
+                                    expressionResult.SourceIndex);
+
+                                return builder.Build(true, assignment);
+                            }
+                        }
+                    }
+                    default:
+                    {
+                        var environment = Internals.Interpreter.Environment;
+
+                        if (environment != null)
+                        {
+                            // TODO: Keyword
+                        }
+                        
+                        return Invalid Instruction
+                    }
                 }
-
-                if (next.Type == LexerTokenType.Equals)
+            }
+            case InvocationExpression invocationExpression:
+            {
+                if (next.Type == LexerTokenType.LeftCurlyBracket)
                 {
-                    Internals.IteratorTools.SkipWhitespaceAndNewlines();
                     
-                    var assignmentValueParser = new ExpressionParser(Internals);
-                    var assignmentValue = assignmentValueParser.Parse();
-
-                    if (!assignmentValue.IsComplete)
-                    {
-                        return Incomplete Instruction
-                    }
-
-                    switch (expression)
-                    {
-                        case VariableExpression variableExpression:
-                        {
-                            var assignment = new VariableAssignmentInstruction(
-                                variableExpression.Reference, assignmentValue.Expression, 
-                                expressionResult.SourceIndex);
-                            
-                            return builder.Build(true, assignment);
-                        }
-                        case IndexExpression indexExpression:
-                        {
-                            var assignment = new IndexAssignmentInstruction(
-                                indexExpression.Target, indexExpression.Values,
-                                assignmentValue.Expression,
-                                expressionResult.SourceIndex);
-
-                            return builder.Build(true, assignment);
-                        }
-                    }
                 }
+
+                var instruction = new ObjectInvocationInstruction(invocationExpression.Expression,
+                    invocationExpression.Parameters, expressionResult.SourceIndex);
+
+                return builder.Build(true, instruction);
             }
         }
     }
