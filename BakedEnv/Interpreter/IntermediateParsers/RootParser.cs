@@ -10,6 +10,6 @@ internal class RootParser
     
     public IEnumerable<IntermediateToken> Parse(EnumerableIterator<LexerToken> iterator)
     {
-        
+        yield break;
     }
 }
