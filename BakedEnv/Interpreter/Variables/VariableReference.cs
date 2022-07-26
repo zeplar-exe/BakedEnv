@@ -70,6 +70,20 @@ public class VariableReference
         Scope = scope;
     }
     
+    public VariableReference(IEnumerable<string> fullPath, InvocationContext context)
+    {
+        Interpreter = context.Interpreter;
+        
+        var array = fullPath.ToArray();
+        
+        if (array.Length < 1)
+            throw new ArgumentException("The full path cannot be empty.");
+
+        Name = array.Last();
+        Path = array.Take(array.Length - 1).ToList().AsReadOnly(); 
+        Scope = context.Scope;
+    }
+    
     /// <summary>
     /// Initialize a VariableReference.
     /// </summary>
@@ -91,6 +105,15 @@ public class VariableReference
         Name = name;
         Path = path.ToList().AsReadOnly();
         Scope = scope;
+    }
+    
+    public VariableReference(string name, IEnumerable<string> path, InvocationContext context)
+    {
+        Interpreter = context.Interpreter;
+
+        Name = name;
+        Path = path.ToList().AsReadOnly();
+        Scope = context.Scope;
     }
     
     /// <summary>
