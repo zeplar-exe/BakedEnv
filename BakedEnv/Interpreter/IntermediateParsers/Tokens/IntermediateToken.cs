@@ -18,7 +18,10 @@ public class IntermediateToken
 
     public T CopyTo<T>() where T : IntermediateToken, new()
     {
-        return new T();
+        var copy =  new T();
+        copy.ChildTokens.AddRange(ChildTokens);
+
+        return copy;
     }
 
     public IntermediateToken AsComplete(bool complete = true)
