@@ -22,13 +22,11 @@ Compatible with .NET 6 or higher
 
 ## Getting Started
 
-### Installation
-
-#### [Nuget](https://www.nuget.org/packages/BakedEnv/) 
+### [Nuget](https://www.nuget.org/packages/BakedEnv/) 
 
 The library can be installed via [nuget](https://www.nuget.org/packages/BakedEnv/).
 
-#### Clone/Self-Build
+### Clone/Self-Build
 
 ... 
 
