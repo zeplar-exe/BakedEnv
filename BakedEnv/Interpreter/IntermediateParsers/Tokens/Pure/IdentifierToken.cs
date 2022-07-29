@@ -1,9 +1,10 @@
 using BakedEnv.Interpreter.IntermediateParsers.Common;
+
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
+namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Pure;
 
-public class IdentifierToken : IntermediateToken
+public class IdentifierToken : PureIntermediateToken
 {
     public LexerTokenList LexerTokens { get; }
 

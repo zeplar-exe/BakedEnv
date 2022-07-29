@@ -8,6 +8,7 @@ public class RawIntermediateTokenGroup : IntermediateToken
 
     public override int StartIndex => RawTokens.FirstOrDefault()?.StartIndex ?? -1;
     public override int Length => RawTokens.Sum(t => t.Length);
+    public override int EndIndex => StartIndex + Length;
 
     public RawIntermediateTokenGroup(LexerTokenType expected)
     {

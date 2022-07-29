@@ -5,24 +5,11 @@ namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
 public abstract class IntermediateToken
 {
     public bool IsComplete { get; private set; }
-    public List<IntermediateToken> ChildTokens { get; }
+    
 
-    public IntermediateToken()
-    {
-        ChildTokens = new List<IntermediateToken>();
-    }
-
-    public virtual int StartIndex => ChildTokens.FirstOrDefault()?.StartIndex ?? -1;
-    public virtual int Length => ChildTokens.Sum(t => t.Length);
-    public virtual int EndIndex => StartIndex + Length;
-
-    public T CopyTo<T>() where T : IntermediateToken, new()
-    {
-        var copy =  new T();
-        copy.ChildTokens.AddRange(ChildTokens);
-
-        return copy;
-    }
+    public abstract int StartIndex { get; }
+    public abstract int Length { get; }
+    public abstract int EndIndex { get; }
 
     public IntermediateToken AsComplete(bool complete = true)
     {

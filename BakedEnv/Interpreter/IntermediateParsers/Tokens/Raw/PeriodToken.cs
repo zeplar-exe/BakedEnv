@@ -1,8 +1,6 @@
-using BakedEnv.Interpreter.IntermediateParsers.Tokens.Raw;
-
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Single;
+namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Raw;
 
 public class PeriodToken : RawIntermediateToken
 {

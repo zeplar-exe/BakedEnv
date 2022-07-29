@@ -8,7 +8,8 @@ public class RawIntermediateToken : IntermediateToken
     
     public override int StartIndex => RawToken.Get().StartIndex;
     public override int Length => RawToken.Get().Length;
-    
+    public override int EndIndex => StartIndex + Length;
+
     public RawIntermediateToken(LexerToken token, LexerTokenType expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
