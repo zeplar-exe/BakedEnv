@@ -27,7 +27,7 @@ public class BakedEnvironment
     
     public List<ControlStatementDefinition> ControlStatements { get; }
 
-    public List<VariableReferenceType> VariableReferenceOrder { get; }
+    public VariableReferenceOrder VariableReferenceOrder { get; }
     
     public TextWriter? OutputWriter { get; set; }
 
@@ -40,73 +40,7 @@ public class BakedEnvironment
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
         Keywords = new List<KeywordDefinition>();
         ControlStatements = new List<ControlStatementDefinition>();
-        VariableReferenceOrder = new List<VariableReferenceType>();
-    }
-
-    /// <summary>
-    /// Add a variable by key and value to the global variables.
-    /// </summary>
-    /// <param name="key">The variable name.</param>
-    /// <param name="variable">The variable's value.</param>
-    /// <returns></returns>
-    public BakedEnvironment WithVariable(BakedVariable variable)
-    {
-        GlobalVariables.Add(variable);
-
-        return this;
-    }
-    
-    public BakedEnvironment WithVariable(string name, BakedObject value)
-    {
-        GlobalVariables.Add(new BakedVariable(name, value));
-
-        return this;
-    }
-
-    public BakedEnvironment WithReadOnlyVariable(string name, BakedObject value)
-    {
-        GlobalVariables.Add(new BakedVariable(name, value) { IsReadOnly = true });
-
-        return this;
-    }
-    
-    /// <summary>
-    /// Add an array of <see cref="IProcessorStatementHandler"/> to the interpreter.
-    /// </summary>
-    /// <param name="handlers">Handlers to add.</param>
-    public BakedEnvironment WithStatementHandlers(params IProcessorStatementHandler[] handlers)
-    {
-        ProcessorStatementHandlers.AddRange(handlers);
-
-        return this;
-    }
-    
-    public BakedEnvironment WithStatementHandlers(IProcessorStatementHandler handler)
-    {
-        ProcessorStatementHandlers.Add(handler);
-
-        return this;
-    }
-
-    public BakedEnvironment WithControlStatements(params ControlStatementDefinition[] definitions)
-    {
-        ControlStatements.AddRange(definitions);
-
-        return this;
-    }
-    
-    public BakedEnvironment WithControlStatement(ControlStatementDefinition definition)
-    {
-        ControlStatements.Add(definition);
-
-        return this;
-    }
-
-    public BakedEnvironment WithOutputWriter(TextWriter? writer)
-    {
-        OutputWriter = writer;
-
-        return this;
+        VariableReferenceOrder = new VariableReferenceOrder();
     }
 
     /// <summary>
