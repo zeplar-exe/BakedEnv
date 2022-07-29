@@ -27,7 +27,7 @@ public class BakedEnvironment
     
     public List<ControlStatementDefinition> ControlStatements { get; }
 
-    public VariableReferenceOrder VariableReferenceOrder { get; }
+    public VariableReferenceOrder VariableReferenceOrder { get; set; }
     
     public TextWriter? OutputWriter { get; set; }
 
@@ -40,7 +40,7 @@ public class BakedEnvironment
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
         Keywords = new List<KeywordDefinition>();
         ControlStatements = new List<ControlStatementDefinition>();
-        VariableReferenceOrder = new VariableReferenceOrder();
+        VariableReferenceOrder = VariableReferenceOrder.Default();
     }
 
     /// <summary>

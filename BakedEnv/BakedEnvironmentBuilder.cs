@@ -37,9 +37,16 @@ public class BakedEnvironmentBuilder
         return this;
     }
 
-    public BakedEnvironmentBuilder WithVariable(string name, BakedObject value, VariableAttributes attributes = 0)
+    public BakedEnvironmentBuilder WithVariable(string name, BakedObject value)
     {
         Environment.GlobalVariables.Add(new BakedVariable(name, value));
+
+        return this;
+    }
+
+    public BakedEnvironmentBuilder WithReferenceOrder(VariableReferenceOrder order)
+    {
+        Environment.VariableReferenceOrder = order;
 
         return this;
     }
