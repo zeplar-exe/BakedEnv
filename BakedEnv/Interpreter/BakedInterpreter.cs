@@ -1,9 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
-using BakedEnv.Interpreter.Expressions;
+
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Instructions;
-using BakedEnv.Interpreter.Parsers;
+using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Sources;
+
+using TokenCs;
 
 namespace BakedEnv.Interpreter;
 
@@ -16,8 +19,6 @@ public class BakedInterpreter
     private CommonErrorReporter ErrorReporter { get; set; }
     
     private InterpreterIterator? Iterator { get; set; }
-    private IteratorTools? IteratorTools { get; set; }
-    private StateMachine<ParserState>? State { get; set; }
     private IBakedScope? CurrentScope { get; set; }
 
     /// <summary>
@@ -37,8 +38,6 @@ public class BakedInterpreter
     [MemberNotNullWhen(true, nameof(CurrentScope))]
     [MemberNotNullWhen(true, nameof(Iterator))]
     [MemberNotNullWhen(true, nameof(Source))]
-    [MemberNotNullWhen(true, nameof(State))]
-    [MemberNotNullWhen(true, nameof(IteratorTools))]
     public bool IsReady { get; private set; }
     
     /// <summary>
@@ -73,10 +72,12 @@ public class BakedInterpreter
         if (Source == null)
             throw new InvalidOperationException(
                 $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
-        
-        Iterator = new InterpreterIterator(new Lexer(Source.EnumerateCharacters()));
-        IteratorTools = new IteratorTools(this, Iterator);
-        State = new StateMachine<ParserState>(ParserState.Any);
+
+        var root = new RootParser();
+        var lexer = new Lexer(Source.EnumerateCharacters());
+        var iterator = new EnumerableIterator<LexerToken>(lexer);
+
+        Iterator = new InterpreterIterator(root.Parse(iterator));
         Context = new InterpreterContext();
         CurrentScope = Context;
         IsReady = true;
@@ -117,10 +118,8 @@ public class BakedInterpreter
     public void TearDown()
     {
         Iterator = null;
-        State = null;
         Context = null;
         IsReady = false;
-        IteratorTools = null;
         CurrentScope = null;
 
         SourceLocked = false;
@@ -135,7 +134,7 @@ public class BakedInterpreter
     {
         AssertReady();
         
-        return ReportError(id, message, Iterator.Current.Span.Start);
+        return ReportError(id, message, Iterator.Current.StartIndex);
     }
 
     /// <summary>
@@ -177,129 +176,6 @@ public class BakedInterpreter
         
         instruction = null;
 
-        IteratorTools.SkipWhitespaceAndNewlinesReserved();
-
-        if (!Iterator.TryMoveNext(out var first))
-            return false;
-        
-        var stride = IteratorTools.SkipWhitespaceAndNewlinesReserved();
-
-        if (stride != 0)
-        {
-            if (!Iterator.TryMoveNext(out first))
-                return false;
-        }
-
-        switch (first.Id)
-        {
-            case LexerTokenId.OpenBracket: // Processor statement
-            {
-                var parser = CreateProcessorStatementParser();
-
-                instruction = parser.Parse();
-                
-                break;
-            }
-            case LexerTokenId.Alphabetic:
-            case LexerTokenId.AlphaNumeric: // 
-            {
-                switch (first.ToString())
-                {
-                    case "return":
-                    {
-                        break; // TODO
-                    }
-                    case "break":
-                    {
-                        break; // TODO
-                    }
-                    case "continue":
-                    {
-                        break; // TODO
-                    }
-                    default: // Variable, invocation, control statement
-                    {
-                        Iterator.PushCurrent();
-                        
-                        var topExpressionParser = CreateExpressionParser();
-                        var topExpressionResult = topExpressionParser.TryParseExpression(out var topExpression);
-                        
-                        if (!topExpressionResult.Success)
-                        {
-                            instruction = new InvalidInstruction(topExpressionResult.Error);
-
-                            break;
-                        }
-
-                        IteratorTools.SkipWhitespaceAndNewlinesReserved();
-
-                        if (!Iterator.TryMoveNext(out var next))
-                        {
-                            instruction = new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current));
-
-                            break;
-                        }
-
-                        switch (next.Id)
-                        {
-                            case LexerTokenId.Equals:
-                            {
-                                if (topExpression is not VariableExpression variableExpression)
-                                {
-                                    instruction = new InvalidInstruction(new BakedError()); // TODO: Expected variable
-                                    
-                                    break;
-                                }
-                                
-                                IteratorTools.SkipWhitespaceAndNewlines();
-
-                                var expressionParser = CreateExpressionParser();
-                                var expResult = expressionParser.TryParseExpression(out var expression);
-                                
-                                if (!expResult.Success)
-                                {
-                                    instruction = new InvalidInstruction(expResult.Error);
-                                    
-                                    break;
-                                }
-                                
-                                instruction = new VariableAssignmentInstruction(
-                                    variableExpression.Reference, 
-                                    expression, 
-                                    Iterator.Current.Span.Start);
-
-                                break;
-                            }
-                            default:
-                            {
-                                Iterator.PushCurrent();
-                                break;
-                            }
-                        }
-
-                        break;
-                    }
-                }
-                
-                break;
-            }
-            case LexerTokenId.CloseCurlyBracket:
-            {
-                if (State.Current != ParserState.StatementBody)
-                {
-                    instruction = new InvalidInstruction(new BakedError()); // TODO
-
-                    break;
-                }
-
-                instruction = new EmptyInstruction(Iterator.Current.Span.Start);
-
-                State.MoveLast();
-                
-                break;
-            }
-        }
-        
         return instruction != null;
     }
     
@@ -311,42 +187,10 @@ public class BakedInterpreter
     [MemberNotNull(nameof(CurrentScope))]
     [MemberNotNull(nameof(Iterator))]
     [MemberNotNull(nameof(Source))]
-    [MemberNotNull(nameof(State))]
-    [MemberNotNull(nameof(IteratorTools))]
     public void AssertReady()
     {
         if (!IsReady)
             throw new InvalidOperationException(
                 $"The interpreter has not been initialized. Try calling '{nameof(Init)}' or '{nameof(WithSource)}' first.");
-    }
-
-    internal ValueParser CreateValueParser()
-    {
-        return new ValueParser(CreateInternals());
-    }
-    
-    internal ParameterParser CreateParameterParser()
-    {
-        return new ParameterParser(CreateInternals());
-    }
-
-    internal ProcessorStatementParser CreateProcessorStatementParser()
-    {
-        return new ProcessorStatementParser(CreateInternals());
-    }
-
-    internal InvocationParser CreateInvocationParser(BakedExpression expression)
-    {
-        return new InvocationParser(CreateInternals(), expression);
-    }
-
-    internal ExpressionParser CreateExpressionParser()
-    {
-        return new ExpressionParser(CreateInternals());
-    }
-
-    private ParserEnvironment CreateInternals()
-    {
-        return new ParserEnvironment(this, Iterator, IteratorTools, ErrorReporter, State, Context);
     }
 }

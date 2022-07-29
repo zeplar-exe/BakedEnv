@@ -26,8 +26,9 @@ public static class ErrorMessages
         return $"Cannot {operationName} a value of type '{right.GetType().Name}' from '{left.GetType().Name}'.";
     }
 
-    public static string InvalidIndex(BakedObject target, BakedObject value)
+    public static string InvalidIndex(BakedObject target, IEnumerable<BakedObject> values)
     {
-        return $"Cannot index a value of type '{target.GetType().Name}' with '{value.GetType().Name}'.";
+        return $"Cannot index a value of type '{target.GetType().Name}' with " +
+               $"'{string.Join(", ", values.Select(v => v.GetType().Name))}'.";
     }
 }

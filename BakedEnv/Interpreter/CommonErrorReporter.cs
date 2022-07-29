@@ -1,4 +1,3 @@
-using BakedEnv.Interpreter.Parsers;
 using TokenCs;
 
 namespace BakedEnv.Interpreter;
@@ -48,10 +47,5 @@ internal class CommonErrorReporter
             ErrorCodes.EndOfFile,
             ErrorMessages.EndOfFile,
             token.StartIndex);
-    }
-    
-    public TryResult EndOfFileResult(LexerToken token)
-    {
-        return new TryResult(false, ReportEndOfFile(token));
     }
 }
