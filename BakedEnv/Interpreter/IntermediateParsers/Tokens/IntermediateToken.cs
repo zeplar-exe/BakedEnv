@@ -2,7 +2,7 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
 
-public class IntermediateToken
+public abstract class IntermediateToken
 {
     public bool IsComplete { get; private set; }
     public List<IntermediateToken> ChildTokens { get; }
@@ -12,9 +12,9 @@ public class IntermediateToken
         ChildTokens = new List<IntermediateToken>();
     }
 
-    public int StartIndex => ChildTokens.FirstOrDefault()?.StartIndex ?? -1;
-    public int Length => ChildTokens.Sum(t => t.Length);
-    public int EndIndex => StartIndex + Length;
+    public virtual int StartIndex => ChildTokens.FirstOrDefault()?.StartIndex ?? -1;
+    public virtual int Length => ChildTokens.Sum(t => t.Length);
+    public virtual int EndIndex => StartIndex + Length;
 
     public T CopyTo<T>() where T : IntermediateToken, new()
     {
