@@ -17,7 +17,7 @@ public class IndexExpression : BakedExpression
     public override BakedObject Evaluate(InvocationContext context)
     {
         var target = Target.Evaluate(context);
-        var values = Values.Select(v => v.Evaluate(context));
+        var values = Values.Select(v => v.Evaluate(context)).ToArray();
         
         if (!target.TryGetIndex(values.ToArray(), out var output))
         {

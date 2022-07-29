@@ -1,19 +1,22 @@
 using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Common;
+using BakedEnv.Interpreter.IntermediateParsers.Tokens;
+
 using TokenCs;
 
 namespace BakedEnv.Interpreter;
 
-internal class InterpreterIterator : EnumerableIterator<LexerToken>
+internal class InterpreterIterator : EnumerableIterator<IntermediateToken>
 {
-    public BacklogEnumerable<LexerToken> Backlog { get; }
+    public BacklogEnumerable<IntermediateToken> Backlog { get; }
 
-    public InterpreterIterator(IEnumerable<LexerToken> enumerable) : this(new BacklogEnumerable<LexerToken>(enumerable))
+    public InterpreterIterator(IEnumerable<IntermediateToken> enumerable) :
+        this(new BacklogEnumerable<IntermediateToken>(enumerable))
     {
         
     }
 
-    public InterpreterIterator(BacklogEnumerable<LexerToken> backlog) : base(backlog)
+    public InterpreterIterator(BacklogEnumerable<IntermediateToken> backlog) : base(backlog)
     {
         Backlog = backlog;
     }
@@ -23,7 +26,7 @@ internal class InterpreterIterator : EnumerableIterator<LexerToken>
         return TryMoveNext(out _);
     }
 
-    public bool TryPeekNext([NotNullWhen(true)] out LexerToken? token)
+    public bool TryPeekNext([NotNullWhen(true)] out IntermediateToken? token)
     {
         if (!TryMoveNext(out token))
             return false;
@@ -33,7 +36,7 @@ internal class InterpreterIterator : EnumerableIterator<LexerToken>
         return true;
     }
 
-    public IEnumerable<LexerToken> PeekTakeWhile(Func<LexerToken, bool> predicate)
+    public IEnumerable<IntermediateToken> PeekTakeWhile(Func<IntermediateToken, bool> predicate)
     {
         while (TryMoveNext(out var token))
         {
