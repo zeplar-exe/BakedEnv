@@ -1,15 +1,25 @@
+using System.Collections;
+
 using BakedEnv.Interpreter.Variables;
 
 namespace BakedEnv;
 
-public class VariableReferenceOrder
+public class VariableReferenceOrder : IEnumerable<VariableReferenceType>
 {
-    private readonly HashSet<VariableReferenceType> b_order;
-    public IEnumerable<VariableReferenceType> Order => b_order;
+    private HashSet<VariableReferenceType> Order { get; }
 
     public VariableReferenceOrder()
     {
-        b_order = new HashSet<VariableReferenceType>();
+        Order = new HashSet<VariableReferenceType>();
+    }
+
+    public static VariableReferenceOrder Empty() => new();
+
+    public static VariableReferenceOrder Default()
+    {
+        return new VariableReferenceOrder()
+            .Then(VariableReferenceType.Globals)
+            .Then(VariableReferenceType.ScopeVariables);
     }
     
     public VariableReferenceOrder(params VariableReferenceType[] order) : this(order.AsEnumerable())
@@ -19,7 +29,7 @@ public class VariableReferenceOrder
 
     public VariableReferenceOrder(IEnumerable<VariableReferenceType> order)
     {
-        b_order = new HashSet<VariableReferenceType>();
+        Order = new HashSet<VariableReferenceType>();
         
         foreach (var type in order)
         {
@@ -29,8 +39,18 @@ public class VariableReferenceOrder
 
     public VariableReferenceOrder Then(VariableReferenceType type)
     {
-        b_order.Add(type);
+        Order.Add(type);
 
         return this;
+    }
+
+    public IEnumerator<VariableReferenceType> GetEnumerator()
+    {
+        return Order.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
