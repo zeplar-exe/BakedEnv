@@ -1,10 +1,10 @@
-using BakedEnv.Interpreter.IntermediateParsers.Tokens.Single;
+using BakedEnv.Interpreter.IntermediateParsers.Tokens.Raw;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Variables;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
+namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Pure;
 
-public class VariableToken : IntermediateToken
+public class VariableToken : PureIntermediateToken
 {
     public List<IdentifierToken> Identifiers { get; }
     public List<PeriodToken> Separators { get; }
