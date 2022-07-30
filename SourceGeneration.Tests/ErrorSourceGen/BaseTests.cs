@@ -5,6 +5,6 @@ public class BaseTests
     [Test]
     public void TestBakedError()
     {
-        Console.WriteLine(BakedError.VAR.E1000("abc123"));
+        Console.WriteLine(BakedError.VAR.E1000("abc123", 0));
     }
 }
