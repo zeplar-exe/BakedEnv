@@ -1,6 +1,6 @@
 using BakedEnv.Interpreter.IntermediateParsers.Tokens.Raw;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Interpreter.Variables;
+using BakedEnv.Variables;
 
 namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Pure;
 

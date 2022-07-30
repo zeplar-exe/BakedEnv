@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.Sources;
+namespace BakedEnv.Sources;
 
 /// <summary>
 /// A baked source which allows for insertion mid-parse. Useful when debugging.

@@ -46,8 +46,8 @@ public class ProcessorStatementInstruction : InterpreterInstruction
         context.ReportError(CreateInvalidStatementError());
     }
 
-    private BakedError CreateInvalidStatementError()
+    private BakedEnv.BakedError CreateInvalidStatementError()
     {
-        return BakedError.PRST.E1000(SourceIndex);
+        return BakedEnv.BakedError.PRST.E1000(SourceIndex);
     }
 }

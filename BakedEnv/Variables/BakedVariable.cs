@@ -1,6 +1,6 @@
 using BakedEnv.Objects;
 
-namespace BakedEnv.Interpreter.Variables;
+namespace BakedEnv.Variables;
 
 public class BakedVariable
 {

@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
+using BakedEnv.Variables;
 
-namespace BakedEnv;
+namespace BakedEnv.Environment;
 
 public class EnvironmentVariableBuilder
 {

@@ -1,9 +1,9 @@
 using BakedEnv.ControlStatements;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
+using BakedEnv.Variables;
 
-namespace BakedEnv;
+namespace BakedEnv.Environment;
 
 public class BakedEnvironmentBuilder
 {

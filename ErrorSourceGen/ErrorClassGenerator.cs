@@ -20,7 +20,7 @@ public class ErrorClassGenerator
         
         context.AddSource("BakedError.g.cs", 
             $@"#nullable enable
-namespace BakedEnv.Interpreter
+namespace BakedEnv
 {{
 public partial record struct BakedError(string? Id, string Name, string ShortDescription, string LongDescription, int SourceIndex)
 {{

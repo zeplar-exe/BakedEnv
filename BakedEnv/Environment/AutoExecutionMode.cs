@@ -1,4 +1,4 @@
-namespace BakedEnv;
+namespace BakedEnv.Environment;
 
 /// <summary>
 /// Determine how <see cref="BakedEnvironment"/> methods will invoke instructions.

@@ -1,6 +1,9 @@
 using System.Numerics;
-using BakedEnv.Interpreter.Sources;
+
+using BakedEnv.Environment;
 using BakedEnv.Objects;
+using BakedEnv.Sources;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;

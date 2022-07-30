@@ -1,8 +1,8 @@
 using System.Collections;
 
-using BakedEnv.Interpreter.Variables;
+using BakedEnv.Variables;
 
-namespace BakedEnv;
+namespace BakedEnv.Environment;
 
 public class VariableReferenceOrder : IEnumerable<VariableReferenceType>
 {

@@ -1,5 +1,6 @@
-﻿using BakedEnv.Interpreter.Variables;
+﻿using BakedEnv.Environment;
 using BakedEnv.Objects;
+using BakedEnv.Variables;
 
 namespace BakedEnv.ApiInjection;
 

@@ -30,7 +30,7 @@ public class IndexAssignmentInstruction : InterpreterInstruction
 
         if (!target.TrySetIndex(indices, value))
         {
-            context.ReportError(BakedError.VAL.E1003(
+            context.ReportError(BakedEnv.BakedError.VAL.E1003(
                 value.TypeName(), StringHelper.CreateTypeList(indices), target.TypeName(), context.SourceIndex));
         }
     }

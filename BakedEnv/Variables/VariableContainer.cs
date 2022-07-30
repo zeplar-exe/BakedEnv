@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+
 using BakedEnv.Objects;
 
-namespace BakedEnv.Interpreter.Variables;
+namespace BakedEnv.Variables;
 
 public class VariableContainer : ICollection<BakedVariable>
 {
