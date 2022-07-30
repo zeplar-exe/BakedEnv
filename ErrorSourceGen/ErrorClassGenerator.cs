@@ -16,11 +16,16 @@ public class ErrorClassGenerator
         if (Contract == null)
             return;
         
+        // Take note of https://stackoverflow.com/a/184975/16324801
+        
         context.AddSource("BakedError.g.cs", 
             $@"#nullable enable
+namespace BakedEnv.Interpreter
+{{
 public partial record struct BakedError(string? Id, string Name, string ShortDescription, string LongDescription, int SourceIndex)
 {{
     {string.Join(Environment.NewLine, Contract.Select(CreateErrorGroupClass))}
+}}
 }}");
     }
 
@@ -55,13 +60,13 @@ public static BakedError E{contract.Key}({string.Join(",", formatParams)})
         ""{contract.Value.LongDescription}"",
         sourceIndex);
 }}";
-    } // Return BakedError instead
+    }
 
     private HashSet<string> FindFormatTags(params string[] strings)
     {
         var set = new HashSet<string>();
         var regex = new Regex(@"(?<!\\)\{[\w_][_\w\d]*\}");
-        // https://regex101.com/r/4Wj3u9/1
+        // https://regex101.com/r/etBhAP/1
 
         foreach (var s in strings)
         {
