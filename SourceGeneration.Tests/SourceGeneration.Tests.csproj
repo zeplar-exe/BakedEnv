@@ -17,11 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ErrorSourceGen\ErrorSourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="ErrorSourceGen\TestResources\GroupTest.json" />
+      <ProjectReference Include="..\ErrorSourceGen\ErrorSourceGen.csproj" 
+                        OutputItemType="Analyzer" 
+                        ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 </Project>
