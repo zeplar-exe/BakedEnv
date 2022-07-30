@@ -14,5 +14,10 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+    
+    <ItemGroup>
+        <None Remove="Errors.json" />
+        <EmbeddedResource Include="Resources\Errors.json" />
+    </ItemGroup>
 
 </Project>
