@@ -37,7 +37,7 @@ public class BakedEnvironmentBuilder
         return this;
     }
 
-    public BakedEnvironmentBuilder WithVariable(string name, BakedObject value)
+    public BakedEnvironmentBuilder WithVariable(string name, BakedObject value, VariableAttributes attributes = 0)
     {
         Environment.GlobalVariables.Add(new BakedVariable(name, value));
 

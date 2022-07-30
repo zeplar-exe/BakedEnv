@@ -124,6 +124,6 @@ public class BakedObjectConversionTests
 
     private object? GetValue(BakedObject bakedObject, Type target)
     {
-        return MappedConversionTable.Primitive().ToObject(bakedObject, target);
+        return MappedConversionTable.Primitive().TryToObject(bakedObject, target, out var o) ? o : null;
     }
 }
