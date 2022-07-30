@@ -89,8 +89,8 @@ public class ObjectConversionTests
     private bool ConvertedValueIs<T>(object value) where T : BakedObject
     {
         var table = MappedConversionTable.Primitive();
-        var bakedObject = table.ToBakedObject(value);
+        var success = table.TryToBakedObject(value, out var bakedObject);
 
-        return bakedObject is T && bakedObject.Equals(value);
+        return success && bakedObject is T && bakedObject.Equals(value);
     }
 }

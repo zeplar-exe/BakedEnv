@@ -31,8 +31,8 @@ public class ProcessorInstructions
     [Test]
     public void TestProcessorStatementExecution()
     {
-        var session = new BakedEnvironment()
-            .WithStatementHandlers(new MockStatementHandler())
+        var session = new BakedEnvironmentBuilder()
+            .WithStatementHandlers(new MockStatementHandler()).Build()
             .CreateSession(new RawStringSource($"[Pizza: \"Time\"]"))
             .Init();
         session.ExecuteUntilEnd();
@@ -43,8 +43,8 @@ public class ProcessorInstructions
     [Test]
     public void TestWhitespace()
     {
-        var session = new BakedEnvironment()
-            .WithStatementHandlers(new MockStatementHandler())
+        var session = new BakedEnvironmentBuilder()
+            .WithStatementHandlers(new MockStatementHandler()).Build()
             .CreateSession(new RawStringSource($"[    NaN: \t 0 \n ]"))
             .Init();
         session.ExecuteUntilEnd();
@@ -57,8 +57,10 @@ public class ProcessorInstructions
         public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
         {
             context.Interpreter.AssertReady();
+
+            var key = instruction.Key.Evaluate(context);
             
-            context.Interpreter.Context.Variables.Add(instruction.Name, instruction.Expression.Evaluate(context));
+            context.Interpreter.Context.Variables.Add(key.ToString(), instruction.Expression.Evaluate(context));
             
             return true;
         }

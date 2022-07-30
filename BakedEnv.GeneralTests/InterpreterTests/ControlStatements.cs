@@ -11,10 +11,11 @@ public class ControlStatements
     [Test]
     public void TestIfStatementTrue()
     {
-        var environment = new BakedEnvironment()
+        var environment = new BakedEnvironmentBuilder()
             .WithVariable("condition", new BakedBoolean(true))
             .WithVariable("target", new BakedInteger(0))
-            .WithControlStatement("if", 1, new IfStatementDefinition());
+            .WithControlStatement(new IfStatementDefinition())
+            .Build();
         var session = environment.CreateSession(new RawStringSource("if (condition) { target = 1 }")).Init();
         session.ExecuteUntilEnd();
 
@@ -24,10 +25,11 @@ public class ControlStatements
     [Test]
     public void TestIfStatementFalse()
     {
-        var environment = new BakedEnvironment()
+        var environment = new BakedEnvironmentBuilder()
             .WithVariable("condition", new BakedBoolean(false))
             .WithVariable("target", new BakedInteger(0))
-            .WithControlStatement("if", 1, new IfStatementDefinition());
+            .WithControlStatement(new IfStatementDefinition())
+            .Build();
         var session = environment.CreateSession(new RawStringSource("if (condition) { target = 1 }")).Init();
         session.ExecuteUntilEnd();
 

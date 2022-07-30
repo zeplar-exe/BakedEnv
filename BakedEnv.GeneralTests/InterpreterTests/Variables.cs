@@ -1,4 +1,5 @@
 using BakedEnv.Interpreter.Sources;
+using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
 using NUnit.Framework;
 
@@ -37,8 +38,9 @@ public class Variables
     [Test]
     public void TestReadOnlyVariable()
     {
-        var environment = new BakedEnvironment()
-            .WithReadOnlyVariable("Foo", new BakedInteger(1));
+        var environment = new BakedEnvironmentBuilder()
+            .WithVariable("Foo", new BakedInteger(1), VariableAttributes.ReadOnly)
+            .Build();
         var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
         session.ExecuteUntilEnd();
         
@@ -48,8 +50,9 @@ public class Variables
     [Test]
     public void TestContainedVariable()
     {
-        var environment = new BakedEnvironment()
-            .WithVariable("pizza", new MockPropertyObject());
+        var environment = new BakedEnvironmentBuilder()
+            .WithVariable("pizza", new MockPropertyObject())
+            .Build();
         var session = environment.CreateSession(new RawStringSource("a = pizza.foo")).Init();
         session.ExecuteUntilEnd();
 

@@ -55,8 +55,9 @@ public class VariableReferences
     [Test]
     public void TestContainedVariable()
     {
-        var environment = new BakedEnvironment()
-            .WithVariable("pizza", new MockPropertyObject());
+        var environment = new BakedEnvironmentBuilder()
+            .WithVariable("pizza", new MockPropertyObject())
+            .Build();
         var session = environment.CreateSession(new RawStringSource("")).Init();
         session.ExecuteUntilEnd();
 

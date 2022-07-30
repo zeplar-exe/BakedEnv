@@ -14,7 +14,7 @@ public class Tables
         session.ExecuteUntilEnd();
 
         var variable = session.TopVariables["foo"];
-        var index = variable.Value.TryGetIndex(new BakedInteger(0), out var value);
+        var index = variable.Value.TryGetIndex(new[] { new BakedInteger(0) }, out var value);
 
         Assert.True(index && value.Equals("Bar"));
     }
