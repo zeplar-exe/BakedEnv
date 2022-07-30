@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter;
+
 namespace SourceGeneration.Tests.ErrorSourceGen;
 
 public class BaseTests
