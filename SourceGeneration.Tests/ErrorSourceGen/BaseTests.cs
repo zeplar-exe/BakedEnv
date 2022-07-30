@@ -1,4 +1,4 @@
-using BakedEnv.Interpreter;
+using BakedEnv;
 
 namespace SourceGeneration.Tests.ErrorSourceGen;
 
