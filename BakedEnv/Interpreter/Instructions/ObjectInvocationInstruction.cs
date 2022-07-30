@@ -43,20 +43,14 @@ public class ObjectInvocationInstruction : InterpreterInstruction
 
         if (value is BakedNull)
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvokeNull,
-                "Cannot invoke a null value.",
-                context.SourceIndex));
+            context.ReportError(BakedError.INVK.E1000(context.SourceIndex));
 
             return value;
         }
 
         if (value is not IBakedCallable callable)
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvokeNonCallable,
-                "Cannot invoke a non-callable object.",
-                context.SourceIndex));
+            context.ReportError(BakedError.INVK.E1001(context.SourceIndex));
             
             return new BakedNull();
         }

@@ -124,31 +124,6 @@ public class BakedInterpreter
 
         SourceLocked = false;
     }
-    
-    /// <summary>
-    /// Report an error using the current token as a source.
-    /// </summary>
-    /// <param name="id">Optional error ID.</param>
-    /// <param name="message">Error message.</param>
-    public BakedError ReportError(string? id, string message)
-    {
-        AssertReady();
-        
-        return ReportError(id, message, Iterator.Current.StartIndex);
-    }
-
-    /// <summary>
-    /// Report an error with the required arguments to create a <see cref="BakedError"/>.
-    /// </summary>
-    /// <param name="id">Optional error ID.</param>
-    /// <param name="message">Error message.</param>
-    /// <param name="sourceIndex">Error index.</param>
-    public BakedError ReportError(string? id, string message, int sourceIndex)
-    {
-        AssertReady();
-        
-        return ReportError(new BakedError(id, message, sourceIndex));
-    }
 
     /// <summary>
     /// Report a raw <see cref="BakedError"/>.

@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -21,9 +22,9 @@ public class ExponentiationExpression : BakedExpression
         
         if (!left.TryExponent(Right.Evaluate(context), out var result))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidBinaryOperation("raise", left, right),
+            context.ReportError(BakedError.VAL.E1000(
+                "raise", 
+                left.TypeName(), right.TypeName(),
                 context.SourceIndex));
         }
 

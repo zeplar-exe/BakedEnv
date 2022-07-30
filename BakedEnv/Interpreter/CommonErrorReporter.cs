@@ -1,3 +1,5 @@
+using BakedEnv.Helpers;
+
 using TokenCs;
 
 namespace BakedEnv.Interpreter;
@@ -27,25 +29,13 @@ internal class CommonErrorReporter
     
     public BakedError ReportUnexpectedTokenType(LexerToken token, params LexerTokenType[] expected)
     {
-        return Interpreter.ReportError(
-            ErrorCodes.InvalidTokenType,
-            ErrorMessages.ExpectedTokenOfType(token, expected),
-            token.StartIndex);
-    }
-
-    public BakedError ReportInvalidValue(LexerToken token)
-    {
-        return Interpreter.ReportError(
-            ErrorCodes.InvalidValue,
-            ErrorMessages.ValueExpected,
-            token.StartIndex);
+        return Interpreter.ReportError(BakedError.TOKN.E1001(
+            StringHelper.CreateEnumList(expected), token.Type, 
+            token.StartIndex));
     }
     
     public BakedError ReportEndOfFile(LexerToken token)
     {
-        return Interpreter.ReportError(
-            ErrorCodes.EndOfFile,
-            ErrorMessages.EndOfFile,
-            token.StartIndex);
+        return Interpreter.ReportError(BakedError.TOKN.E1000(token.StartIndex));
     }
 }

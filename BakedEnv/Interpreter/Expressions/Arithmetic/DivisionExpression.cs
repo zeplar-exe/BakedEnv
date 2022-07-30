@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -21,9 +22,9 @@ public class DivisionExpression : BakedExpression
         
         if (!left.TryDivide(Right.Evaluate(context), out var result))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidBinaryOperation("divide", left, right),
+            context.ReportError(BakedError.VAL.E1000(
+                "divide", 
+                left.TypeName(), right.TypeName(),
                 context.SourceIndex));
         }
 

@@ -52,7 +52,7 @@ public static BakedError E{contract.Key}({string.Join(",", formatParams)})
         ""{contract.Key}"", 
         ""{contract.Value.Name}"", 
         ""{contract.Value.ShortDescription}"", 
-        ""{contract.Value.ShortDescription}"",
+        ""{contract.Value.LongDescription}"",
         sourceIndex);
 }}";
     } // Return BakedError instead

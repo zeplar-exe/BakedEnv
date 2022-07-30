@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -18,10 +19,7 @@ public class NegateExpression : BakedExpression
         
         if (!value.TryNegate(out var negated))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidUnaryOperation("negate", value),
-                context.SourceIndex));
+            context.ReportError(BakedError.VAL.E1001("negate", value.TypeName(), context.SourceIndex));
         }
 
         return negated;

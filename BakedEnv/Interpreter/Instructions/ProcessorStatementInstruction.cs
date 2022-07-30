@@ -43,14 +43,11 @@ public class ProcessorStatementInstruction : InterpreterInstruction
                 return;
         }
         
-        context.Interpreter.ReportError(CreateInvalidStatementError());
+        context.ReportError(CreateInvalidStatementError());
     }
 
     private BakedError CreateInvalidStatementError()
     {
-        return new BakedError(
-            ErrorCodes.UnregisteredProcStatement,
-            $"A valid handler for this processor statement has not been registered.",
-            SourceIndex);
+        return BakedError.PRST.E1000(SourceIndex);
     }
 }

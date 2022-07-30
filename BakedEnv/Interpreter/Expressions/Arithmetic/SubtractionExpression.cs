@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -21,9 +22,9 @@ public class SubtractionExpression : BakedExpression
         
         if (!left.TrySubtract(Right.Evaluate(context), out var result))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidBinaryOperation("subtract", left, right),
+            context.ReportError(BakedError.VAL.E1000(
+                "subtract", 
+                left.TypeName(), right.TypeName(),
                 context.SourceIndex));
         }
 
