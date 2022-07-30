@@ -1,4 +1,5 @@
-﻿using BakedEnv.Objects;
+﻿using BakedEnv.Interpreter.Variables;
+using BakedEnv.Objects;
 
 namespace BakedEnv.ApiInjection;
 
@@ -19,8 +20,9 @@ public class ApiInjector
         }
 
         var method = new DelegateObject((Func<string, BakedObject>)RetrieveApi);
+        var variable = new BakedVariable(ApiMethodName, method) { IsReadOnly = true };
 
-        environment.WithVariable(ApiMethodName, method);
+        environment.GlobalVariables.Add(variable);
     }
     
     public void Inject(string name, ApiObject o)
