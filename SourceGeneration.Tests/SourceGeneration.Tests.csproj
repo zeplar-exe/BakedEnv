@@ -17,9 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ErrorSourceGen\ErrorSourceGen.csproj" 
-                        OutputItemType="Analyzer" 
-                        ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\ErrorSourceGen\ErrorSourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 </Project>
