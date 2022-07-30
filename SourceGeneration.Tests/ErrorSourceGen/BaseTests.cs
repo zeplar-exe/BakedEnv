@@ -3,8 +3,8 @@ namespace SourceGeneration.Tests.ErrorSourceGen;
 public class BaseTests
 {
     [Test]
-    public void Base()
+    public void TestBakedError()
     {
-        Console.WriteLine(GeneratedOutput.Text);
+        Console.WriteLine(BakedError.VAR.E1000());
     }
 }

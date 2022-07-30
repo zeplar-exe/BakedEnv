@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Runtime.Serialization.Json;
+
 using Microsoft.CodeAnalysis;
 
 namespace ErrorSourceGen;
@@ -7,10 +8,12 @@ namespace ErrorSourceGen;
 [Generator]
 public class StaticErrorsGenerator : ISourceGenerator
 {
+    private ErrorClassGenerator ClassGenerator { get; set; }
     private OutputGenerator Output { get; set; }
     
     public void Initialize(GeneratorInitializationContext context)
     {
+        ClassGenerator = new ErrorClassGenerator();
         Output = new OutputGenerator();
     }
     
@@ -23,15 +26,27 @@ public class StaticErrorsGenerator : ISourceGenerator
         {
             if (name.StartsWith($"{assembly.GetName().Name}.Resources"))
             {
-                HandleJson(name);
+                HandleJson(assembly, name);
             }
         }
         
+        ClassGenerator.Flush(context);
         Output.Flush(context);
     }
 
-    private void HandleJson(string manifest)
+    private void HandleJson(Assembly assembly, string manifest)
     {
-        Output.WriteLine(manifest);
+        using var manifestStream = assembly.GetManifestResourceStream(manifest);
+        
+        if (manifestStream == null)
+            return;
+        
+        var serializeSettings = new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true };
+        var serializer = new DataContractJsonSerializer(typeof(ErrorsContract), serializeSettings);
+
+        if (serializer.ReadObject(manifestStream) is not ErrorsContract result)
+            return;
+
+        ClassGenerator.Contract = result;
     }
 }
