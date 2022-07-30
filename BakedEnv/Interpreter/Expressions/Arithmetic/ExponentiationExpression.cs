@@ -22,7 +22,7 @@ public class ExponentiationExpression : BakedExpression
         
         if (!left.TryExponent(Right.Evaluate(context), out var result))
         {
-            context.ReportError(BakedError.VAL.E1000(
+            context.ReportError(BakedEnv.BakedError.VAL.E1000(
                 "raise", 
                 left.TypeName(), right.TypeName(),
                 context.SourceIndex));

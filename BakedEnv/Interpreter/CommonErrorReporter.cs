@@ -13,7 +13,7 @@ internal class CommonErrorReporter
         Interpreter = interpreter;
     }
     
-    public bool TestUnexpectedTokenType(LexerToken token, out BakedError error, params LexerTokenType[] expected)
+    public bool TestUnexpectedTokenType(LexerToken token, out BakedEnv.BakedError error, params LexerTokenType[] expected)
     {
         error = default;
         
@@ -27,15 +27,15 @@ internal class CommonErrorReporter
         return false;
     }
     
-    public BakedError ReportUnexpectedTokenType(LexerToken token, params LexerTokenType[] expected)
+    public BakedEnv.BakedError ReportUnexpectedTokenType(LexerToken token, params LexerTokenType[] expected)
     {
-        return Interpreter.ReportError(BakedError.TOKN.E1001(
+        return Interpreter.ReportError(BakedEnv.BakedError.TOKN.E1001(
             StringHelper.CreateEnumList(expected), token.Type, 
             token.StartIndex));
     }
     
-    public BakedError ReportEndOfFile(LexerToken token)
+    public BakedEnv.BakedError ReportEndOfFile(LexerToken token)
     {
-        return Interpreter.ReportError(BakedError.TOKN.E1000(token.StartIndex));
+        return Interpreter.ReportError(BakedEnv.BakedError.TOKN.E1000(token.StartIndex));
     }
 }

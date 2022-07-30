@@ -7,7 +7,7 @@ public record InvocationContext(BakedInterpreter Interpreter, IBakedScope Scope,
         
     }
 
-    public void ReportError(BakedError error)
+    public void ReportError(BakedEnv.BakedError error)
     {
         Interpreter.ReportError(error);
     }

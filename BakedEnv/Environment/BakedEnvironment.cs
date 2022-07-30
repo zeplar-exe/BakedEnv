@@ -1,12 +1,11 @@
 ﻿using BakedEnv.ControlStatements;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
-using BakedEnv.Interpreter.Sources;
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Keywords;
-using BakedEnv.Objects;
+using BakedEnv.Sources;
+using BakedEnv.Variables;
 
-namespace BakedEnv;
+namespace BakedEnv.Environment;
 
 /// <summary>
 /// An script environment to load and execute scripts.

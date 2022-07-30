@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.Sources;
+namespace BakedEnv.Sources;
 
 /// <summary>
 /// A baked source which enumerates a raw string.

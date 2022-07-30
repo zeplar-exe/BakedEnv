@@ -1,3 +1,4 @@
+using BakedEnv.Environment;
 using BakedEnv.Interpreter;
 using NUnit.Framework;
 

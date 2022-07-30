@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.Variables;
+namespace BakedEnv.Variables;
 
 [Flags]
 public enum VariableAttributes

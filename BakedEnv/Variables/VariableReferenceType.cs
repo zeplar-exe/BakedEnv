@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.Variables;
+namespace BakedEnv.Variables;
 
 public enum VariableReferenceType
 {

@@ -1,10 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 
-using BakedEnv.Extensions;
+using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
-namespace BakedEnv.Interpreter.Variables;
+namespace BakedEnv.Variables;
 
 /// <summary>
 /// A 'reference' to variables within a BakedInterpreter.

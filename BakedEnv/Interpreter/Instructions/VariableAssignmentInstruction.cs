@@ -1,6 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Interpreter.Variables;
+using BakedEnv.Variables;
 
 namespace BakedEnv.Interpreter.Instructions;
 

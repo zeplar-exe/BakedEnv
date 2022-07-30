@@ -1,7 +1,7 @@
 using BakedEnv.Helpers;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
+using BakedEnv.Variables;
 
 namespace BakedEnv.Interpreter.Expressions;
 
@@ -20,10 +20,10 @@ public class VariableExpression : BakedExpression
         {
             if (Reference.IsLocal())
             {
-                context.ReportError(BakedError.VAR.E1000(Reference.Name, context.SourceIndex));
+                context.ReportError(BakedEnv.BakedError.VAR.E1000(Reference.Name, context.SourceIndex));
             }
             
-            context.ReportError(BakedError.VAR.E1001(
+            context.ReportError(BakedEnv.BakedError.VAR.E1001(
                 string.Join('.', Reference.FullPath),
                 context.SourceIndex));
         }

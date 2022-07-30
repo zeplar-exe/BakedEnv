@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace BakedEnv.Interpreter.Sources;
+namespace BakedEnv.Sources;
 
 /// <summary>
 /// A baked source which pulls characters from a file.

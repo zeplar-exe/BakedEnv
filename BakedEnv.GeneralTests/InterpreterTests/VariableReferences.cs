@@ -1,6 +1,8 @@
-using BakedEnv.Interpreter.Sources;
-using BakedEnv.Interpreter.Variables;
+using BakedEnv.Environment;
 using BakedEnv.Objects;
+using BakedEnv.Sources;
+using BakedEnv.Variables;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;

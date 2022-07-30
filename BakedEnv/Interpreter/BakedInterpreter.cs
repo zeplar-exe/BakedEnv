@@ -1,10 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Common;
+using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Interpreter.Sources;
+using BakedEnv.Sources;
 
 using TokenCs;
 
@@ -51,9 +52,9 @@ public class BakedInterpreter
     public bool SourceLocked { get; private set; }
     
     /// <summary>
-    /// Event invoked via <see cref="ReportError(BakedError)"/>. Retrieves error information during parsing or execution.
+    /// Event invoked via <see cref="ReportError(BakedEnv.BakedError)"/>. Retrieves error information during parsing or execution.
     /// </summary>
-    public event EventHandler<BakedError>? ErrorReported;
+    public event EventHandler<BakedEnv.BakedError>? ErrorReported;
 
     /// <summary>
     /// Initialize a BakedInterpreter.
@@ -126,10 +127,10 @@ public class BakedInterpreter
     }
 
     /// <summary>
-    /// Report a raw <see cref="BakedError"/>.
+    /// Report a raw <see cref="BakedEnv.BakedError"/>.
     /// </summary>
     /// <param name="error">Error to report.</param>
-    public BakedError ReportError(BakedError error)
+    public BakedEnv.BakedError ReportError(BakedEnv.BakedError error)
     {
         AssertReady();
         

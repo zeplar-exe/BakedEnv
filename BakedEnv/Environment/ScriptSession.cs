@@ -1,11 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
+
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
-using BakedEnv.Interpreter.Sources;
-using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
+using BakedEnv.Sources;
+using BakedEnv.Variables;
 
-namespace BakedEnv;
+namespace BakedEnv.Environment;
 
 /// <summary>
 /// Singular unit of a BakedEnv script session. 
