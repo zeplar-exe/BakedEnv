@@ -58,7 +58,7 @@ public class BakedTable : BakedObject
     {
         bakedObject = new BakedNull();
         
-        if (key.Length > 0)
+        if (key.Length > 1)
         {
             return false;
         }
@@ -70,7 +70,7 @@ public class BakedTable : BakedObject
     
     public override bool TrySetIndex(BakedObject[] key, BakedObject value)
     {
-        if (key.Length > 0)
+        if (key.Length > 1)
         {
             return false;
         }

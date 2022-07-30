@@ -1,3 +1,5 @@
+using BakedEnv.Extensions;
+using BakedEnv.Helpers;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Scopes;
 
@@ -28,7 +30,8 @@ public class IndexAssignmentInstruction : InterpreterInstruction
 
         if (!target.TrySetIndex(indices, value))
         {
-            context.Interpreter.ReportError(new BakedError()); // TODO
+            context.ReportError(BakedError.VAL.E1003(
+                value.TypeName(), StringHelper.CreateTypeList(indices), target.TypeName(), context.SourceIndex));
         }
     }
 }

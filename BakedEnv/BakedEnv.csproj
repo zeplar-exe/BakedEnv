@@ -13,5 +13,9 @@
     <ItemGroup>
       <PackageReference Include="TokenCs" Version="1.0.2" />
     </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ErrorSourceGen\ErrorSourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
     
 </Project>

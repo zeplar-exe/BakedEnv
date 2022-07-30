@@ -1,5 +1,6 @@
 using System.Reflection;
 using BakedEnv.Extensions;
+using BakedEnv.Helpers;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects.Conversion;
@@ -26,9 +27,10 @@ public class DelegateObject : BakedObject, IBakedCallable
     
     public BakedObject Invoke(BakedObject[] parameters, InvocationContext context)
     {
+        var delegateParameters = Delegate.Method.GetParameters();
+        
         try
         {
-            var delegateParameters = Delegate.Method.GetParameters();
             var objectParameters = parameters.Select((p, i) =>
             {
                 if (i >= delegateParameters.Length)
@@ -44,17 +46,18 @@ public class DelegateObject : BakedObject, IBakedCallable
         {
             switch (e)
             {
-                case ArgumentException args:
-                    context.Interpreter.ReportError(new BakedError(
-                        null,
-                        "Invalid arguments.",
+                case ArgumentException:
+                    var delegateParametersString = string.Join(", ", 
+                        delegateParameters.Select(p => p.ParameterType.Name));
+                    
+                    context.ReportError(BakedError.INVK.E1002(
+                        StringHelper.CreateTypeList(parameters), delegateParametersString, 
                         context.SourceIndex));
                     break;
-                case TargetParameterCountException paramCount:
-                    context.Interpreter.ReportError(new BakedError(
-                        null,
-                        "Expected {} parameters, got {}.",
-                        context.SourceIndex));
+                case TargetParameterCountException:
+                    context.ReportError(BakedError.INVK.E1003(
+                        delegateParameters.Length,
+                        parameters.Length, context.SourceIndex));
                     break;
                 default:
                     throw;

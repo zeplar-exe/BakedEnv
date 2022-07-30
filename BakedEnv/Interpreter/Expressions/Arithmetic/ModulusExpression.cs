@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -21,9 +22,9 @@ public class ModulusExpression : BakedExpression
         
         if (!left.TryModulus(Right.Evaluate(context), out var result))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidBinaryOperation("modulo", left, right),
+            context.ReportError(BakedError.VAL.E1000(
+                "modulo", 
+                left.TypeName(), right.TypeName(),
                 context.SourceIndex));
         }
 

@@ -1,3 +1,4 @@
+using BakedEnv.Helpers;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Interpreter.Variables;
 using BakedEnv.Objects;
@@ -17,10 +18,13 @@ public class VariableExpression : BakedExpression
     {
         if (!Reference.TryGetVariable(out var variable))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidVariableOrPath, 
-                $"Variable, variable path, or part of path " + 
-                $"'{string.Join(".", Reference.Path.AsEnumerable())}' does not exist.",
+            if (Reference.IsLocal())
+            {
+                context.ReportError(BakedError.VAR.E1000(Reference.Name, context.SourceIndex));
+            }
+            
+            context.ReportError(BakedError.VAR.E1001(
+                string.Join('.', Reference.FullPath),
                 context.SourceIndex));
         }
         

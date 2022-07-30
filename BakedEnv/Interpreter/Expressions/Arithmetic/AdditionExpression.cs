@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -21,10 +22,11 @@ public class AdditionExpression : BakedExpression
         
         if (!left.TryAdd(Right.Evaluate(context), out var result))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidBinaryOperation("add", left, right),
-                context.SourceIndex));
+            context.ReportError(
+                    BakedError.VAL.E1000(
+                        "add", 
+                        left.TypeName(), right.TypeName(),
+                        context.SourceIndex));
         }
 
         return result;

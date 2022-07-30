@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -20,6 +22,8 @@ public class VariableReference
     /// </summary>
     /// <remarks>If the path is empty, the variable is assumed to be top-level.</remarks>
     public IReadOnlyCollection<string> Path { get; }
+
+    public IEnumerable<string> FullPath => Path.Concat(new[] { Name });
 
     private IBakedScope? b_scope;
 
@@ -136,6 +140,11 @@ public class VariableReference
         Name = name;
         Path = new List<string>().AsReadOnly();
         Scope = scope;
+    }
+
+    public bool IsLocal()
+    {
+        return Path.Count == 0;
     }
 
     /// <summary>
@@ -264,7 +273,7 @@ public class VariableReference
     {
         bakedObject = null;
         
-        if (Path.Count == 0)
+        if (IsLocal())
             return false;
         
         var first = Path.First();

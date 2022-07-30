@@ -1,3 +1,4 @@
+using BakedEnv.Extensions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -21,9 +22,9 @@ public class IndexExpression : BakedExpression
         
         if (!target.TryGetIndex(values.ToArray(), out var output))
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvalidOperator,
-                ErrorMessages.InvalidIndex(target, values),
+            context.ReportError(BakedError.VAL.E1002(
+                target.TypeName(), 
+                string.Join(", ", values.Select(v => v.GetType().Name)), 
                 context.SourceIndex));
         }
 

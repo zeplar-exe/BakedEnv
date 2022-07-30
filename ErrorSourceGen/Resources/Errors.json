@@ -23,12 +23,12 @@
   "VAR": {
     "1000": {
       "name": "InvalidLocalVariable",
-      "short": "A variable by this name ({name}) does not existing in the current scope, its ancestors, or globals.",
+      "short": "The variable '{name}' does not exist in the current scope, its ancestors, or globals.",
       "long": ""
     },
     "1001": {
       "name": "InvalidVariablePath",
-      "short": "'{path_part}' does not contain an object by the name '{null_part}.",
+      "short": "A part of the path '{fullPath}' was null when access was attempted.",
       "long": "Operations regarding pathed variables will fail if any part of the path is null when accessed."
     }
   },
@@ -47,6 +47,34 @@
     "1002": {
       "name": "InvocationArgumentMismatch",
       "short": "This invocation expected ({args}) and received ({actual_args}).",
+      "long": ""
+    },
+    "1003": {
+      "name": "InvocationArgumentCountMismatch",
+      "short": "Expected {expectedCount} parameters, got {actualCount}.",
+      "long": ""
+    }
+  },
+  
+  "VAL": {
+    "1000": {
+      "name": "InvalidBinaryOperation",
+      "short": "Cannot {operationName} a value of type '{leftType}' with '{rightType}'.",
+      "long": ""
+    },
+    "1001": {
+      "name": "InvalidUnaryOperation",
+      "short": "Cannot {operationName} a value of type '{objectType}'.",
+      "long": ""
+    },
+    "1002": {
+      "name": "InvalidIndex",
+      "short": "Cannot index a value of type '{targetType}' with '{valueStringList}'.",
+      "long": ""
+    },
+    "1003": {
+      "name": "InvalidIndexAssignment",
+      "short": "Cannot assign a value of type '{valueType}' to the index '{valueStringList}' of {targetType}.",
       "long": ""
     }
   }
