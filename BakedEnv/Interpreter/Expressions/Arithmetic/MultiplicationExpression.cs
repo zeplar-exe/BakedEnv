@@ -22,7 +22,7 @@ public class MultiplicationExpression : BakedExpression
         
         if (!left.TryMultiply(Right.Evaluate(context), out var result))
         {
-            context.ReportError(BakedEnv.BakedError.VAL.E1000(
+            context.ReportError(BakedError.VAL.E1000(
                 "multiply", 
                 left.TypeName(), right.TypeName(),
                 context.SourceIndex));

@@ -54,7 +54,7 @@ public class BakedInterpreter
     /// <summary>
     /// Event invoked via <see cref="ReportError(BakedEnv.BakedError)"/>. Retrieves error information during parsing or execution.
     /// </summary>
-    public event EventHandler<BakedEnv.BakedError>? ErrorReported;
+    public event EventHandler<BakedError>? ErrorReported;
 
     /// <summary>
     /// Initialize a BakedInterpreter.
@@ -130,7 +130,7 @@ public class BakedInterpreter
     /// Report a raw <see cref="BakedEnv.BakedError"/>.
     /// </summary>
     /// <param name="error">Error to report.</param>
-    public BakedEnv.BakedError ReportError(BakedEnv.BakedError error)
+    public BakedError ReportError(BakedError error)
     {
         AssertReady();
         

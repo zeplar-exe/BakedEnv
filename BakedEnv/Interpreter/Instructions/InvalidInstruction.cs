@@ -10,13 +10,13 @@ public class InvalidInstruction : InterpreterInstruction
     /// <summary>
     /// Error associated with this invalid instruction.
     /// </summary>
-    public BakedEnv.BakedError AssociatedError { get; }
+    public BakedError AssociatedError { get; }
 
     /// <summary>
     /// Initialize an InvalidInstruction with its associated error.
     /// </summary>
     /// <param name="error"></param>
-    public InvalidInstruction(BakedEnv.BakedError error) : base(error.SourceIndex)
+    public InvalidInstruction(BakedError error) : base(error.SourceIndex)
     {
         AssociatedError = error;
     }

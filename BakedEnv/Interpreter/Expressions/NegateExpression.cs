@@ -19,7 +19,7 @@ public class NegateExpression : BakedExpression
         
         if (!value.TryNegate(out var negated))
         {
-            context.ReportError(BakedEnv.BakedError.VAL.E1001("negate", value.TypeName(), context.SourceIndex));
+            context.ReportError(BakedError.VAL.E1001("negate", value.TypeName(), context.SourceIndex));
         }
 
         return negated;

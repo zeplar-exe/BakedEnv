@@ -16,9 +16,9 @@ public class ErrorGroupContract : ExtensionDictionary<ErrorContract>
 
 public class ErrorContract
 {
-    [JsonPropertyName("name")] public string Name { get; set; }
-    [JsonPropertyName("short")] public string ShortDescription { get; set; }
-    [JsonPropertyName("long")] public string LongDescription { get; set; }
+    [JsonPropertyName("name")] public string? Name { get; set; }
+    [JsonPropertyName("short")] public string? ShortDescription { get; set; }
+    [JsonPropertyName("long")] public string? LongDescription { get; set; }
 }
 
 public abstract class ExtensionDictionary<TValue>
