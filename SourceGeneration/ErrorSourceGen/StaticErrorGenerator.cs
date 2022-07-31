@@ -1,5 +1,7 @@
-﻿using System.Reflection;
-using System.Runtime.Serialization.Json;
+﻿using System.Diagnostics;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using Microsoft.CodeAnalysis;
 
@@ -41,10 +43,9 @@ public class StaticErrorsGenerator : ISourceGenerator
         if (manifestStream == null)
             return;
         
-        var serializeSettings = new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true };
-        var serializer = new DataContractJsonSerializer(typeof(ErrorsContract), serializeSettings);
-
-        if (serializer.ReadObject(manifestStream) is not ErrorsContract result)
+        var reader = new StreamReader(manifestStream);
+        
+        if (JsonSerializer.Deserialize<ErrorsContract>(reader.ReadToEnd()) is not { } result)
             return;
 
         ClassGenerator.Contract = result;
