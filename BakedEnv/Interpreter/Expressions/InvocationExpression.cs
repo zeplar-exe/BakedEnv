@@ -21,14 +21,14 @@ public class InvocationExpression : BakedExpression
 
         if (value is BakedNull)
         {
-            context.ReportError(BakedEnv.BakedError.INVK.E1000(context.SourceIndex));
+            context.ReportError(BakedError.INVK.E1000(context.SourceIndex));
 
             return value;
         }
 
         if (value is not IBakedCallable callable)
         {
-            context.ReportError(BakedEnv.BakedError.INVK.E1001(context.SourceIndex));
+            context.ReportError(BakedError.INVK.E1001(context.SourceIndex));
             
             return new BakedNull();
         }

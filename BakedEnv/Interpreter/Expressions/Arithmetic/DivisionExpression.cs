@@ -22,7 +22,7 @@ public class DivisionExpression : BakedExpression
         
         if (!left.TryDivide(Right.Evaluate(context), out var result))
         {
-            context.ReportError(BakedEnv.BakedError.VAL.E1000(
+            context.ReportError(BakedError.VAL.E1000(
                 "divide", 
                 left.TypeName(), right.TypeName(),
                 context.SourceIndex));
