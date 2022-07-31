@@ -23,7 +23,7 @@ namespace BakedEnv
 {{
 public partial record struct BakedError(string? Id, string Name, string ShortDescription, string LongDescription, int SourceIndex)
 {{
-    {string.Join(Environment.NewLine, Contract.Select(CreateErrorGroupClass))}
+    {string.Join(Environment.NewLine, Contract.Properties.Select(CreateErrorGroupClass))}
 }}
 }}");
     }
@@ -33,7 +33,7 @@ public partial record struct BakedError(string? Id, string Name, string ShortDes
         return $@"
 public static class {contract.Key}
 {{
-    {string.Join(Environment.NewLine, contract.Value.Select(CreateErrorMethod))}
+    {string.Join(Environment.NewLine, contract.Value.Properties.Select(CreateErrorMethod))}
 }}";
     }
 
