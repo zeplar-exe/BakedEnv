@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
@@ -62,13 +61,14 @@ public static BakedError E{contract.Key}({string.Join(",", formatParams)})
 }}";
     }
 
-    private HashSet<string> FindFormatTags(params string[] strings)
+    #nullable enable
+    private HashSet<string> FindFormatTags(params string?[] strings)
     {
         var set = new HashSet<string>();
         var regex = new Regex(@"(?<!\\)\{[\w_][_\w\d]*\}");
         // https://regex101.com/r/etBhAP/1
 
-        foreach (var s in strings)
+        foreach (var s in strings.OfType<string>())
         {
             foreach (Match match in regex.Matches(s))
             {
