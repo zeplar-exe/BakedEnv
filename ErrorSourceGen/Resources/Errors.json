@@ -1,4 +1,6 @@
 {
+  "$schema": "./ErrorSpec.schema.json",
+  
   "TOKN": {
     "1000": {
       "name": "EarlyEndOfFile",
