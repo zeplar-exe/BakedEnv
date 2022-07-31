@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorSourceGen", "SourceGen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "SourceGeneration\Tests\Tests.csproj", "{8D13FD46-407F-4380-8B80-88C0DBA63D0A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceGeneration", "SourceGeneration\", "{EB998B32-F9BE-445F-9E72-E2FEF472FD63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,5 +40,7 @@ Global
 		{8D13FD46-407F-4380-8B80-88C0DBA63D0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{32E2A88A-F35A-484A-B662-9E633F05DB78} = {EB998B32-F9BE-445F-9E72-E2FEF472FD63}
+		{8D13FD46-407F-4380-8B80-88C0DBA63D0A} = {EB998B32-F9BE-445F-9E72-E2FEF472FD63}
 	EndGlobalSection
 EndGlobal
