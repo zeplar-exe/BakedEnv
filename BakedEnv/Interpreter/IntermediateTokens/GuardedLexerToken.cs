@@ -1,6 +1,8 @@
+using BakedEnv.Interpreter.IntermediateParsers;
+
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
+namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public class GuardedLexerToken
 {

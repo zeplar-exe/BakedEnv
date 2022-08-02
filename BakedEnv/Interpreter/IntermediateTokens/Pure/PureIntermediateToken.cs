@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Pure;
+namespace BakedEnv.Interpreter.IntermediateTokens.Pure;
 
 public class PureIntermediateToken : IntermediateToken
 {
