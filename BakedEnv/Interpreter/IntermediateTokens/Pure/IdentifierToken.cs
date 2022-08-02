@@ -2,7 +2,7 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Pure;
+namespace BakedEnv.Interpreter.IntermediateTokens.Pure;
 
 public class IdentifierToken : PureIntermediateToken
 {

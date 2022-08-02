@@ -1,6 +1,4 @@
-using TokenCs;
-
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
+namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public abstract class IntermediateToken
 {

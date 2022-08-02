@@ -1,5 +1,6 @@
 using BakedEnv.Common;
-using BakedEnv.Interpreter.IntermediateParsers.Tokens;
+using BakedEnv.Interpreter.IntermediateTokens;
+
 using TokenCs;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;

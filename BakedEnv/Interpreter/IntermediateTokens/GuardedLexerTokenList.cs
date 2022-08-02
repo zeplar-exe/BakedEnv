@@ -2,7 +2,7 @@ using System.Collections;
 
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens;
+namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public class GuardedLexerTokenList : IList<LexerToken>
 {

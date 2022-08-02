@@ -1,8 +1,8 @@
-using BakedEnv.Interpreter.IntermediateParsers.Tokens.Raw;
+using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Variables;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Tokens.Pure;
+namespace BakedEnv.Interpreter.IntermediateTokens.Pure;
 
 public class VariableToken : PureIntermediateToken
 {

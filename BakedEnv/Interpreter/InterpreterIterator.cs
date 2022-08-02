@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Common;
-using BakedEnv.Interpreter.IntermediateParsers.Tokens;
+using BakedEnv.Interpreter.IntermediateTokens;
 
 using TokenCs;
 
