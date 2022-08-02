@@ -11,16 +11,14 @@ public class GuardedLexerToken
     
     public GuardedLexerToken(LexerToken initial, LexerTokenType expectedTypes)
     {
+        Token = initial;
         ExpectedTypes = new[] { expectedTypes };
-        
-        Set(initial);
     }
     
     public GuardedLexerToken(LexerToken initial, params LexerTokenType[] expectedTypes)
     {
+        Token = initial;
         ExpectedTypes = expectedTypes;
-        
-        Set(initial);
     }
 
     public LexerToken Get()
