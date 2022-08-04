@@ -4,6 +4,7 @@ using BakedEnv.Common;
 using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
+using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
 
@@ -76,7 +77,7 @@ public class BakedInterpreter
 
         var root = new RootParser();
         var lexer = new Lexer(Source.EnumerateCharacters());
-        var iterator = new EnumerableIterator<LexerToken>(lexer);
+        var iterator = new ParserIterator(lexer);
 
         Iterator = new InterpreterIterator(root.Parse(iterator));
         Context = new InterpreterContext();

@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace BakedEnv.Common;
 
-internal class EnumerableIterator<T> : IDisposable
+public class EnumerableIterator<T> : IDisposable
 {
     private IEnumerator<T> Enumerator { get; }
 
