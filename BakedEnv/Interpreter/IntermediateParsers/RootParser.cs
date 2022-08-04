@@ -1,9 +1,11 @@
+using System.Runtime.CompilerServices;
+
 using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
 
 using TokenCs;
 
+[assembly: InternalsVisibleTo("BakedEnv.GeneralTests")]
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 internal class RootParser
