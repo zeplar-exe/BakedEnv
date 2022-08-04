@@ -1,4 +1,3 @@
-using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
@@ -16,11 +15,19 @@ internal class ProcessorStatementParser
             LeftBracket = leftBracket
         };
 
-        if (!iterator.NextIs(LexerTokenType.RightBracket, out var rightBracket))
-            return token.AsIncomplete();
+        while (iterator.SkipTrivia(out var next))
+        {
+            switch (next.Type)
+            {
+                case LexerTokenType.RightBracket:
+                {
+                    token.RightBracket = new RightBracketToken(next);
 
-        token.RightBracket = new RightBracketToken(rightBracket);
+                    return token.AsComplete();
+                }
+            }
+        }
 
-        return token;
+        return token.AsIncomplete();
     }
 }
