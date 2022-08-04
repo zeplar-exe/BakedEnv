@@ -14,7 +14,7 @@ public class RootParserCore
     public void EmptyInputIsEndOfFile()
     {
         var parser = new RootParser();
-        var iterator = LexerHelper.CreateIterator(string.Empty);
+        var iterator = ParserHelper.CreateIterator(string.Empty);
 
         var resultEnumerable = parser.Parse(iterator);
         var last = resultEnumerable.Last();
@@ -26,7 +26,7 @@ public class RootParserCore
     public void EndOfFileIsCreated()
     {
         var parser = new RootParser();
-        var iterator = LexerHelper.CreateIterator("abc");
+        var iterator = ParserHelper.CreateIterator("abc");
 
         var resultEnumerable = parser.Parse(iterator);
         var last = resultEnumerable.Last();
