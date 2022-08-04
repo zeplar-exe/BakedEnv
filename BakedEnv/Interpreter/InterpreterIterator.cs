@@ -20,12 +20,7 @@ internal class InterpreterIterator : EnumerableIterator<IntermediateToken>
     {
         Backlog = backlog;
     }
-
-    public bool TrySkip()
-    {
-        return TryMoveNext(out _);
-    }
-
+    
     public bool TryPeekNext([NotNullWhen(true)] out IntermediateToken? token)
     {
         if (!TryMoveNext(out token))
