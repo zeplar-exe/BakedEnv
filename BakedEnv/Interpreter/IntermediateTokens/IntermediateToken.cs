@@ -2,7 +2,7 @@ namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public abstract class IntermediateToken
 {
-    public bool IsComplete { get; private set; }
+    public bool IsComplete { get; protected set; }
     
 
     public abstract int StartIndex { get; }
