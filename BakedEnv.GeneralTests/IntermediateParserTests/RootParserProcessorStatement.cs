@@ -12,12 +12,14 @@ public class RootParserProcessorStatement
     {
         Assert.That(ParserHelper.TryGetFirst("[]", out var token), Is.True);
         Assert.That(token, Is.TypeOf<ProcessorStatementToken>());
+        Assert.That(token.IsComplete, Is.True);
     }
 
     [Test]
-    public void IncompleteProcessorStatementIsFailure()
+    public void ValidProcessorStatementWithTriviaIsSuccess()
     {
-        Assert.That(ParserHelper.TryGetFirst("][", out var token), Is.True);
-        Assert.That(token.IsComplete, Is.False);
+        Assert.That(ParserHelper.TryGetFirst("[ \n\r\t ]", out var token), Is.True);
+        Assert.That(token, Is.TypeOf<ProcessorStatementToken>());
+        Assert.That(token.IsComplete, Is.True);
     }
 }
