@@ -23,6 +23,11 @@ internal class EnumerableIterator<T> : IDisposable
             yield return next;
         }
     }
+    
+    public bool TrySkip()
+    {
+        return TryMoveNext(out _);
+    }
 
     public bool TryMoveNext([NotNullWhen(true)] out T? next)
     {
