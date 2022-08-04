@@ -1,11 +1,8 @@
-using System.Runtime.CompilerServices;
-
 using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 
 using TokenCs;
 
-[assembly: InternalsVisibleTo("BakedEnv.GeneralTests")]
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 internal class RootParser
@@ -21,5 +18,7 @@ internal class RootParser
             yield return new EndOfFileToken(index); 
             yield break;
         }
+
+        yield return new EndOfFileToken(input.Current!.StartIndex);
     }
 }
