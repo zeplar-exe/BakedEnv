@@ -28,6 +28,13 @@ public class GuardedLexerToken
 
     public void Set(LexerToken token)
     {
+        if (ExpectedTypes.Length == 0)
+        {
+            Token = token;
+            
+            return;
+        }
+        
         Token = token.AssertIsType(ExpectedTypes);
     }
 

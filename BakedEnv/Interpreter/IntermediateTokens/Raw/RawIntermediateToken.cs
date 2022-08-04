@@ -5,6 +5,7 @@ namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 public class RawIntermediateToken : IntermediateToken
 {
     public GuardedLexerToken RawToken { get; }
+    public LexerTokenType Type => RawToken.Get().Type;
     
     public override int StartIndex => RawToken.Get().StartIndex;
     public override int Length => RawToken.Get().Length;
