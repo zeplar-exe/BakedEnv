@@ -9,7 +9,7 @@ internal class EnumerableIterator<T> : IDisposable
     public bool Started { get; private set; }
     public bool Ended { get; private set; }
 
-    public T Current => Enumerator.Current;
+    public T? Current => Enumerator.Current;
 
     public EnumerableIterator(IEnumerable<T> enumerable)
     {
