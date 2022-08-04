@@ -48,6 +48,16 @@ internal class RootParser
                 
                 break;
             }
+            case LexerTokenType.SingleQuotation:
+            case LexerTokenType.DoubleQuotation:
+            {
+                var quotationToken = new QuotationToken(next);
+                var stringParser = new StringParser();
+
+                token = stringParser.Parse(quotationToken, input);
+                
+                break;
+            }
             default:
             {
                 token = new UnexpectedToken(next);
