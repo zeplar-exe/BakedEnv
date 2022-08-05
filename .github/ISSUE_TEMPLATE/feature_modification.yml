@@ -1,4 +1,4 @@
-name: Feature Addition
+name: Feature Modification
 description: Request a feature to be changed or removed.
 labels: [ "feature" ]
 body:
