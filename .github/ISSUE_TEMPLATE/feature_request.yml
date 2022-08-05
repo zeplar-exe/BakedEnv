@@ -1,0 +1,43 @@
+name: Feature Addition
+description: Request a new feature to be added.
+labels: [ "feature" ]
+body:
+  - type: checkboxes
+    attributes:
+      options:
+        - label: This is a request for a feature to be *added*, not *modified*, in which case, the feature modification template should be used.
+          required: true
+  - type: textarea
+    id: contact
+    attributes:
+      label: Feature Description
+      description: Describe what your feature does or changes.
+    validations:
+      required: true
+  - type: markdown
+    value: |
+      ## Is it necessary?
+      
+      Before continuing, is your feature unique? Ensure that it doesn't already exist in another form (exceptions being when said form is too complex).
+  - type: checkboxes
+    id: changed-systems
+    attributes:
+      label: Codebase Changes
+      description: Which aspects of the codebase would change as a result of this feature being added?
+      options:
+        - label: Dependencies
+        - label: Intermediate Tokenization
+        - label: Baked Objects
+        - label: Conversion Tables
+        - label: Baked Environments
+        - label: Script Sessions
+        - label: The Holy Interpreter
+        - label: Expressions
+        - label: Keywords
+        - label: Control Statements
+        - label: Variables
+        - label: Other, describe below
+  - type: textarea
+    id: other-changes
+    attributes:
+      label: Other Codebase Changes?
