@@ -1,0 +1,51 @@
+name: Bug Report
+description: Report a bug or otherwise any unexepected behavior
+labels: [ "bug" ]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Give a general overview of the bug. Such as what exactly happens and the aftermath.
+      placeholder: "You can't back up the network without transcoding the auxiliary RAM transmitter!"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What is the expected behavior?.
+      placeholder: "The RAM transmitter should concede to the Royal Navy."
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of BakedEnv are you running?
+      options:
+        - 1.0.0-alpha
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: List the steps to reproduce the bug.
+      placeholder: "1.\n2.\n3.\n..."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Add any logs you have.
+      placeholder: "Transmission failed within -0.1ms."
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+    validations:
+      required: false
