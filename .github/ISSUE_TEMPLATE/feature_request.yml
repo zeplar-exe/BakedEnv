@@ -20,7 +20,7 @@ body:
       value: |
         ## Is it necessary?
       
-      Before continuing, is your feature unique? Ensure that it doesn't already exist in another form (exceptions being when said form is too complex).
+        Before continuing, is your feature unique? Ensure that it doesn't already exist in another form (exceptions being when said form is too complex).
   - type: checkboxes
     id: changed-systems
     attributes:
