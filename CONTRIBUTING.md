@@ -39,6 +39,10 @@ In almost every case, pull requests should be connected to a specific issue. It 
 that your changes do not exceed the scope of the target issue. This is evident when unrelated systems 
 are changed, and should discussed in a separate issue.
 
+### Formatting
+
+Code formatting rules should more or less be defined in the [editorconfig](https://github.com/zeplar-exe/BakedEnv/blob/master/.editorconfig).
+
 ### Testing
 
 Unit tests should reflect any changes made in pull requests. This includes source generators to a lesser 
