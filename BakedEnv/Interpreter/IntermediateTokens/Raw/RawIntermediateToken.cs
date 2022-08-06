@@ -2,7 +2,7 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
-public class RawIntermediateToken : IntermediateToken
+public abstract class RawIntermediateToken : IntermediateToken
 {
     public GuardedLexerToken RawToken { get; }
     public LexerTokenType Type => RawToken.Get().Type;
@@ -19,5 +19,10 @@ public class RawIntermediateToken : IntermediateToken
     public RawIntermediateToken(LexerToken token, params LexerTokenType[] expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
+    }
+
+    public override string ToString()
+    {
+        return RawToken.ToString();
     }
 }
