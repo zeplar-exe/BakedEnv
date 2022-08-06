@@ -1,16 +1,39 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
-
-using TokenCs;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 internal class RootParser
 {
+    public TypeList<MatchParser> ContinueParsers { get; }
+
+    public RootParser()
+    {
+        ContinueParsers = new TypeList<MatchParser>();
+    }
+
+    public static RootParser Default()
+    {
+        return new RootParser()
+            .WithParser<ProcessorStatementParser>()
+            .WithParser<StringParser>();
+    }
+
+    public RootParser WithParser<T>() where T : MatchParser, new()
+    {
+        ContinueParsers.Add<T>();
+
+        return this;
+    }
     
-    
+    public RootParser WithParser(MatchParser parser)
+    {
+        ContinueParsers.Add(parser);
+
+        return this;
+    }
+
     public IEnumerable<IntermediateToken> Parse(ParserIterator input)
     {
         while (true)
@@ -36,35 +59,20 @@ internal class RootParser
         {
             return false;
         }
-            
-        switch (next.Type)
+
+        foreach (var parser in ContinueParsers)
         {
-            case LexerTokenType.LeftBracket:
-            {
-                var bracketToken = new LeftBracketToken(next);
-                var processorParser = new ProcessorStatementParser();
+            var result = parser.TryParse(next, input);
 
-                token = processorParser.Parse(bracketToken, input);
-                
-                break;
-            }
-            case LexerTokenType.SingleQuotation:
-            case LexerTokenType.DoubleQuotation:
+            if (result.IsMatch)
             {
-                var quotationToken = new QuotationToken(next);
-                var stringParser = new StringParser();
-
-                token = stringParser.Parse(quotationToken, input);
-                
-                break;
-            }
-            default:
-            {
-                token = new UnexpectedToken(next);
+                token = result.Token;
                 
                 break;
             }
         }
+
+        token ??= new UnexpectedToken(next);
 
         return true;
     }

@@ -6,11 +6,17 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class StringParser
+public class StringParser : MatchParser
 {
-    public StringToken Parse(QuotationToken quotation, ParserIterator iterator)
+    public override TryMatchResult TryParse(LexerToken first, ParserIterator iterator)
     {
-        var token = new StringToken { LeftQuotation = quotation };
+        if (!TestTokenIs(first, LexerTokenType.SingleQuotation, LexerTokenType.DoubleQuotation))
+            return TryMatchResult.NotMatch();
+        
+        var token = new StringToken
+        {
+            LeftQuotation = new QuotationToken(first)
+        };
 
         LexerToken? escapeToken = null;
 
@@ -18,11 +24,11 @@ public class StringParser
         {
             if (escapeToken == null)
             {
-                if (next.Type == quotation.Type)
+                if (next.Type == first.Type)
                 {
                     token.RightQuotation = new QuotationToken(next);
 
-                    return token.AsComplete();
+                    return TryMatchResult.MatchSuccess(token.AsComplete());
                 }
             }
             else
@@ -46,6 +52,6 @@ public class StringParser
             }
         }
 
-        return token.AsIncomplete();
+        return TryMatchResult.MatchSuccess(token.AsIncomplete());
     }
 }
