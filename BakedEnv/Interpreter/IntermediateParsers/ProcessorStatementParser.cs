@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
@@ -6,13 +8,16 @@ using TokenCs;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-internal class ProcessorStatementParser
+internal class ProcessorStatementParser : MatchParser
 {
-    public ProcessorStatementToken Parse(LeftBracketToken leftBracket, ParserIterator iterator)
+    public override TryMatchResult TryParse(LexerToken first, ParserIterator iterator)
     {
+        if (!TestTokenIs(first, LexerTokenType.LeftBracket))
+            return TryMatchResult.NotMatch();
+        
         var token = new ProcessorStatementToken
         {
-            LeftBracket = leftBracket
+            LeftBracket = new LeftBracketToken(first)
         };
 
         while (iterator.SkipTrivia(out var next))
@@ -23,11 +28,11 @@ internal class ProcessorStatementParser
                 {
                     token.RightBracket = new RightBracketToken(next);
 
-                    return token.AsComplete();
+                    return new TryMatchResult(true, token.AsComplete());
                 }
             }
         }
-
-        return token.AsIncomplete();
+        
+        return TryMatchResult.MatchSuccess(token.AsIncomplete());
     }
 }
