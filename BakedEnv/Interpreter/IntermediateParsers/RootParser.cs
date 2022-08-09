@@ -63,14 +63,10 @@ internal class RootParser
 
         foreach (var parser in ContinueParsers)
         {
-            var result = parser.TryParse(next, input);
-
-            if (result.IsMatch)
-            {
-                token = result.Token;
-                
-                break;
-            }
+            if (!parser.Match(next))
+                continue;
+            
+            token = parser.Parse(next, input);
         }
 
         token ??= new UnexpectedToken(next);

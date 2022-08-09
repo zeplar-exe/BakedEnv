@@ -9,11 +9,13 @@ namespace BakedEnv.Interpreter.IntermediateParsers;
 
 public class StringParser : MatchParser
 {
-    public override TryMatchResult TryParse(LexerToken first, ParserIterator iterator)
+    public override bool Match(LexerToken first)
     {
-        if (!TestTokenIs(first, LexerTokenType.SingleQuotation, LexerTokenType.DoubleQuotation))
-            return TryMatchResult.NotMatch();
-        
+        return TestTokenIs(first, LexerTokenType.SingleQuotation, LexerTokenType.DoubleQuotation);
+    }
+
+    public override IntermediateToken Parse(LexerToken first, ParserIterator iterator)
+    {
         var token = new StringToken
         {
             LeftQuotation = new QuotationToken(first)
@@ -29,7 +31,7 @@ public class StringParser : MatchParser
                 {
                     token.RightQuotation = new QuotationToken(next);
 
-                    return TryMatchResult.MatchSuccess(token.AsComplete());
+                    return token.AsComplete();
                 }
             }
             else
@@ -53,6 +55,6 @@ public class StringParser : MatchParser
             }
         }
 
-        return TryMatchResult.MatchSuccess(token.AsIncomplete());
+        return token.AsIncomplete();
     }
 }
