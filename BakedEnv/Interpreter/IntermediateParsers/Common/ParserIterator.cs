@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Common;
-using BakedEnv.Interpreter.IntermediateTokens;
 
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers;
+namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
 public class ParserIterator : EnumerableIterator<LexerToken>
 {

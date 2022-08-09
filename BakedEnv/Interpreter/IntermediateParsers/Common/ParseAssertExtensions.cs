@@ -1,6 +1,6 @@
 using TokenCs;
 
-namespace BakedEnv.Interpreter.IntermediateParsers;
+namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
 public static class ParseAssertExtensions
 {
