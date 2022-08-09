@@ -5,10 +5,11 @@ namespace BakedEnv.Common;
 public class EnumerableIterator<T> : IDisposable
 {
     private IEnumerator<T> Enumerator { get; }
+    private bool ReserveCurrent { get; set; }
 
     public bool Started { get; private set; }
     public bool Ended { get; private set; }
-
+    
     public T? Current => Enumerator.Current;
 
     public EnumerableIterator(IEnumerable<T> enumerable)
@@ -33,6 +34,14 @@ public class EnumerableIterator<T> : IDisposable
     {
         next = default;
 
+        if (ReserveCurrent)
+        {
+            next = Enumerator.Current;
+            ReserveCurrent = false;
+            
+            return true;
+        }
+
         if (Enumerator.MoveNext())
         {
             Started = true;
@@ -46,6 +55,11 @@ public class EnumerableIterator<T> : IDisposable
         }
 
         return !Ended;
+    }
+    
+    public void Reserve()
+    {
+        ReserveCurrent = true;
     }
 
     public void Dispose()
