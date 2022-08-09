@@ -11,11 +11,13 @@ namespace BakedEnv.Interpreter.IntermediateParsers;
 
 internal class ProcessorStatementParser : MatchParser
 {
-    public override TryMatchResult TryParse(LexerToken first, ParserIterator iterator)
+    public override bool Match(LexerToken first)
     {
-        if (!TestTokenIs(first, LexerTokenType.LeftBracket))
-            return TryMatchResult.NotMatch();
-        
+        return TestTokenIs(first, LexerTokenType.LeftBracket);
+    }
+
+    public override IntermediateToken Parse(LexerToken first, ParserIterator iterator)
+    {
         var token = new ProcessorStatementToken
         {
             LeftBracket = new LeftBracketToken(first)
@@ -29,11 +31,11 @@ internal class ProcessorStatementParser : MatchParser
                 {
                     token.RightBracket = new RightBracketToken(next);
 
-                    return new TryMatchResult(true, token.AsComplete());
+                    return token.AsComplete();
                 }
             }
         }
         
-        return TryMatchResult.MatchSuccess(token.AsIncomplete());
+        return token.AsIncomplete();
     }
 }
