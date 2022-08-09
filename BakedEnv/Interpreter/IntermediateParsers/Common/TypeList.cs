@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.IntermediateParsers;
+namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
 public class TypeList<T> : List<T>
 {

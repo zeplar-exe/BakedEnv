@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Interpreter.IntermediateTokens;
 
-namespace BakedEnv.Interpreter.IntermediateParsers;
+namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
 public readonly struct TryMatchResult
 {
