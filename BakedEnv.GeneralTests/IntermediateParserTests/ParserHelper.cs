@@ -4,6 +4,9 @@ using System.Linq;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.IntermediateTokens.Pure;
+
+using NUnit.Framework;
 
 using TokenCs;
 
@@ -26,5 +29,13 @@ internal static class ParserHelper
         token = root.Parse(CreateIterator(text)).FirstOrDefault();
 
         return token != null && token is not EndOfFileToken;
+    }
+
+    public static T AssertFirstIs<T>(string input) where T : IntermediateToken
+    {
+        Assert.That(TryGetFirst(input, out var token), Is.True);
+        Assert.That(token, Is.TypeOf<T>());
+
+        return (T)token!;
     }
 }
