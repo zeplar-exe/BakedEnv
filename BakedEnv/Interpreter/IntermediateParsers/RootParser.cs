@@ -18,7 +18,8 @@ internal class RootParser
     {
         return new RootParser()
             .WithParser<ProcessorStatementParser>()
-            .WithParser<StringParser>();
+            .WithParser<StringParser>()
+            .WithParser<NumericParser>();
     }
 
     public RootParser WithParser<T>() where T : MatchParser, new()
@@ -27,10 +28,17 @@ internal class RootParser
 
         return this;
     }
-    
+
     public RootParser WithParser(MatchParser parser)
     {
         ContinueParsers.Add(parser);
+
+        return this;
+    }
+
+    public RootParser WithoutParser<T>() where T : MatchParser, new()
+    {
+        ContinueParsers.RemoveAll<T>();
 
         return this;
     }

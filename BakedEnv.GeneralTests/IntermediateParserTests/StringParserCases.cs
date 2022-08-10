@@ -12,25 +12,33 @@ public class StringParserCases
     [Test]
     public void EmptyStringIsValid()
     {
-        AssertStringTokenContentSame("");
+        AssertStringTokenIsEqual("");
     }
 
     [Test]
     public void RegularStringIsValid()
     {
-        AssertStringTokenContentSame("Hello world! My name is Mark");
+        AssertStringTokenIsEqual("Hello world! My name is Mark");
     }
 
     [Test]
     public void EscapeQuotationIsValid()
     {
-        AssertStringTokenContentSame("\\\"");
+        AssertStringTokenIsEqual("\\\"");
     }
 
     [Test]
     public void EscapeInvalidCodeIsRawCharacter()
     {
-        AssertStringTokenContentSame("\\j paw");
+        AssertStringTokenIsEqual("\\j paw");
+    }
+
+    [Test]
+    public void NewlineIsValid()
+    {
+        AssertStringTokenIsEqual("\n");
+        AssertStringTokenIsEqual("\r");
+        AssertStringTokenIsEqual("\r\n");
     }
 
     [Test]
@@ -40,19 +48,11 @@ public class StringParserCases
         Assert.That(token.IsComplete, Is.False);
     }
     
-    private void AssertStringTokenContentSame(string content)
+    private void AssertStringTokenIsEqual(string content)
     {
-        var token = AssertFirstIsString(content);
+        var token = ParserHelper.AssertFirstIs<StringToken>($"\"{content}\"");
         var join = string.Concat(token.Content.Select(t => t.RawToken.ToString()));
         
         Assert.That(join, Is.EqualTo(content));
-    }
-
-    private StringToken AssertFirstIsString(string input)
-    {
-        Assert.That(ParserHelper.TryGetFirst($"\"{input}\"", out var token), Is.True);
-        Assert.That(token, Is.TypeOf<StringToken>());
-
-        return (StringToken)token!;
     }
 }
