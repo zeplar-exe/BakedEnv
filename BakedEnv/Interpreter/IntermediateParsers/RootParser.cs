@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 
@@ -16,10 +14,12 @@ internal class RootParser
 
     public static RootParser Default()
     {
-        return new RootParser()
-            .WithParser<ProcessorStatementParser>()
-            .WithParser<StringParser>()
-            .WithParser<NumericParser>();
+        var root = new RootParser();
+
+        var defaultParsers = AnyParser.Default().ContinueParsers;
+        root.ContinueParsers.AddRange(defaultParsers);
+
+        return root;
     }
 
     public RootParser WithParser<T>() where T : MatchParser, new()
@@ -45,9 +45,13 @@ internal class RootParser
 
     public IEnumerable<IntermediateToken> Parse(ParserIterator input)
     {
+        var any = new AnyParser();
+        
+        any.ContinueParsers.AddRange(ContinueParsers);
+        
         while (true)
         {
-            if (TryParseOne(input, out var token))
+            if (any.TryParseOne(input, out var token))
             {
                 yield return token;
             }
@@ -58,27 +62,5 @@ internal class RootParser
         }
 
         yield return new EndOfFileToken(input.Current?.EndIndex ?? 0);
-    }
-
-    private bool TryParseOne(ParserIterator input, [NotNullWhen(true)] out IntermediateToken? token)
-    {
-        token = null;
-        
-        if (!input.SkipTrivia(out var next))
-        {
-            return false;
-        }
-
-        foreach (var parser in ContinueParsers)
-        {
-            if (!parser.Match(next))
-                continue;
-            
-            token = parser.Parse(next, input);
-        }
-
-        token ??= new UnexpectedToken(next);
-
-        return true;
     }
 }
