@@ -44,7 +44,7 @@ public class StringParserCases
     [Test]
     public void IncompleteStringIsFailure()
     {
-        Assert.That(ParserHelper.TryGetFirst("\"abc123", out var token), Is.True);
+        var token = ParserHelper.AssertFirstIs<StringToken>("\"abc123");
         Assert.That(token.IsComplete, Is.False);
     }
     

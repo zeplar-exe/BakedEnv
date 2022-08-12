@@ -13,6 +13,5 @@ public class UnexpectedToken : IntermediateToken
     public UnexpectedToken(LexerToken token)
     {
         Token = token;
-        IsComplete = true;
     }
 }

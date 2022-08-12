@@ -13,6 +13,7 @@ public abstract class RawIntermediateTokenGroup : IntermediateToken
     public RawIntermediateTokenGroup(LexerTokenType expected)
     {
         RawTokens = new GuardedLexerTokenList(expected);
+        IsComplete = true;
     }
 
     public RawIntermediateTokenGroup(params LexerTokenType[] expected)
