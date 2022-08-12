@@ -25,12 +25,13 @@ public class CommentParser : MatchParser
             {
                 if (next.Type == LexerTokenType.Hashtag)
                 {
-                    var multiToken = new MultiLineCommentToken();
-
-                    multiToken.Start = new MultiLineCommentDelimiterToken
+                    var multiToken = new MultiLineCommentToken
                     {
-                        FirstHash = new HashToken(first),
-                        SecondHash = new HashToken(next)
+                        Start = new MultiLineCommentDelimiterToken
+                        {
+                            FirstHash = new HashToken(first),
+                            SecondHash = new HashToken(next)
+                        }
                     };
 
                     return ParseMultiLine(multiToken, iterator);
@@ -50,11 +51,20 @@ public class CommentParser : MatchParser
 
     private MultiLineCommentToken ParseMultiLine(MultiLineCommentToken target, ParserIterator iterator)
     {
+        void AppendContent(LexerToken token)
+        {
+            var any = new AnyToken(token);
+            
+            target.Content.Add(any);
+        }
+        
         while (iterator.TryMoveNext(out var next))
         {
             if (next.Type == LexerTokenType.Hashtag)
             {
-                if (iterator.TryMoveNext(out var afterNext))
+                if (iterator.TryMoveNext(out var afterNext)) 
+                    // If false, we skip down and append next anyway
+                    // Will subsequently end the loop and return as incomplete
                 {
                     if (afterNext.Type == LexerTokenType.Hashtag)
                     {
@@ -66,22 +76,17 @@ public class CommentParser : MatchParser
 
                         return target.AsComplete();
                     }
-                }
-                else
-                {
-                    var any = new AnyToken(next);
-                    
-                    target.Content.Add(any);
+                    else
+                    {
+                        AppendContent(next);
+                        AppendContent(afterNext);
 
-                    return target.AsIncomplete();
+                        continue;
+                    }
                 }
             }
-            else
-            {
-                var any = new AnyToken(next);
-                
-                target.Content.Add(any);
-            }
+            
+            AppendContent(next);
         }
 
         return target.AsIncomplete();
