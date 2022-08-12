@@ -19,7 +19,8 @@ internal class AnyParser
         return new AnyParser()
             .WithParser<ProcessorStatementParser>()
             .WithParser<StringParser>()
-            .WithParser<NumericParser>();
+            .WithParser<NumericParser>()
+            .WithParser<CommentParser>();
     }
 
     public AnyParser WithParser<T>() where T : MatchParser, new()
