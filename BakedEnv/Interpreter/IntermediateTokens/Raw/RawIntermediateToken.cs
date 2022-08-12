@@ -14,11 +14,13 @@ public abstract class RawIntermediateToken : IntermediateToken
     public RawIntermediateToken(LexerToken token, LexerTokenType expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
+        IsComplete = true;
     }
 
     public RawIntermediateToken(LexerToken token, params LexerTokenType[] expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
+        IsComplete = true;
     }
 
     public override string ToString()
