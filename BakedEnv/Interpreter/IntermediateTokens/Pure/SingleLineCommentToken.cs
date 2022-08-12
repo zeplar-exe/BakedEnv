@@ -2,29 +2,25 @@ using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Pure;
 
-public class StringToken : PureIntermediateToken
+public class SingleLineCommentToken : PureIntermediateToken
 {
-    public QuotationToken? LeftQuotation { get; set; }
+    public HashToken? StartToken { get; set; }
     public List<AnyToken> Content { get; }
-    public QuotationToken? RightQuotation { get; set; }
-    
 
     public override IEnumerable<IntermediateToken> ChildTokens
     {
         get
         {
-            if (LeftQuotation != null) yield return LeftQuotation;
-
+            if (StartToken != null) yield return StartToken;
+            
             foreach (var content in Content)
             {
                 yield return content;
             }
-
-            if (RightQuotation != null) yield return RightQuotation;
         }
     }
 
-    public StringToken()
+    public SingleLineCommentToken()
     {
         Content = new List<AnyToken>();
     }

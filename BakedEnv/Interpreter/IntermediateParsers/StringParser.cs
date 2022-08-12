@@ -36,14 +36,14 @@ public class StringParser : MatchParser
             }
             else
             {
-                var escapeContent = new StringContentToken(escapeToken);
+                var escapeContent = new AnyToken(escapeToken);
             
                 token.Content.Add(escapeContent);
             }
 
             escapeToken = null;
             
-            var content = new StringContentToken(next);
+            var content = new AnyToken(next);
             
             if (next.Type == LexerTokenType.Backslash)
             {
