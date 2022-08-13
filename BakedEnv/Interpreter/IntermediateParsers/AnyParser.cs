@@ -53,13 +53,9 @@ internal class AnyParser
             return false;
         }
 
-        foreach (var parser in ContinueParsers)
-        {
-            if (!parser.Match(next))
-                continue;
-            
-            token = parser.Parse(next, input);
-        }
+        token = ContinueParsers
+            .FirstOrDefault(p => p.Match(next))?
+            .Parse(next, input);
 
         token ??= new UnexpectedToken(next);
 

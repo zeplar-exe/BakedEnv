@@ -21,16 +21,8 @@ public class NumericParser : MatchParser
             Digits = { new DigitsToken(first) }
         };
 
-        while (true)
+        while (iterator.TryMoveNext(out var next))
         {
-            if (!iterator.TryMoveNext(out var next))
-            {
-                if (token.DecimalPoint == null)
-                    return token.AsComplete();
-                
-                return token.AsIncomplete();
-            }
-
             switch (next.Type)
             {
                 case LexerTokenType.Numeric:
@@ -49,8 +41,19 @@ public class NumericParser : MatchParser
                 default:
                     iterator.Reserve();
 
+                    if (token.DecimalPoint != null && token.Mantissa.Count == 0)
+                        return token.AsIncomplete();
+                    
                     return token.AsComplete();
             }
         }
+
+        if (token.Digits.Count == 0) // Great example of an impossible condition to be safe
+            return token.AsIncomplete();
+        
+        if (token.DecimalPoint != null && token.Mantissa.Count == 0)
+            return token.AsIncomplete();
+                    
+        return token.AsComplete();
     }
 }
