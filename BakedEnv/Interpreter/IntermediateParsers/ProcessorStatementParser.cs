@@ -33,6 +33,12 @@ internal class ProcessorStatementParser : MatchParser
 
                     return token.AsComplete();
                 }
+                default:
+                {
+                    iterator.Reserve();
+
+                    return token.AsIncomplete();
+                }
             }
         }
         
