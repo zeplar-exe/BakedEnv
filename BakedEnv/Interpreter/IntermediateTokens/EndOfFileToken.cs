@@ -2,11 +2,11 @@ namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public class EndOfFileToken : IntermediateToken
 {
-    public override int StartIndex { get; }
+    public override ulong StartIndex { get; }
     public override int Length { get; }
-    public override int EndIndex { get; }
+    public override ulong EndIndex { get; }
 
-    public EndOfFileToken(int index)
+    public EndOfFileToken(ulong index)
     {
         StartIndex = index;
         Length = 0;

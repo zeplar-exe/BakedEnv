@@ -1,11 +1,13 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public class QuotationToken : RawIntermediateToken
 {
-    public QuotationToken(LexerToken token) : base(token, 
-        LexerTokenType.SingleQuotation, LexerTokenType.DoubleQuotation)
+    public QuotationToken(TextualToken token) : base(token, 
+        TextualTokenType.SingleQuotation, TextualTokenType.DoubleQuotation)
     {
         
     }

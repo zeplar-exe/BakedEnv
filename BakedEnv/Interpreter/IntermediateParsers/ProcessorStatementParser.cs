@@ -4,19 +4,20 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
+using BakedEnv.Interpreter.Lexer;
 
-using TokenCs;
+
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 internal class ProcessorStatementParser : MatchParser
 {
-    public override bool Match(LexerToken first)
+    public override bool Match(TextualToken first)
     {
-        return TestTokenIs(first, LexerTokenType.LeftBracket);
+        return TestTokenIs(first, TextualTokenType.LeftBracket);
     }
 
-    public override IntermediateToken Parse(LexerToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
     {
         var token = new ProcessorStatementToken
         {
@@ -27,7 +28,7 @@ internal class ProcessorStatementParser : MatchParser
         {
             switch (next.Type)
             {
-                case LexerTokenType.RightBracket:
+                case TextualTokenType.RightBracket:
                 {
                     token.RightBracket = new RightBracketToken(next);
 

@@ -1,8 +1,8 @@
 namespace BakedEnv.Interpreter.Scopes;
 
-public record InvocationContext(BakedInterpreter Interpreter, IBakedScope Scope, int SourceIndex = -1)
+public record InvocationContext(BakedInterpreter Interpreter, IBakedScope Scope, ulong SourceIndex = 0)
 {
-    public InvocationContext(BakedInterpreter interpreter, int sourceIndex = -1) : this(interpreter, interpreter.Context, sourceIndex)
+    public InvocationContext(BakedInterpreter interpreter, ulong sourceIndex = 0) : this(interpreter, interpreter.Context, sourceIndex)
     {
         
     }

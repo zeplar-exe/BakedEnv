@@ -1,23 +1,25 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public abstract class RawIntermediateToken : IntermediateToken
 {
     public GuardedLexerToken RawToken { get; }
-    public LexerTokenType Type => RawToken.Get().Type;
+    public TextualTokenType Type => RawToken.Get().Type;
     
-    public override int StartIndex => RawToken.Get().StartIndex;
+    public override ulong StartIndex => RawToken.Get().StartIndex;
     public override int Length => RawToken.Get().Length;
-    public override int EndIndex => StartIndex + Length;
+    public override ulong EndIndex => StartIndex + (ulong)Length;
 
-    public RawIntermediateToken(LexerToken token, LexerTokenType expected)
+    public RawIntermediateToken(TextualToken token, TextualTokenType expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
         IsComplete = true;
     }
 
-    public RawIntermediateToken(LexerToken token, params LexerTokenType[] expected)
+    public RawIntermediateToken(TextualToken token, params TextualTokenType[] expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
         IsComplete = true;

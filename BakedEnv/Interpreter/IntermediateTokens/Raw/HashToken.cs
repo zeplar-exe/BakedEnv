@@ -1,10 +1,12 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public class HashToken : RawIntermediateToken
 {
-    public HashToken(LexerToken token) : base(token, LexerTokenType.Hashtag)
+    public HashToken(TextualToken token) : base(token, TextualTokenType.Hashtag)
     {
         
     }

@@ -1,16 +1,18 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public class UnexpectedToken : IntermediateToken
 {
-    public LexerToken Token { get; }
+    public TextualToken Token { get; }
 
-    public override int StartIndex => Token.StartIndex;
+    public override ulong StartIndex => Token.StartIndex;
     public override int Length => Token.Length;
-    public override int EndIndex => Token.EndIndex;
+    public override ulong EndIndex => Token.EndIndex;
 
-    public UnexpectedToken(LexerToken token)
+    public UnexpectedToken(TextualToken token)
     {
         Token = token;
     }

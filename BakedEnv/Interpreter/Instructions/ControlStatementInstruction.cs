@@ -10,7 +10,7 @@ public class ControlStatementInstruction : InterpreterInstruction
     public BakedExpression[] Parameters { get; }
     public IEnumerable<InterpreterInstruction> Instructions { get; }
     
-    public ControlStatementInstruction(ControlStatementDefinition definition, BakedExpression[] parameters, IEnumerable<InterpreterInstruction> instructions, int sourceIndex) : base(sourceIndex)
+    public ControlStatementInstruction(ControlStatementDefinition definition, BakedExpression[] parameters, IEnumerable<InterpreterInstruction> instructions, ulong sourceIndex) : base(sourceIndex)
     {
         StatementDefinition = definition;
         Parameters = parameters;

@@ -1,33 +1,34 @@
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
+using BakedEnv.Interpreter.Lexer;
 
-using TokenCs;
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens;
 
 public class GuardedLexerToken
 {
-    private LexerToken Token { get; set; }
-    private LexerTokenType[] ExpectedTypes { get; }
+    private TextualToken Token { get; set; }
+    private TextualTokenType[] ExpectedTypes { get; }
     
-    public GuardedLexerToken(LexerToken initial, LexerTokenType expectedTypes)
+    public GuardedLexerToken(TextualToken initial, TextualTokenType expectedTypes)
     {
         Token = initial;
         ExpectedTypes = new[] { expectedTypes };
     }
     
-    public GuardedLexerToken(LexerToken initial, params LexerTokenType[] expectedTypes)
+    public GuardedLexerToken(TextualToken initial, params TextualTokenType[] expectedTypes)
     {
         Token = initial;
         ExpectedTypes = expectedTypes;
     }
 
-    public LexerToken Get()
+    public TextualToken Get()
     {
         return Token;
     }
 
-    public void Set(LexerToken token)
+    public void Set(TextualToken token)
     {
         if (ExpectedTypes.Length == 0)
         {

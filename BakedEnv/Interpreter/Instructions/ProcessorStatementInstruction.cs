@@ -25,7 +25,7 @@ public class ProcessorStatementInstruction : InterpreterInstruction
     /// <param name="name">The key/name of this processor statement.</param>
     /// <param name="expression">The expressional value of this processor statement.</param>
     /// <param name="sourceIndex">Source index used internally.</param>
-    public ProcessorStatementInstruction(BakedExpression key, BakedExpression expression, int sourceIndex) : base(sourceIndex)
+    public ProcessorStatementInstruction(BakedExpression key, BakedExpression expression, ulong sourceIndex) : base(sourceIndex)
     {
         Key = key;
         Expression = expression;

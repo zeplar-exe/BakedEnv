@@ -2,20 +2,18 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
-
-using TokenCs;
-using TokenCs.Extensions;
+using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 public class CommentParser : MatchParser
 {
-    public override bool Match(LexerToken first)
+    public override bool Match(TextualToken first)
     {
-        return TestTokenIs(first, LexerTokenType.Hashtag);
+        return TestTokenIs(first, TextualTokenType.Hashtag);
     }
 
-    public override IntermediateToken Parse(LexerToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
     {
         var token = new SingleLineCommentToken();
         
@@ -23,7 +21,7 @@ public class CommentParser : MatchParser
         {
             if (token.Content.Count == 0)
             {
-                if (next.Type == LexerTokenType.Hashtag)
+                if (next.Type == TextualTokenType.Hashtag)
                 {
                     var multiToken = new MultiLineCommentToken
                     {
@@ -42,7 +40,7 @@ public class CommentParser : MatchParser
             
             token.Content.Add(any);
             
-            if (next.IsNewLine())
+            if (next.IsNewline())
                 break;
         }
 
@@ -51,7 +49,7 @@ public class CommentParser : MatchParser
 
     private MultiLineCommentToken ParseMultiLine(MultiLineCommentToken target, ParserIterator iterator)
     {
-        void AppendContent(LexerToken token)
+        void AppendContent(TextualToken token)
         {
             var any = new AnyToken(token);
             
@@ -60,13 +58,13 @@ public class CommentParser : MatchParser
         
         while (iterator.TryMoveNext(out var next))
         {
-            if (next.Type == LexerTokenType.Hashtag)
+            if (next.Type == TextualTokenType.Hashtag)
             {
                 if (iterator.TryMoveNext(out var afterNext)) 
                     // If false, we skip down and append next anyway
                     // Will subsequently end the loop and return as incomplete
                 {
-                    if (afterNext.Type == LexerTokenType.Hashtag)
+                    if (afterNext.Type == TextualTokenType.Hashtag)
                     {
                         target.End = new MultiLineCommentDelimiterToken
                         {
