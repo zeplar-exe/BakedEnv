@@ -1,10 +1,12 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public class SingleNumericToken : RawIntermediateToken
 {
-    public SingleNumericToken(LexerToken token) : base(token, LexerTokenType.Numeric)
+    public SingleNumericToken(TextualToken token) : base(token, TextualTokenType.Numeric)
     {
         
     }

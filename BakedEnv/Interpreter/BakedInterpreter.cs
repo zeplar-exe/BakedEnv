@@ -6,10 +6,9 @@ using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
-
-using TokenCs;
 
 namespace BakedEnv.Interpreter;
 
@@ -77,7 +76,7 @@ public class BakedInterpreter
                 $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
 
         var root = new RootParser();
-        var lexer = new Lexer(Source.EnumerateCharacters());
+        var lexer = new TextLexer(Source.EnumerateCharacters());
         var iterator = new ParserIterator(lexer);
 
         Iterator = new InterpreterIterator(root.Parse(iterator));

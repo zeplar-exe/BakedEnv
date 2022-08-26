@@ -5,10 +5,11 @@ using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
+using BakedEnv.Interpreter.Lexer;
 
 using NUnit.Framework;
 
-using TokenCs;
+
 
 namespace BakedEnv.GeneralTests.IntermediateParserTests;
 
@@ -16,7 +17,7 @@ internal static class ParserHelper
 {
     public static ParserIterator CreateIterator(string text)
     {
-        var lexer = new Lexer(text);
+        var lexer = new TextLexer(text);
         var iterator = new ParserIterator(lexer);
 
         return iterator;

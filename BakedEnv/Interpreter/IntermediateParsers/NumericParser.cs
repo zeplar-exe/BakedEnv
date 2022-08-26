@@ -2,19 +2,20 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
+using BakedEnv.Interpreter.Lexer;
 
-using TokenCs;
+
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 public class NumericParser : MatchParser
 {
-    public override bool Match(LexerToken first)
+    public override bool Match(TextualToken first)
     {
-        return TestTokenIs(first, LexerTokenType.Numeric);
+        return TestTokenIs(first, TextualTokenType.Numeric);
     }
 
-    public override IntermediateToken Parse(LexerToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
     {
         var token = new NumericToken
         {
@@ -25,7 +26,7 @@ public class NumericParser : MatchParser
         {
             switch (next.Type)
             {
-                case LexerTokenType.Numeric:
+                case TextualTokenType.Numeric:
                     var digit = new DigitsToken(next);
                     
                     if (token.DecimalPoint == null)
@@ -34,7 +35,7 @@ public class NumericParser : MatchParser
                         token.Mantissa.Add(digit);
                     
                     break;
-                case LexerTokenType.Period:
+                case TextualTokenType.Period:
                     token.DecimalPoint = new PeriodToken(next);
                     
                     break;

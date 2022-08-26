@@ -21,7 +21,7 @@ public class ErrorClassGenerator
             $@"#nullable enable
 namespace BakedEnv
 {{
-public partial record struct BakedError(string? Id, string Name, string ShortDescription, string LongDescription, int SourceIndex)
+public partial record struct BakedError(string? Id, string Name, string ShortDescription, string LongDescription, ulong SourceIndex)
 {{
     {string.Join(Environment.NewLine, Contract.Properties.Select(CreateErrorGroupClass))}
 }}
@@ -43,7 +43,7 @@ public static class {contract.Key}
             contract.Value.ShortDescription, contract.Value.LongDescription);
         var formatParams = formatTags.Select(f => $"object? {f}").ToList();
         
-        formatParams.Add("int sourceIndex");
+        formatParams.Add("ulong sourceIndex");
 
         return $@"
 /// <summary>

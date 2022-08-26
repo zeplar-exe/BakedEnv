@@ -2,26 +2,27 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
+using BakedEnv.Interpreter.Lexer;
 
-using TokenCs;
+
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
 public class StringParser : MatchParser
 {
-    public override bool Match(LexerToken first)
+    public override bool Match(TextualToken first)
     {
-        return TestTokenIs(first, LexerTokenType.SingleQuotation, LexerTokenType.DoubleQuotation);
+        return TestTokenIs(first, TextualTokenType.SingleQuotation, TextualTokenType.DoubleQuotation);
     }
 
-    public override IntermediateToken Parse(LexerToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
     {
         var token = new StringToken
         {
             LeftQuotation = new QuotationToken(first)
         };
 
-        LexerToken? escapeToken = null;
+        TextualToken? escapeToken = null;
 
         while (iterator.TryMoveNext(out var next))
         {
@@ -45,7 +46,7 @@ public class StringParser : MatchParser
             
             var content = new AnyToken(next);
             
-            if (next.Type == LexerTokenType.Backslash)
+            if (next.Type == TextualTokenType.Backslash)
             {
                 escapeToken = next;
             }

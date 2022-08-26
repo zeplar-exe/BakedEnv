@@ -4,7 +4,7 @@ namespace BakedEnv.Interpreter.Instructions;
 
 public class EndOfFileInstruction : InterpreterInstruction
 {
-    public EndOfFileInstruction(int sourceIndex) : base(sourceIndex)
+    public EndOfFileInstruction(ulong sourceIndex) : base(sourceIndex)
     {
         
     }

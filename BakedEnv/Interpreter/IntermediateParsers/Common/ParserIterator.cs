@@ -1,19 +1,20 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Common;
+using BakedEnv.Interpreter.Lexer;
 
-using TokenCs;
+
 
 namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
-public class ParserIterator : EnumerableIterator<LexerToken>
+public class ParserIterator : EnumerableIterator<TextualToken>
 {
-    public ParserIterator(IEnumerable<LexerToken> enumerable) : base(enumerable)
+    public ParserIterator(IEnumerable<TextualToken> enumerable) : base(enumerable)
     {
         
     }
     
-    public bool NextIs(LexerTokenType type, [NotNullWhen(true)] out LexerToken? token)
+    public bool NextIs(TextualTokenType type, [NotNullWhen(true)] out TextualToken? token)
     {
         token = null;
 
@@ -26,7 +27,7 @@ public class ParserIterator : EnumerableIterator<LexerToken>
         return true;
     }
     
-    public bool SkipTrivia([NotNullWhen(true)] out LexerToken? token)
+    public bool SkipTrivia([NotNullWhen(true)] out TextualToken? token)
     {
         token = null;
 
@@ -37,11 +38,11 @@ public class ParserIterator : EnumerableIterator<LexerToken>
             
             switch (next.Type)
             {
-                case LexerTokenType.Space:
-                case LexerTokenType.Tab:
-                case LexerTokenType.LineFeed:
-                case LexerTokenType.CarriageReturn:
-                case LexerTokenType.CarriageReturnLineFeed:
+                case TextualTokenType.Space:
+                case TextualTokenType.Tab:
+                case TextualTokenType.LineFeed:
+                case TextualTokenType.CarriageReturn:
+                case TextualTokenType.CarriageReturnLineFeed:
                 {
                     continue;
                 }

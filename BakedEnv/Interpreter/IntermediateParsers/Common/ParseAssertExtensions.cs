@@ -1,15 +1,17 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
 public static class ParseAssertExtensions
 {
-    public static LexerToken AssertIsType(this LexerToken? token, LexerTokenType type)
+    public static TextualToken AssertIsType(this TextualToken? token, TextualTokenType type)
     {
         if (token == null)
         {
             throw new InvalidOperationException(
-                $"Expected {nameof(token)} to be a non-null LexerToken.");
+                $"Expected {nameof(token)} to be a non-null TextualToken.");
         }
 
         if (token.Type != type)
@@ -21,12 +23,12 @@ public static class ParseAssertExtensions
         return token;
     }
     
-    public static LexerToken AssertIsType(this LexerToken? token, params LexerTokenType[] types)
+    public static TextualToken AssertIsType(this TextualToken? token, params TextualTokenType[] types)
     {
         if (token == null)
         {
             throw new InvalidOperationException(
-                $"Expected {nameof(token)} to be a non-null LexerToken.");
+                $"Expected {nameof(token)} to be a non-null TextualToken.");
         }
 
         if (!types.Contains(token.Type))

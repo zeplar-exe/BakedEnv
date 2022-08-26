@@ -1,10 +1,12 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public class IdentifierToken : RawIntermediateTokenGroup
 {
-    public IdentifierToken() : base(LexerTokenType.AlphaNumeric, LexerTokenType.Numeric, LexerTokenType.Underscore)
+    public IdentifierToken() : base(TextualTokenType.AlphaNumeric, TextualTokenType.Numeric, TextualTokenType.Underscore)
     {
         
     }

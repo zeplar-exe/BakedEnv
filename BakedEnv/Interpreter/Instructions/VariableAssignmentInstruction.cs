@@ -24,7 +24,7 @@ public class VariableAssignmentInstruction : InterpreterInstruction
     /// <param name="reference">Reference object for accessing the variable.</param>
     /// <param name="expression">The expression to assign.a</param>
     /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public VariableAssignmentInstruction(VariableReference reference, BakedExpression expression, int sourceIndex) : base(sourceIndex)
+    public VariableAssignmentInstruction(VariableReference reference, BakedExpression expression, ulong sourceIndex) : base(sourceIndex)
     {
         Reference = reference;
         Expression = expression;

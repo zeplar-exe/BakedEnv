@@ -1,10 +1,12 @@
-using TokenCs;
+using BakedEnv.Interpreter.Lexer;
+
+
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public class IntegerToken : RawIntermediateToken
 {
-    public IntegerToken(LexerToken token) : base(token, LexerTokenType.Numeric)
+    public IntegerToken(TextualToken token) : base(token, TextualTokenType.Numeric)
     {
         
     }
