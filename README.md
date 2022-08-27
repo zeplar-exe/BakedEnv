@@ -1,57 +1,59 @@
 # BakedEnv
 
-![build](https://github.com/zeplar-exe/BakedEnv/actions/workflows/dotnet.yml/badge.svg)
+Compatible with .NET 6 or higher.
 
-BakedEnv is a scripting language made in C#, for C#. Designed after Lua, BakedEnv is built for extensibility between C# and
+![license](https://img.shields.io/github/license/zeplar-exe/BakedEnv)
+![version](https://img.shields.io/nuget/v/BakedEnv)
+![build](https://github.com/zeplar-exe/BakedEnv/actions/workflows/dotnet.yml/badge.svg)
+![coverage](https://img.shields.io/codecov/c/github/zeplar-exe/BakedEnv)
+
+[See the change log](...)
+
+BakedEnv is a scripting language made in C#, for C#. Designed after Lua, it is built for extensibility between C# and
 written scripts.
+
+"The Lua of C#" as I like to call it. BakedEnv can sate all of your needs for an embedded scripting language in C#. From game
+nodding to your own mini scripting language, it is applicable to a wide range of uses. BakedEnv is focused to be as extensible
+as possible, allowing for the creation, implementation, and modification of core behavior. Additionally, the ease of access for
+cross-language typing via functions and objects contribute to its applicability.
+
+## Features
+
+- User defined keywords
+- User defined statements and control flow
+- User defined objects and types
+- User defined processor directives/statements
+- C# interop-ability
+- Extensible System.Object-BakedObject conversion
+- Code injection into internal parse processes
+- Direct access to the interpreter
+- API/library injection
+- Extensions to skip the boring environment setup
+- Extensible variable/member access handling
+
+[Try the live demo](...)
 
 ## Getting Started
 
-### Dependencies
+### [Nuget](https://www.nuget.org/packages/BakedEnv/)
 
-* .NET 6
+The library can be installed via [nuget](https://www.nuget.org/packages/BakedEnv/).
 
-### Installation
+### Clone/Self-Build
 
-#### API
+An initial build is required to execute any source generators present. Errors will otherwise
+appear in the solution until the next build.
 
-The C# library can be installed via [nuget](https://www.nuget.org/packages/BakedEnv/) or inclusion of the desired version's DLL in your project. 
-Learn more about the latter [here](https://stackoverflow.com/questions/7685718/).
+## Samples
 
-#### CLI
+...
 
-Every version of the project's CLI can be found under [releases](https://github.com/zeplar-exe/BakedEnv/releases/).
-After downloading, the exe must be placed in the system PATH. Learn more [here](https://stackoverflow.com/questions/4822400/).
+## Featured Uses
 
-### Usage
+If you want to get your project added to this list, simply make a pull request.
 
-#### API
-
-The highest level classes for interaction with the language are `BakedEnvironment` and `BakedInterpreter`. 
-The latter providing a more direct approach.
-
-Samples coming soon, I swear.
-
-#### CLI
-
-Assuming the exe is accessible from your command line, commands can be used as below:
-
-```shell
-> ben execute -r
-```
-
-`ben execute` is the most commonly used command here. It can execute BakedEnv scripts on the fly
-from the command line or an external file.
-
-```shell
-> ben interactive
-```
-
-While devoid of function at the moment, `ben interactive` will be useful for interactive shell scripting
-and enhanced debugging.
-
-Run `ben [...] --help` for extensive command information.
+*crickets chirp aggressively*
 
 ## License
 
-This project is licensed under the **BSD 3-Clause License** - see the [LICENSE](LICENSE) file for details
+This project is licensed under the **BSD 3-Clause License** - see the [LICENSE](LICENSE) file for more info. 
