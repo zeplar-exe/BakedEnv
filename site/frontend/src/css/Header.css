@@ -1,0 +1,32 @@
+﻿.header {
+    height: 70px;
+    line-height: 70px; /* vertically center */
+    background-color: #526dc7;
+    box-shadow: 0px 3px 3px black;
+    padding-left: 25px;
+    display: flex;
+}
+
+#home-link {
+    background-color: transparent;
+    font-size: 35px;
+    font-weight: 550;
+    margin: 0px;
+}
+
+.header > p,
+.header > a {
+    background-color: transparent;
+    font-size: 25px;
+    font-weight: 400;
+    margin: 0px;
+}
+
+.divider {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.spacer-1 {
+    width: 500px;
+}
