@@ -5,7 +5,6 @@ public enum TextualTokenType
     Unhandled,
     
     Alphabetic,
-    AlphaNumeric,
     Numeric,
     
     Tilde,

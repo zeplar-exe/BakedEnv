@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 public class IdentifierToken : RawIntermediateTokenGroup
 {
-    public IdentifierToken() : base(TextualTokenType.AlphaNumeric, TextualTokenType.Numeric, TextualTokenType.Underscore)
+    public IdentifierToken() : base(TextualTokenType.Alphabetic, TextualTokenType.Numeric, TextualTokenType.Underscore)
     {
         
     }
