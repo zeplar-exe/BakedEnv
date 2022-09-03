@@ -3,7 +3,6 @@
     line-height: 70px; /* vertically center */
     background-color: #526dc7;
     box-shadow: 0px 3px 3px black;
-    padding-left: 25px;
     display: flex;
 }
 
@@ -11,7 +10,13 @@
     background-color: transparent;
     font-size: 35px;
     font-weight: 550;
-    margin: 0px;
+    margin-left: 25px;
+    margin-right: 25px;
+    transition: 0.1s;
+}
+
+#home-link:hover {
+    color: #919fd0;
 }
 
 .header > p,
@@ -19,14 +24,15 @@
     background-color: transparent;
     font-size: 25px;
     font-weight: 400;
-    margin: 0px;
 }
 
-.divider {
-    margin-left: 10px;
-    margin-right: 10px;
+.header-item {
+    margin-left: 25px;
+    text-decoration: none;
+    text-decoration-thickness: 1px;
+    vertical-align: middle;
 }
 
-.spacer-1 {
-    width: 500px;
+.header-item:hover {
+    text-decoration: underline;
 }
