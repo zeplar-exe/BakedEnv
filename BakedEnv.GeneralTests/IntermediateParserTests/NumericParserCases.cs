@@ -18,6 +18,8 @@ public class NumericParserCases
         
         Assert.That(double.TryParse(digitsConcat, out _), Is.True);
         Assert.That(double.TryParse(mantissaConcat, out _), Is.True);
+        Assert.That(digitsConcat, Is.EqualTo("123"));
+        Assert.That(mantissaConcat, Is.EqualTo("456"));
     }
 
     [Test]
@@ -77,7 +79,7 @@ public class NumericParserCases
     private (string, string) ReadNumericToken(NumericToken token)
     {
         var digitsConcat = string.Concat(token.Digits);
-        var mantissaConcat = string.Concat(token.Digits);
+        var mantissaConcat = string.Concat(token.Mantissa);
 
         return (digitsConcat, mantissaConcat);
     }
