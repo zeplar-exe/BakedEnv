@@ -72,7 +72,7 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
                     '{' => TextualTokenType.LeftCurlyBracket,
                     '[' => TextualTokenType.LeftBracket,
                     '}' => TextualTokenType.RightCurlyBracket,
-                    ']' => TextualTokenType.LeftBracket,
+                    ']' => TextualTokenType.RightBracket,
                     '|' => TextualTokenType.Vertical,
                     '\\' => TextualTokenType.Backslash,
                     ':' => TextualTokenType.Colon,
