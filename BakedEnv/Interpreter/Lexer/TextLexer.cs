@@ -39,6 +39,12 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
 
                 yield return CreateToken(num, TextualTokenType.Numeric);
             }
+            else if (next == ' ')
+            {
+                var space = string.Concat(EnumerateWhile(c => c == ' ').Prepend(next));
+
+                yield return CreateToken(space, TextualTokenType.Space);
+            }
             else if (next == '\r')
             {
                 if (TryNext(out var after))
@@ -49,6 +55,16 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
                         
                         yield return CreateToken(text, TextualTokenType.CarriageReturnLineFeed);
                     }
+                    else
+                    {
+                        yield return CreateToken(next.ToString(), TextualTokenType.CarriageReturn);
+                        
+                        ReserveCurrent = true;
+                    }
+                }
+                else
+                {
+                    yield return CreateToken(next.ToString(), TextualTokenType.CarriageReturn);
                 }
             }
             else
