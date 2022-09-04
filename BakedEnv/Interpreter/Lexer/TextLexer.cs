@@ -17,6 +17,8 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
     {
         while (ReserveCurrent || Source.MoveNext())
         {
+            ReserveCurrent = false;
+            
             var next = Source.Current;
             var startIndex = Index;
 
