@@ -22,7 +22,7 @@ public static class TokenHelper
 
     public static void AssertTokensLength(TextualToken[] tokens, int length)
     {
-        Assert.That(tokens, Has.Length.EqualTo(length), $"Expected TextLexer enumeration length of {length}.");
+        Assert.That(tokens, Has.Length.EqualTo(length), $"Expected TextLexer enumeration length of {length}, got {tokens.Length}.");
     }
     
     public static TextualToken[] GetTokens(string input)

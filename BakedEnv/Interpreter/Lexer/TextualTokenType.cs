@@ -2,7 +2,7 @@ namespace BakedEnv.Interpreter.Lexer;
 
 public enum TextualTokenType
 {
-    Unhandled,
+    Unhandled = 0,
     
     Alphabetic,
     Numeric,
