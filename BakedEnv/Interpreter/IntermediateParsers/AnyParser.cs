@@ -44,6 +44,16 @@ internal class AnyParser
         return this;
     }
 
+    public IEnumerable<IntermediateToken> Parse(ParserIterator input)
+    {
+        while (TryParseOne(input, out var next))
+        {
+            yield return next;
+        }
+        
+        yield return new EndOfFileToken(input.Current?.EndIndex ?? 0);
+    }
+
     public bool TryParseOne(ParserIterator input, [NotNullWhen(true)] out IntermediateToken? token)
     {
         token = null;

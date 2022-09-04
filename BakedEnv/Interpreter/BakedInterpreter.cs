@@ -75,7 +75,7 @@ public class BakedInterpreter
             throw new InvalidOperationException(
                 $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
 
-        var root = new RootParser();
+        var root = new AnyParser();
         var lexer = new TextLexer(Source.EnumerateCharacters());
         var iterator = new ParserIterator(lexer);
 
