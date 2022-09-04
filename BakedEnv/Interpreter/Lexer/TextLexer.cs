@@ -85,6 +85,8 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
                     '.' => TextualTokenType.Period,
                     '?' => TextualTokenType.QuestionMark,
                     '/' => TextualTokenType.Slash,
+                    ' ' => TextualTokenType.Space,
+                    '\t' => TextualTokenType.Tab,
                     '\r' => TextualTokenType.CarriageReturn,
                     '\n' => TextualTokenType.LineFeed,
                     _ => TextualTokenType.Unhandled
