@@ -14,4 +14,9 @@ public class TextualToken
         Type = type;
         StartIndex = index;
     }
+
+    public override string ToString()
+    {
+        return Text;
+    }
 }
