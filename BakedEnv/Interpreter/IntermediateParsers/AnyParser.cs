@@ -5,7 +5,7 @@ using BakedEnv.Interpreter.IntermediateTokens;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-internal class AnyParser
+public class AnyParser : ParserBase
 {
     public TypeList<MatchParser> ContinueParsers { get; }
 
@@ -30,16 +30,16 @@ internal class AnyParser
         return this;
     }
 
-    public AnyParser WithParser(MatchParser parser)
+    public AnyParser WithParser(Type parserType)
     {
-        ContinueParsers.Add(parser);
+        ContinueParsers.Add(parserType);
 
         return this;
     }
 
     public AnyParser WithoutParser<T>() where T : MatchParser, new()
     {
-        ContinueParsers.RemoveAll<T>();
+        ContinueParsers.Remove<T>();
 
         return this;
     }
@@ -53,7 +53,7 @@ internal class AnyParser
         
         yield return new EndOfFileToken(input.Current?.EndIndex ?? 0);
     }
-
+    
     public bool TryParseOne(ParserIterator input, [NotNullWhen(true)] out IntermediateToken? token)
     {
         token = null;
@@ -62,12 +62,13 @@ internal class AnyParser
         {
             return false;
         }
+        
+        var parser = ContinueParsers.EnumerateInstances()
+            .FirstOrDefault(p => p.Match(next));
 
-        token = ContinueParsers
-            .FirstOrDefault(p => p.Match(next))?
-            .Parse(next, input);
+        RegisterParser(parser);
 
-        token ??= new UnexpectedToken(next);
+        token = parser?.Parse(next, input) ?? new UnexpectedToken(next);
 
         return true;
     }

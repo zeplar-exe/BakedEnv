@@ -1,11 +1,9 @@
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.Lexer;
 
-
-
 namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
-public abstract class MatchParser
+public abstract class MatchParser : ParserBase
 {
     public abstract bool Match(TextualToken first);
     public abstract IntermediateToken Parse(TextualToken first, ParserIterator iterator);

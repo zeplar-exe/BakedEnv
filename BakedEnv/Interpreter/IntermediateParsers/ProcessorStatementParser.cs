@@ -10,7 +10,7 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-internal class ProcessorStatementParser : MatchParser
+public class ProcessorStatementParser : MatchParser
 {
     public override bool Match(TextualToken first)
     {
