@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-dotnet:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      
+  build-site:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 13.x
+    
+    - name: Install NPM packages
+      working-directory: ./site/frontend
+      run: npm ci
+    
+    - name: Build project
+      working-directory: ./site/frontend
+      run: npm run build
+    
+    - name: Run tests
+      working-directory: ./site/frontend
+      run: npm run test
+
+    - name: Upload production-ready build files
+      uses: actions/upload-artifact@v2
+      with:
+        name: production-files
+        path: ./site/frontend/build
+        
+  deploy-site:
+    name: Deploy
+    needs: build-site
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: production-files
+        path: ./site/frontendbuild
+
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./site/frontend/build
