@@ -4,13 +4,13 @@ namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
 public class TypeList<T> : IEnumerable<Type>
 {
-    private HashSet<TypePair> Types { get; }
+    private Dictionary<int, TypePair> Types { get; }
 
     public delegate T TypeCreator(Type type);
 
     public TypeList()
     {
-        Types = new HashSet<TypePair>();
+        Types = new Dictionary<int, TypePair>();
     }
     
     public bool Add<T2>() where T2 : T, new()
@@ -31,11 +31,14 @@ public class TypeList<T> : IEnumerable<Type>
     public bool Add(Type type, TypeCreator creator)
     {
         if (!type.IsAssignableTo(typeof(T)))
-        {
             throw new ArgumentException($"Type ({type.Name}) must be assignable to {typeof(T)}.");
-        }
-        
-        return Types.Add(new TypePair(type, creator));
+
+        if (Types.ContainsKey(type.GetHashCode()))
+            return false;
+
+        Types[type.GetHashCode()] = new TypePair(type, creator);
+
+        return true;
     }
 
     public bool Remove<T2>() where T2 : T
@@ -45,14 +48,15 @@ public class TypeList<T> : IEnumerable<Type>
 
     public bool Remove(Type type)
     {
-        var pair = new TypePair(type, _ => throw new Exception("This delegate should never be invoked."));
-
-        return Types.Remove(pair);
+        if (!Types.ContainsKey(type.GetHashCode()))
+            return false;
+        
+        return Types.Remove(type.GetHashCode());
     }
 
     public IEnumerable<T> EnumerateInstances()
     {
-        foreach (var pair in Types)
+        foreach (var (hash, pair) in Types)
         {
             yield return pair.Creator.Invoke(pair.Type);
         }
@@ -60,7 +64,7 @@ public class TypeList<T> : IEnumerable<Type>
     
     public IEnumerator<Type> GetEnumerator()
     {
-        return Types.Select(t => t.Type).GetEnumerator();
+        return Types.Select(item => item.Value.Type).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -77,11 +81,6 @@ public class TypeList<T> : IEnumerable<Type>
         {
             Type = type;
             Creator = creator;
-        }
-
-        public override int GetHashCode()
-        {
-            return Type.GetHashCode();
         }
     }
 }
