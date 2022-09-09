@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 
@@ -12,9 +13,9 @@ public class NumericParserCases
     [Test]
     public void NumericTokenIsValidParse()
     {
-        var token = ParserHelper.AssertFirstIs<NumericToken>("123.456");
+        var token = ParserHelper.AssertFirstIs<DecimalToken>("123.456");
 
-        var (digitsConcat, mantissaConcat) = ReadNumericToken(token);
+        var (digitsConcat, mantissaConcat) = ReadDecimalToken(token);
         
         Assert.That(double.TryParse(digitsConcat, out _), Is.True);
         Assert.That(double.TryParse(mantissaConcat, out _), Is.True);
@@ -34,18 +35,22 @@ public class NumericParserCases
         AssertNumericTokenIsEqual(123);
     }
 
-    [Test]
-    public void DecimalIsValid()
+    // Word of warning: doubles do not retain trailing zeros.
+    // You could use string formatting hacks to imitate this,
+    // however, it's very volatile in future terms and will
+    // probably break stuff
+    [TestCase(123, 456)]
+    [TestCase(789, 1)]
+    [TestCase(0, 987)]
+    public void DecimalIsValid(int digits, int mantissa)
     {
-        AssertNumericTokenIsEqual(123, 456);
-        AssertNumericTokenIsEqual(789, 10);
-        AssertNumericTokenIsEqual(0, 987);
+        AssertNumericTokenIsEqual(digits, mantissa);
     }
 
     [Test]
     public void TrailingDecimalPointIsInvalid()
     {
-        var token = ParserHelper.AssertFirstIs<NumericToken>("123.");
+        var token = ParserHelper.AssertFirstIs<DecimalToken>("123.");
         
         Assert.That(token.IsComplete, Is.False);
     }
@@ -53,12 +58,25 @@ public class NumericParserCases
     private void AssertNumericTokenIsEqual(int digits, int? mantissa = null)
     {
         var n = BuildDouble(digits, mantissa).ToString(CultureInfo.InvariantCulture);
-        var token = ParserHelper.AssertFirstIs<NumericToken>(n);
+        Assert.That(ParserHelper.TryGetFirst(n, out var token), Is.True);
 
-        var (digitsConcat, mantissaConcat) = ReadNumericToken(token);
-        
-        Assert.That(digitsConcat, Is.EqualTo(digitsConcat));
-        Assert.That(mantissaConcat, Is.EqualTo(mantissaConcat));
+        if (token is DecimalToken decimalToken)
+        {
+            var (digitsConcat, mantissaConcat) = ReadDecimalToken(decimalToken);
+            
+            Assert.That(digitsConcat, Is.EqualTo(digits.ToString()));
+            Assert.That(mantissaConcat, Is.EqualTo(mantissa.ToString()));
+        }
+        else if (token is IntegerToken integerToken)
+        {
+            var integerConcat = ReadIntegerToken(integerToken);
+            
+            Assert.That(integerConcat, Is.EqualTo(digits.ToString()));
+        }
+        else
+        {
+            Assert.Fail($"Expected decimal or integer token, got '{token?.GetType().Name ?? "null"}'");
+        }
     }
 
     private double BuildDouble(int digits, int? mantissa)
@@ -76,7 +94,14 @@ public class NumericParserCases
         return result;
     }
 
-    private (string, string) ReadNumericToken(NumericToken token)
+    private string ReadIntegerToken(IntegerToken token)
+    {
+        var digitsConcat = string.Concat(token.Digits);
+
+        return digitsConcat;
+    }
+    
+    private (string, string) ReadDecimalToken(DecimalToken token)
     {
         var digitsConcat = string.Concat(token.Digits);
         var mantissaConcat = string.Concat(token.Mantissa);

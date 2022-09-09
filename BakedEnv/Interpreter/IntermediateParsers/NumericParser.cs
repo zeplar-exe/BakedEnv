@@ -4,6 +4,7 @@ using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
 
+using IntegerToken = BakedEnv.Interpreter.IntermediateTokens.Pure.IntegerToken;
 
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
@@ -17,7 +18,7 @@ public class NumericParser : MatchParser
 
     public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
     {
-        var token = new NumericToken
+        var token = new IntegerToken
         {
             Digits = { new DigitsToken(first) }
         };
@@ -29,32 +30,50 @@ public class NumericParser : MatchParser
                 case TextualTokenType.Numeric:
                     var digit = new DigitsToken(next);
                     
-                    if (token.DecimalPoint == null)
-                        token.Digits.Add(digit);
-                    else
-                        token.Mantissa.Add(digit);
-                    
+                    token.Digits.Add(digit);
                     break;
                 case TextualTokenType.Period:
-                    token.DecimalPoint = new PeriodToken(next);
+                    var period = new PeriodToken(next);
+                    
+                    return ParseDecimalToken(iterator, token, period);
+                default:
+                    iterator.Reserve();
+                    
+                    return token.AsComplete();
+            }
+        }
+                    
+        return token.AsComplete();
+    }
+
+    private DecimalToken ParseDecimalToken(ParserIterator iterator, IntegerToken integerToken, PeriodToken period)
+    {
+        var decimalToken = new DecimalToken { DecimalPoint = period };
+        decimalToken.Digits.AddRange(integerToken.Digits);
+
+        while (iterator.TryMoveNext(out var next))
+        {
+            switch (next.Type)
+            {
+                case TextualTokenType.Numeric:
+                    var digit = new DigitsToken(next);
+                    
+                    decimalToken.Mantissa.Add(digit);
                     
                     break;
                 default:
                     iterator.Reserve();
 
-                    if (token.DecimalPoint != null && token.Mantissa.Count == 0)
-                        return token.AsIncomplete();
+                    if (decimalToken.Mantissa.Count == 0)
+                        return decimalToken.AsIncomplete();
                     
-                    return token.AsComplete();
+                    return decimalToken.AsComplete();
             }
         }
-
-        if (token.Digits.Count == 0) // Great example of an impossible condition to be safe
-            return token.AsIncomplete();
         
-        if (token.DecimalPoint != null && token.Mantissa.Count == 0)
-            return token.AsIncomplete();
-                    
-        return token.AsComplete();
+        if (decimalToken.Mantissa.Count == 0)
+            return decimalToken.AsIncomplete();
+        
+        return decimalToken.AsComplete();
     }
 }
