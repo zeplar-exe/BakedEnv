@@ -19,12 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="BakedObjects" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="TestFiles\**\*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <Compile Remove="IntermediateParserTests\NumericParserCases.cs" />
     </ItemGroup>
 </Project>

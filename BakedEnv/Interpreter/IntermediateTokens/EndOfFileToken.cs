@@ -12,4 +12,9 @@ public class EndOfFileToken : IntermediateToken
         Length = 0;
         EndIndex = index;
     }
+
+    public override string ToString()
+    {
+        return string.Empty;
+    }
 }

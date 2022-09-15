@@ -17,4 +17,6 @@ public abstract class IntermediateToken
         
         throw new InvalidOperationException($"The caller, '{caller}' requires that this '({GetType().Name})' be complete.");
     }
+
+    public abstract override string ToString();
 }
