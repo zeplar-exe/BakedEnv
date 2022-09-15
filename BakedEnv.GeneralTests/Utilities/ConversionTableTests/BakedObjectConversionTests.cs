@@ -8,60 +8,26 @@ namespace BakedEnv.GeneralTests.Utilities.ConversionTableTests;
 
 public class BakedObjectConversionTests
 {
-    [Test]
-    public void TestIntegerToSignedByte()
+    [TestCase(1, typeof(sbyte))]
+    [TestCase(1, typeof(byte))]
+    [TestCase(200, typeof(short))]
+    [TestCase(200, typeof(ushort))]
+    [TestCase(500, typeof(int))]
+    [TestCase(500, typeof(uint))]
+    [TestCase(500, typeof(long))]
+    [TestCase(500, typeof(ulong))]
+    public void TestInteger(int integer, Type targetType)
     {
-        Assert.True(GetValueNotNull(new BakedInteger(1), typeof(sbyte))
-            .Equals((sbyte)0b1));
+        var converted = Convert.ChangeType(integer, targetType);
+        
+        Assert.True(GetValueNotNull(new BakedInteger(integer), targetType).Equals(converted));
     }
     
     [Test]
-    public void TestIntegerToByte()
+    public void TestIntegerToBigInteger()
     {
-        Assert.True(GetValueNotNull(new BakedInteger(1), typeof(byte))
-            .Equals((byte)0b1));
-    }
-    
-    [Test]
-    public void TestIntegerToShort()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(200), typeof(short))
-            .Equals((short)200));
-    }
-    
-    [Test]
-    public void TestIntegerToUnsignedShort()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(200), typeof(ushort))
-            .Equals((ushort)200));
-    }
-    
-    [Test]
-    public void TestIntegerToInt()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(500), typeof(int))
-            .Equals(500));
-    }
-    
-    [Test]
-    public void TestIntegerToUnsignedInt()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(500), typeof(uint))
-            .Equals(500U));
-    }
-    
-    [Test]
-    public void TestIntegerToLong()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(500), typeof(long))
-            .Equals(500L));
-    }
-
-    [Test]
-    public void TestIntegerToUnsignedLong()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(500), typeof(ulong))
-            .Equals(500UL));
+        Assert.True(GetValueNotNull(new BakedInteger(500), typeof(BigInteger))
+            .Equals(new BigInteger(500)));
     }
     
     [Test]
@@ -83,13 +49,6 @@ public class BakedObjectConversionTests
     {
         Assert.True(GetValueNotNull(new BakedInteger(500), typeof(decimal))
             .Equals(500M));
-    }
-    
-    [Test]
-    public void TestIntegerToBigInteger()
-    {
-        Assert.True(GetValueNotNull(new BakedInteger(500), typeof(BigInteger))
-            .Equals(new BigInteger(500)));
     }
 
     [Test]
