@@ -21,7 +21,7 @@ session.Init();
 session.ExecuteUntilTermination();
 
 ```
-FunctionSample.cs
+FunctionSample.cs<br/><br/>
 
 ```
 a = 500
@@ -31,7 +31,7 @@ myFunc("trabajar")
 myFunc(123 + 456)
 myFunc(a * 0.5)
 ```
-Example BakedEnv input
+Example BakedEnv input<br/><br/>
 
 ```sh
 > abc
