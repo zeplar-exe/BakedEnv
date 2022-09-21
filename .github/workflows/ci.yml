@@ -43,7 +43,7 @@ jobs:
     
     - name: Run tests
       working-directory: ./site/frontend
-      run: npm run test --passWithNoTests
+      run: npm run test
       env:
         CI: false
 
