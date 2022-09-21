@@ -46,7 +46,7 @@ appear in the solution until the next build.
 
 ## Samples
 
-...
+See [issue/#3](https://github.com/zeplar-exe/BakedEnv/blob/issue/%233/README.md).
 
 ## Featured Uses
 
