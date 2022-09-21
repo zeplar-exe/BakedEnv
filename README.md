@@ -46,7 +46,7 @@ appear in the solution until the next build.
 
 ## Samples
 
-...
+- [Functions - samples/function-caller.md](./samples/function-caller.md)
 
 ## Featured Uses
 
