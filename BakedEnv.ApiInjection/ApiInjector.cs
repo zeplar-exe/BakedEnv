@@ -21,7 +21,7 @@ public class ApiInjector
         }
 
         var method = new DelegateObject((Func<string, BakedObject>)RetrieveApi);
-        var variable = new BakedVariable(ApiMethodName, method) { IsReadOnly = true };
+        var variable = new BakedVariable(ApiMethodName, method) { Flags = VariableFlags.ReadOnly };
 
         environment.GlobalVariables.Add(variable);
     }

@@ -41,7 +41,7 @@ public class Variables
     public void TestReadOnlyVariable()
     {
         var environment = new BakedEnvironmentBuilder()
-            .WithVariable("Foo", new BakedInteger(1), VariableAttributes.ReadOnly)
+            .WithVariable("Foo", new BakedInteger(1), VariableFlags.ReadOnly)
             .Build();
         var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
         session.ExecuteUntilEnd();

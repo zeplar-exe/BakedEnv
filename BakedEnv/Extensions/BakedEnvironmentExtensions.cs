@@ -20,8 +20,8 @@ public static class BakedEnvironmentExtensions
     public static BakedEnvironmentBuilder WithReadOnlyBooleanVariables(this BakedEnvironmentBuilder environment)
     {
         return environment
-            .WithVariable(new BakedVariable("true", new BakedBoolean(true)) { IsReadOnly = true })
-            .WithVariable(new BakedVariable("false", new BakedBoolean(true)) { IsReadOnly = true });
+            .WithVariable(new BakedVariable("true", new BakedBoolean(true), VariableFlags.ReadOnly))
+            .WithVariable(new BakedVariable("false", new BakedBoolean(true), VariableFlags.ReadOnly));
     }
 
     public static BakedEnvironmentBuilder WithNullVariable(this BakedEnvironmentBuilder environment)
@@ -33,7 +33,7 @@ public static class BakedEnvironmentExtensions
     public static BakedEnvironmentBuilder WithReadOnlyNullVariable(this BakedEnvironmentBuilder environment)
     {
         return environment
-            .WithVariable(new BakedVariable("null", new BakedNull()) { IsReadOnly = true });
+            .WithVariable(new BakedVariable("null", new BakedNull(), VariableFlags.ReadOnly));
     }
 
     public static BakedEnvironmentBuilder WithControlFlow(this BakedEnvironmentBuilder environment)

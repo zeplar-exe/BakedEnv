@@ -153,7 +153,7 @@ public class VariableReference
     /// <param name="scope">The target scope.</param>
     /// <param name="bakedVariable">The value (or null) of the referenced variable.</param>
     /// <returns>Whether the variable was successfully retrieved.</returns>
-    public bool TryGetVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
+    public bool TryGetVariable([NotNullWhen(true)] out IBakedVariable? bakedVariable)
     {
         bakedVariable = null;
 
@@ -174,7 +174,7 @@ public class VariableReference
         {
             if (TryFindVariable(out var variable))
             {
-                if (variable.IsReadOnly)
+                if (variable.Flags.HasFlag(VariableFlags.ReadOnly))
                     return false;
                     
                 variable.Value = value;
@@ -188,7 +188,7 @@ public class VariableReference
         {
             if (TryFindVariable(out var variable))
             {
-                if (variable.IsReadOnly)
+                if (variable.Flags.HasFlag(VariableFlags.ReadOnly))
                     return false;
                 
                 variable.Value = value;
@@ -226,7 +226,7 @@ public class VariableReference
     /// <param name="scope">The target scope.</param>
     /// <param name="bakedVariable">The referenced variable.</param>
     /// <returns>Whether the variable could be found.</returns>
-    public bool TryFindVariable([NotNullWhen(true)] out BakedVariable? bakedVariable)
+    public bool TryFindVariable([NotNullWhen(true)] out IBakedVariable? bakedVariable)
     {
         bakedVariable = null;
         

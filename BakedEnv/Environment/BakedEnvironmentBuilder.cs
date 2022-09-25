@@ -30,16 +30,16 @@ public class BakedEnvironmentBuilder
     /// <param name="key">The variable name.</param>
     /// <param name="variable">The variable's value.</param>
     /// <returns></returns>
-    public BakedEnvironmentBuilder WithVariable(BakedVariable variable)
+    public BakedEnvironmentBuilder WithVariable(IBakedVariable variable)
     {
         Environment.GlobalVariables.Add(variable);
 
         return this;
     }
 
-    public BakedEnvironmentBuilder WithVariable(string name, BakedObject value, VariableAttributes attributes = 0)
+    public BakedEnvironmentBuilder WithVariable(string name, BakedObject value, VariableFlags flags = 0)
     {
-        Environment.GlobalVariables.Add(new BakedVariable(name, value));
+        Environment.GlobalVariables.Add(new BakedVariable(name, value, flags));
 
         return this;
     }

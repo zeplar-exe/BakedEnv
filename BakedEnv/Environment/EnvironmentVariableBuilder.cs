@@ -10,7 +10,7 @@ public class EnvironmentVariableBuilder
     private BakedEnvironmentBuilder Source { get; }
     
     private string? Name { get; set; }
-    private VariableAttributes Attributes { get; set; }
+    private VariableFlags Flags { get; set; }
     private BakedObject? Value { get; set; }
 
     internal EnvironmentVariableBuilder(BakedEnvironmentBuilder source)
@@ -35,9 +35,9 @@ public class EnvironmentVariableBuilder
     public EnvironmentVariableBuilder AsReadOnly(bool flag = true)
     {
         if (flag)
-            Attributes |= VariableAttributes.ReadOnly;
+            Flags |= VariableFlags.ReadOnly;
         else
-            Attributes &= ~VariableAttributes.ReadOnly;
+            Flags &= ~VariableFlags.ReadOnly;
 
         return this;
     }
@@ -46,11 +46,8 @@ public class EnvironmentVariableBuilder
     {
         AssertRequiredValue(Name);
         AssertRequiredValue(Value);
-        
-        var variable = new BakedVariable(Name, Value)
-        {
-            IsReadOnly = Attributes.HasFlag(VariableAttributes.ReadOnly)
-        };
+
+        var variable = new BakedVariable(Name, Value, Flags);
 
         return Source.WithVariable(variable);
     }

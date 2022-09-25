@@ -5,31 +5,31 @@ using BakedEnv.Objects;
 
 namespace BakedEnv.Variables;
 
-public class VariableContainer : ICollection<BakedVariable>
+public class VariableContainer : ICollection<IBakedVariable>
 {
-    private Dictionary<string, BakedVariable> Variables { get; }
+    private Dictionary<string, IBakedVariable> Variables { get; }
     
     public int Count => Variables.Count;
     public bool IsReadOnly => false;
 
     public VariableContainer()
     {
-        Variables = new Dictionary<string, BakedVariable>();
+        Variables = new Dictionary<string, IBakedVariable>();
     }
 
-    public BakedVariable this[string key] => Variables[key];
+    public IBakedVariable this[string key] => Variables[key];
 
     public void Add(string name, BakedObject value)
     {
         Variables[name] = new BakedVariable(name, value);
     }
     
-    public void Add(BakedVariable item)
+    public void Add(IBakedVariable item)
     {
         Variables[item.Name] = item;
     }
 
-    public bool TryGetValue(string key, [NotNullWhen(true)] out BakedVariable? variable)
+    public bool TryGetValue(string key, [NotNullWhen(true)] out IBakedVariable? variable)
     {
         if (Variables.TryGetValue(key, out variable))
             return true;
@@ -44,22 +44,22 @@ public class VariableContainer : ICollection<BakedVariable>
         Variables.Clear();
     }
 
-    public bool Contains(BakedVariable item)
+    public bool Contains(IBakedVariable item)
     {
         return Variables.ContainsKey(item.Name);
     }
 
-    public void CopyTo(BakedVariable[] array, int arrayIndex)
+    public void CopyTo(IBakedVariable[] array, int arrayIndex)
     {
         Variables.Values.CopyTo(array, arrayIndex);
     }
 
-    public bool Remove(BakedVariable item)
+    public bool Remove(IBakedVariable item)
     {
         return Variables.Remove(item.Name);
     }
     
-    public IEnumerator<BakedVariable> GetEnumerator()
+    public IEnumerator<IBakedVariable> GetEnumerator()
     {
         return Variables.Values.GetEnumerator();
     }
