@@ -30,4 +30,11 @@ public class IndexExpression : BakedExpression
 
         return output;
     }
+    
+    public override bool TryAssign(BakedObject value, InvocationContext context)
+    {
+        var values = Values.Select(v => v.Evaluate(context)).ToArray();
+        
+        return Target.Evaluate(context).TrySetIndex(values, value);
+    }
 }
