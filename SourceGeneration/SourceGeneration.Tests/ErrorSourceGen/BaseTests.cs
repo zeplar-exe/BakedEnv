@@ -1,6 +1,6 @@
 using BakedEnv;
 
-namespace Tests.ErrorSourceGen;
+namespace SourceGeneration.Tests.ErrorSourceGen;
 
 public class BaseTests
 {
