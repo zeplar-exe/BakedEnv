@@ -30,13 +30,13 @@ internal class CommonErrorReporter
     
     public BakedError ReportUnexpectedTokenType(TextualToken token, params TextualTokenType[] expected)
     {
-        return Interpreter.ReportError(BakedError.TOKN.E1001(
+        return Interpreter.ReportError(BakedError.EUnexpectedTokenType(
             StringHelper.CreateEnumList(expected), token.Type, 
             token.StartIndex));
     }
     
     public BakedError ReportEndOfFile(TextualToken token)
     {
-        return Interpreter.ReportError(BakedError.TOKN.E1000(token.StartIndex));
+        return Interpreter.ReportError(BakedError.EEarlyEndOfFile(token.StartIndex));
     }
 }

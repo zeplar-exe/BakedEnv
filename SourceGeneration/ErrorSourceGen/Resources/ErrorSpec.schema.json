@@ -7,32 +7,26 @@
             "type" : "string"
         }
     },
-    "patternProperties": {
+    "patternProperties" : {
         "[\\w\\d_]+": {
             "additionalProperties" : false,
             "additionalItems" : false,
             "type" : "object",
-            "patternProperties" : {
-                "[\\w\\d_]+": {
-                    "additionalProperties" : false,
-                    "additionalItems" : false,
-                    "properties" : {
-                        "name": {
-                            "description" : "Simple name of this error.",
-                            "type" : "string"
-                        },
-                        "short": {
-                            "description" : "Short/brief description of this error.",
-                            "type" : "string"
-                        },
-                        "long": {
-                            "description" : "Long/detailed description of this error.",
-                            "type" : "string"
-                        }
-                    },
-                    "required" : [ "name", "short", "long" ]
+            "properties" : {
+                "name": {
+                    "description" : "Simple name of this error.",
+                    "type" : "string"
+                },
+                "short": {
+                    "description" : "Short/brief description of this error.",
+                    "type" : "string"
+                },
+                "long": {
+                    "description" : "Long/detailed description of this error.",
+                    "type" : "string"
                 }
-            }
+            },
+            "required" : [ "name", "short", "long" ]
         }
     }
 }

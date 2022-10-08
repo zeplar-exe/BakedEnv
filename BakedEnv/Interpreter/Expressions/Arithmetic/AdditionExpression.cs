@@ -23,7 +23,7 @@ public class AdditionExpression : BakedExpression
         if (!left.TryAdd(Right.Evaluate(context), out var result))
         {
             context.ReportError(
-                    BakedError.VAL.E1000(
+                    BakedError.EInvalidBinaryOperation(
                         "add", 
                         left.TypeName(), right.TypeName(),
                         context.SourceIndex));

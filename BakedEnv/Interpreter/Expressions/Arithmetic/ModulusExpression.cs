@@ -22,7 +22,7 @@ public class ModulusExpression : BakedExpression
         
         if (!left.TryModulus(Right.Evaluate(context), out var result))
         {
-            context.ReportError(BakedError.VAL.E1000(
+            context.ReportError(BakedError.EInvalidBinaryOperation(
                 "modulo", 
                 left.TypeName(), right.TypeName(),
                 context.SourceIndex));

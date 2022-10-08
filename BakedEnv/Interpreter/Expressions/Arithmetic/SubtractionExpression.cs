@@ -22,7 +22,7 @@ public class SubtractionExpression : BakedExpression
         
         if (!left.TrySubtract(Right.Evaluate(context), out var result))
         {
-            context.ReportError(BakedError.VAL.E1000(
+            context.ReportError(BakedError.EInvalidBinaryOperation(
                 "subtract", 
                 left.TypeName(), right.TypeName(),
                 context.SourceIndex));

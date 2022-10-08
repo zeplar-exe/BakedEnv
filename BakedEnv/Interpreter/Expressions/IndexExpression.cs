@@ -22,7 +22,7 @@ public class IndexExpression : BakedExpression
         
         if (!target.TryGetIndex(values.ToArray(), out var output))
         {
-            context.ReportError(BakedError.VAL.E1002(
+            context.ReportError(BakedError.EInvalidIndex(
                 target.TypeName(), 
                 string.Join(", ", values.Select(v => v.GetType().Name)), 
                 context.SourceIndex));

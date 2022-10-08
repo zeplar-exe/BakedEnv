@@ -4,12 +4,7 @@ using System.Text.Json.Serialization;
 namespace ErrorSourceGen;
 
 #nullable enable
-public class ErrorsContract : ExtensionDictionary<ErrorGroupContract>
-{
-    
-}
-
-public class ErrorGroupContract : ExtensionDictionary<ErrorContract>
+public class ErrorsContract : ExtensionDictionary<ErrorContract>
 {
     
 }
@@ -24,13 +19,13 @@ public class ErrorContract
 public abstract class ExtensionDictionary<TValue>
 {
     [JsonExtensionData] public Dictionary<string, JsonElement> Elements { get; set; } = new();
-
+    
     public Dictionary<string, TValue> Properties
     {
         get
         {
             var dict = new Dictionary<string, TValue>();
-
+            
             foreach (var pair in Elements)
             {
                 try

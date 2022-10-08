@@ -7,6 +7,6 @@ public class BaseTests
     [Test]
     public void TestBakedError()
     {
-        Console.WriteLine(BakedError.VAR.E1000("abc123", 0));
+        Console.WriteLine(BakedError.EInvalidLocalVariable("abc123", 0));
     }
 }

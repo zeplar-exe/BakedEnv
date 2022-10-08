@@ -23,34 +23,25 @@ namespace BakedEnv
 {{
 public partial record struct BakedError(string? Id, string Name, string ShortDescription, string LongDescription, ulong SourceIndex)
 {{
-    {string.Join(Environment.NewLine, Contract.Properties.Select(CreateErrorGroupClass))}
+    {string.Join(Environment.NewLine, Contract.Properties.Select(CreateErrorMethod))}
 }}
 }}");
-    }
-
-    private string CreateErrorGroupClass(KeyValuePair<string, ErrorGroupContract> contract)
-    {
-        return $@"
-public static class {contract.Key}
-{{
-    {string.Join(Environment.NewLine, contract.Value.Properties.Select(CreateErrorMethod))}
-}}";
     }
 
     private string CreateErrorMethod(KeyValuePair<string, ErrorContract> contract)
     {
         var formatTags = FindFormatTags(
             contract.Value.ShortDescription, contract.Value.LongDescription);
-        var formatParams = formatTags.Select(f => $"object? {f}").ToList();
+        var formatParams = formatTags.Select(f => $"object? @{f}").ToList();
         
         formatParams.Add("ulong sourceIndex");
 
         return $@"
 /// <summary>
-/// <b>{contract.Value.Name}</b> <br/>
+/// <b>{contract.Value.Name}</b> ({contract.Key}) <br/>
 /// {contract.Value.ShortDescription}
 /// </summary>
-public static BakedError E{contract.Key}({string.Join(",", formatParams)})
+public static BakedError E{contract.Value.Name}({string.Join(",", formatParams)})
 {{
     return new BakedError(
         ""{contract.Key}"", 

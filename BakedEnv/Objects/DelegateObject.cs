@@ -50,12 +50,12 @@ public class DelegateObject : BakedObject, IBakedCallable
                     var delegateParametersString = string.Join(", ", 
                         delegateParameters.Select(p => p.ParameterType.Name));
                     
-                    context.ReportError(BakedError.INVK.E1002(
+                    context.ReportError(BakedError.EInvocationArgumentMismatch(
                         StringHelper.CreateTypeList(parameters), delegateParametersString, 
                         context.SourceIndex));
                     break;
                 case TargetParameterCountException:
-                    context.ReportError(BakedError.INVK.E1003(
+                    context.ReportError(BakedError.EInvocationArgumentCountMismatch(
                         delegateParameters.Length,
                         parameters.Length, context.SourceIndex));
                     break;

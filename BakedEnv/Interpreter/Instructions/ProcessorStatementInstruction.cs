@@ -48,6 +48,6 @@ public class ProcessorStatementInstruction : InterpreterInstruction
 
     private BakedError CreateInvalidStatementError()
     {
-        return BakedError.PRST.E1000(SourceIndex);
+        return BakedError.EUnregisteredProcessorStatement(SourceIndex);
     }
 }

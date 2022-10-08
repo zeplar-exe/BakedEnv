@@ -1,78 +1,68 @@
 {
     "$schema" : "./ErrorSpec.schema.json",
-    "TOKN" : {
-        "1000" : {
-            "name" : "EarlyEndOfFile",
-            "short" : "The IBakedSource ending was reached unexpectedly.",
-            "long" : ""
-        },
-        "1001" : {
-            "name" : "UnexpectedTokenType",
-            "short" : "A token of type '{expected_type}' was expected, got '{actual_type}'.",
-            "long" : ""
-        }
+    "1000" : {
+        "name" : "EarlyEndOfFile",
+        "short" : "The IBakedSource ending was reached unexpectedly.",
+        "long" : ""
     },
-    "PRST" : {
-        "1000" : {
-            "name" : "UnregisteredProcessorStatement",
-            "short" : "A handler for this processor statement's key or value has not been registered.",
-            "long" : "Processor statements will error on execution if no processor statement handler reports successful handling."
-        }
+    "1001" : {
+        "name" : "UnexpectedTokenType",
+        "short" : "A token of type '{expected_type}' was expected, got '{actual_type}'.",
+        "long" : ""
     },
-    "VAR" : {
-        "1000" : {
-            "name" : "InvalidLocalVariable",
-            "short" : "The variable '{name}' does not exist in the current scope, its ancestors, or globals.",
-            "long" : ""
-        },
-        "1001" : {
-            "name" : "InvalidVariablePath",
-            "short" : "A part of the path '{fullPath}' was null when access was attempted.",
-            "long" : "Operations regarding pathed variables will fail if any part of the path is null when accessed."
-        }
+    "1002" : {
+        "name" : "UnregisteredProcessorStatement",
+        "short" : "A handler for this processor statement's key or value has not been registered.",
+        "long" : "Processor statements will error on execution if no processor statement handler reports successful handling."
     },
-    "INVK" : {
-        "1000" : {
-            "name" : "NullInvocation",
-            "short" : "A null value cannot be invoked.",
-            "long" : ""
-        },
-        "1001" : {
-            "name" : "NonCallableInvocation",
-            "short" : "A non-callable object cannot be invoked.",
-            "long" : "BakedObjects that don't implement IBakedCallable cannot be invoked."
-        },
-        "1002" : {
-            "name" : "InvocationArgumentMismatch",
-            "short" : "This invocation expected ({args}) and received ({actual_args}).",
-            "long" : ""
-        },
-        "1003" : {
-            "name" : "InvocationArgumentCountMismatch",
-            "short" : "Expected {expectedCount} parameters, got {actualCount}.",
-            "long" : ""
-        }
+    "1003" : {
+        "name" : "InvalidLocalVariable",
+        "short" : "The variable '{name}' does not exist in the current scope, its ancestors, or globals.",
+        "long" : ""
     },
-    "VAL" : {
-        "1000" : {
-            "name" : "InvalidBinaryOperation",
-            "short" : "Cannot {operationName} a value of type '{leftType}' with '{rightType}'.",
-            "long" : ""
-        },
-        "1001" : {
-            "name" : "InvalidUnaryOperation",
-            "short" : "Cannot {operationName} a value of type '{objectType}'.",
-            "long" : ""
-        },
-        "1002" : {
-            "name" : "InvalidIndex",
-            "short" : "Cannot index a value of type '{targetType}' with '{valueStringList}'.",
-            "long" : ""
-        },
-        "1003" : {
-            "name" : "InvalidIndexAssignment",
-            "short" : "Cannot assign a value of type '{valueType}' to the index '{valueStringList}' of {targetType}.",
-            "long" : ""
-        }
+    "1004" : {
+        "name" : "InvalidVariablePath",
+        "short" : "A part of the path '{fullPath}' was null when access was attempted.",
+        "long" : "Operations regarding pathed variables will fail if any part of the path is null when accessed."
+    },
+    "1005" : {
+        "name" : "NullInvocation",
+        "short" : "A null value cannot be invoked.",
+        "long" : ""
+    },
+    "1006" : {
+        "name" : "NonCallableInvocation",
+        "short" : "A non-callable object cannot be invoked.",
+        "long" : "BakedObjects that don't implement IBakedCallable cannot be invoked."
+    },
+    "1007" : {
+        "name" : "InvocationArgumentMismatch",
+        "short" : "This invocation expected ({args}) and received ({actual_args}).",
+        "long" : ""
+    },
+    "1008" : {
+        "name" : "InvocationArgumentCountMismatch",
+        "short" : "Expected {expectedCount} parameters, got {actualCount}.",
+        "long" : ""
+    },
+    "1009" : {
+        "name" : "InvalidBinaryOperation",
+        "short" : "Cannot {operationName} a value of type '{leftType}' with '{rightType}'.",
+        "long" : ""
+    },
+    "1010" : {
+        "name" : "InvalidUnaryOperation",
+        "short" : "Cannot {operationName} a value of type '{objectType}'.",
+        "long" : ""
+    },
+    "1011" : {
+        "name" : "InvalidIndex",
+        "short" : "Cannot index a value of type '{targetType}' with '{valueStringList}'.",
+        "long" : ""
+    },
+    "1012" : {
+        "name" : "InvalidIndexAssignment",
+        "short" : "Cannot assign a value of type '{valueType}' to the index '{valueStringList}' of {targetType}.",
+        "long" : ""
     }
 }
