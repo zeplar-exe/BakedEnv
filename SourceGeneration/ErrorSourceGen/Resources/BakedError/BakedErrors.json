@@ -1,5 +1,6 @@
 {
-    "$schema" : "./ErrorSpec.schema.json",
+    "$schema" : "../ErrorSpec.schema.json",
+    
     "1000" : {
         "name" : "EarlyEndOfFile",
         "short" : "The IBakedSource ending was reached unexpectedly.",

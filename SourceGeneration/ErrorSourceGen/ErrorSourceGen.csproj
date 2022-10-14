@@ -28,7 +28,10 @@
     
     <ItemGroup>
         <None Remove="Errors.json" />
-        <EmbeddedResource Include="Resources\Errors.json" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\BakedError\BakedErrors.json" />
     </ItemGroup>
 
 </Project>

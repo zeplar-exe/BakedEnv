@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Reflection;
+
+using ErrorSourceGen.Common;
+using ErrorSourceGen.Generators;
 
 using Microsoft.CodeAnalysis;
 
@@ -10,13 +10,20 @@ namespace ErrorSourceGen;
 [Generator]
 public class StaticErrorsGenerator : ISourceGenerator
 {
-    private ErrorClassGenerator ClassGenerator { get; set; }
-    private OutputGenerator Output { get; set; }
+    private GenericTypeList<ErrorGenerator> Generators { get; }
+    private OutputGenerator Output { get; }
+
+    public StaticErrorsGenerator()
+    {
+        Generators = new GenericTypeList<ErrorGenerator>();
+        Output = new OutputGenerator();
+        
+        Generators.Add<BakedErrorGenerator>();
+    }
     
     public void Initialize(GeneratorInitializationContext context)
     {
-        ClassGenerator = new ErrorClassGenerator();
-        Output = new OutputGenerator();
+        
     }
     
     public void Execute(GeneratorExecutionContext context)
@@ -26,28 +33,23 @@ public class StaticErrorsGenerator : ISourceGenerator
         
         foreach (var name in resourceNames)
         {
-            if (name.StartsWith($"{assembly.GetName().Name}.Resources"))
+            foreach (var generator in Generators)
             {
-                HandleJson(assembly, name);
+                if (generator.CanHandleManifest(name))
+                {
+                    using var stream = assembly.GetManifestResourceStream(name);
+                    
+                    if (stream == null)
+                        continue;
+
+                    using var reader = new StreamReader(stream);
+                    
+                    generator.InitJson(reader.ReadToEnd());
+                    generator.Flush(context);
+                }
             }
         }
         
-        ClassGenerator.Flush(context);
         Output.Flush(context);
-    }
-
-    private void HandleJson(Assembly assembly, string manifest)
-    {
-        using var manifestStream = assembly.GetManifestResourceStream(manifest);
-        
-        if (manifestStream == null)
-            return;
-        
-        var reader = new StreamReader(manifestStream);
-        
-        if (JsonSerializer.Deserialize<ErrorsContract>(reader.ReadToEnd()) is not { } result)
-            return;
-
-        ClassGenerator.Contract = result;
     }
 }
