@@ -136,9 +136,24 @@ public class MethodBuilder
 
         var parameters = Parameters.Select(p => $"{p.Value} {p.Key}");
 
+        var doc = new StringBuilder();
+        var xml = XmlDoc.ToString();
+
+        var reader = new StringReader(xml);
+
+        while (reader.Peek() != -1)
+        {
+            doc.Append("/// ");
+            doc.Append(reader.ReadLine());
+        }
+
         return new StringBuilder()
             .Append(access).Append(' ')
             .Append(inherit).Append(Inheritability == Inheritability.None ? "" : " ")
+            .Append(IsExtern ? "extern " : "")
+            .Append(IsOverride ? "override " : "")
+            .Append(IsSealed ? "sealed " : "")
+            .Append(IsStatic ? "static " : "")
             .Append(ReturnType).Append(' ')
             .Append(Name).Append('(')
             .Append(string.Join(", ", parameters)).Append(')')
