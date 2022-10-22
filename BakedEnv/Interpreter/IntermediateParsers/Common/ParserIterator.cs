@@ -27,6 +27,21 @@ public class ParserIterator : EnumerableIterator<TextualToken>
         return true;
     }
     
+    public bool NextIsAny(IEnumerable<TextualTokenType> types, [NotNullWhen(true)] out TextualToken? token)
+    {
+        token = null;
+
+        if (!SkipTrivia(out token))
+            return false;
+
+        var type = token.Type;
+
+        if (types.Any(t => t == type))
+            return false;
+
+        return true;
+    }
+    
     public bool SkipTrivia([NotNullWhen(true)] out TextualToken? token)
     {
         token = null;

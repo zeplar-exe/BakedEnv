@@ -17,8 +17,8 @@ public abstract class RawIntermediateTokenGroup : IntermediateToken
         RawTokens = new GuardedLexerTokenList(expected);
         IsComplete = true;
     }
-
-    public RawIntermediateTokenGroup(params TextualTokenType[] expected)
+    
+    public RawIntermediateTokenGroup(IEnumerable<TextualTokenType> expected)
     {
         RawTokens = new GuardedLexerTokenList(expected);
     }

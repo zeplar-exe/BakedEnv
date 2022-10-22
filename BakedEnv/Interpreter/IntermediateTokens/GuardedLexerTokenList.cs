@@ -20,9 +20,9 @@ public class GuardedLexerTokenList : IList<TextualToken>
         Tokens = new List<GuardedLexerToken>();
     }
     
-    public GuardedLexerTokenList(params TextualTokenType[] expected)
+    public GuardedLexerTokenList(IEnumerable<TextualTokenType> expected)
     {
-        Expected = expected;
+        Expected = expected.ToArray();
         Tokens = new List<GuardedLexerToken>();
     }
     
