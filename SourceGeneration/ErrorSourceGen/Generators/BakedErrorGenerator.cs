@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using ErrorSourceGen.Builders;
@@ -32,7 +34,7 @@ public class BakedErrorGenerator : ErrorGenerator
         // Take note of https://stackoverflow.com/a/184975/16324801
 
         var className = "public partial record struct BakedError(" +
-                        "string? Id, string Name, " +
+                        "string Id, string Name, " +
                         "string ShortDescription, string LongDescription, " +
                         "ulong SourceIndex)";
         
@@ -68,6 +70,13 @@ namespace BakedEnv
             .AppendLine($"\"{contract.Value.ShortDescription}\",")
             .AppendLine($"\"{contract.Value.LongDescription}\",")
             .AppendLine("sourceIndex);");
+
+        builder.XmlDoc.Name = "summary";
+        builder.XmlDoc.Value = new StringBuilder()
+            .Append("ID: ").Append(contract.Key).Append("<br/>")
+            .Append(contract.Value.ShortDescription).Append("<br/><br/>")
+            .Append(contract.Value.LongDescription)
+            .ToString();
 
         return builder.ToString();
     }

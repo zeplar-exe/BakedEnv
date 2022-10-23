@@ -11,12 +11,10 @@ namespace ErrorSourceGen;
 public class StaticErrorsGenerator : ISourceGenerator
 {
     private GenericTypeList<ErrorGenerator> Generators { get; }
-    private OutputGenerator Output { get; }
 
     public StaticErrorsGenerator()
     {
         Generators = new GenericTypeList<ErrorGenerator>();
-        Output = new OutputGenerator();
         
         Generators.Add<BakedErrorGenerator>();
     }
@@ -49,7 +47,5 @@ public class StaticErrorsGenerator : ISourceGenerator
                 }
             }
         }
-        
-        Output.Flush(context);
     }
 }

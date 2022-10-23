@@ -23,6 +23,7 @@ public class MethodBuilder
         Name = string.Empty;
         Parameters = new Dictionary<string, string>();
         Body = new StringBuilder();
+        XmlDoc = new XElement("summary");
     }
 
     public MethodBuilder WithName(string name)
@@ -148,6 +149,7 @@ public class MethodBuilder
         }
 
         return new StringBuilder()
+            .AppendLine(doc.ToString())
             .Append(access).Append(' ')
             .Append(inherit).Append(Inheritability == Inheritability.None ? "" : " ")
             .Append(IsExtern ? "extern " : "")
@@ -157,9 +159,9 @@ public class MethodBuilder
             .Append(ReturnType).Append(' ')
             .Append(Name).Append('(')
             .Append(string.Join(", ", parameters)).Append(')')
-            .Append('{').AppendLine()
-            .Append(Body).AppendLine()
-            .Append('}').AppendLine()
+            .AppendLine("{")
+            .AppendLine(Body.ToString())
+            .Append('}')
             .ToString();
     }
 }
