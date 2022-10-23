@@ -66,9 +66,16 @@ public class AnyParser : ParserBase
         var parser = ContinueParsers.EnumerateInstances()
             .FirstOrDefault(p => p.Match(next));
 
+        if (parser == null)
+        {
+            token = new UnexpectedToken(next);
+
+            return true;
+        }
+
         RegisterParser(parser);
 
-        token = parser?.Parse(next, input) ?? new UnexpectedToken(next);
+        token = parser.Parse(next, input);
 
         return true;
     }
