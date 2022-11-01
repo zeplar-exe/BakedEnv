@@ -72,15 +72,5 @@ public class TypeList<T> : IEnumerable<Type>
         return GetEnumerator();
     }
 
-    private readonly struct TypePair
-    {
-        public Type Type { get; }
-        public TypeCreator Creator { get; }
-
-        public TypePair(Type type, TypeCreator creator)
-        {
-            Type = type;
-            Creator = creator;
-        }
-    }
+    private readonly record struct TypePair(Type Type, TypeCreator Creator);
 }
