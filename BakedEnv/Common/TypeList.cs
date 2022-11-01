@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace BakedEnv.Interpreter.IntermediateParsers.Common;
+namespace BakedEnv.Common;
 
 public class TypeList<T> : IEnumerable<Type>
 {

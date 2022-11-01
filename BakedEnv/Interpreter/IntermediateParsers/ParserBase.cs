@@ -1,4 +1,5 @@
-using BakedEnv.Interpreter.IntermediateParsers.Errors;
+using BakedEnv.Common;
+using BakedEnv.Interpreter.IntermediateParsers.Common;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 

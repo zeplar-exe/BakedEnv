@@ -1,4 +1,4 @@
-namespace BakedEnv.Interpreter.IntermediateParsers.Errors;
+namespace BakedEnv.Common;
 
 public class ErrorReporter
 {
