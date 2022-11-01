@@ -9,6 +9,6 @@ public record InvocationContext(BakedInterpreter Interpreter, IBakedScope Scope,
 
     public void ReportError(BakedError error)
     {
-        Interpreter.ReportError(error);
+        Interpreter.Error.Report(error);
     }
 }

@@ -18,8 +18,6 @@ namespace BakedEnv.Interpreter;
 /// </summary>
 public class BakedInterpreter
 {
-    private CommonErrorReporter ErrorReporter { get; set; }
-    
     private InterpreterIterator? Iterator { get; set; }
     private IBakedScope? CurrentScope { get; set; }
 
@@ -52,18 +50,7 @@ public class BakedInterpreter
     /// </summary>
     public bool SourceLocked { get; private set; }
     
-    /// <summary>
-    /// Event invoked via <see cref="ReportError(BakedEnv.BakedError)"/>. Retrieves error information during parsing or execution.
-    /// </summary>
-    public event EventHandler<BakedError>? ErrorReported;
-
-    /// <summary>
-    /// Initialize a BakedInterpreter.
-    /// </summary>
-    public BakedInterpreter()
-    {
-        ErrorReporter = new CommonErrorReporter(this);
-    }
+    public ErrorReporter? Error { get; private set; }
 
     /// <summary>
     /// Initialize the interpreter and reset necessary values.
@@ -83,6 +70,7 @@ public class BakedInterpreter
         Context = new InterpreterContext();
         CurrentScope = Context;
         IsReady = true;
+        Error = new ErrorReporter();
 
         SourceLocked = true;
     }
@@ -123,21 +111,9 @@ public class BakedInterpreter
         Context = null;
         IsReady = false;
         CurrentScope = null;
-
+       
         SourceLocked = false;
-    }
-
-    /// <summary>
-    /// Report a raw <see cref="BakedEnv.BakedError"/>.
-    /// </summary>
-    /// <param name="error">Error to report.</param>
-    public BakedError ReportError(BakedError error)
-    {
-        AssertReady();
-        
-        ErrorReported?.Invoke(this, error);
-
-        return error;
+        Error = null;
     }
 
     /// <summary>
