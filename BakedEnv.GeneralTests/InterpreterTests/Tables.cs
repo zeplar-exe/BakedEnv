@@ -1,4 +1,5 @@
 using BakedEnv.Environment;
+using BakedEnv.Interpreter;
 using BakedEnv.Objects;
 using BakedEnv.Sources;
 
@@ -12,7 +13,7 @@ public class Tables
     [Test]
     public void TestTableDeclaration()
     {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = [ 0 : \"Bar\" ]")).Init();
+        var session = InterpreterTestHelper.CreateSession("foo = [ 0 : \"Bar\" ]");
         session.ExecuteUntilEnd();
 
         var variable = session.TopVariables["foo"];

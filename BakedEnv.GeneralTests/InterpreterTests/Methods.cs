@@ -18,7 +18,7 @@ public class Methods
         var del = new DelegateObject(delegate() { target = 1; });
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
-        var session = environment.CreateSession(new RawStringSource("foo()")).Init();
+        var session = environment.CreateSession("foo()");
         session.ExecuteUntilEnd();
         
         Assert.True(target == 1);
@@ -33,7 +33,7 @@ public class Methods
         // TODO: Right parenthesis after number is ignored? (ParserTools Lexer)
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
-        var session = environment.CreateSession(new RawStringSource("foo(5)")).Init();
+        var session = environment.CreateSession("foo(5)");
         session.ExecuteUntilEnd();
 
         Assert.True(target == 5);
@@ -45,7 +45,7 @@ public class Methods
         var del = new DelegateObject(delegate() { return "Hello world!"; });
         
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
-        var session = environment.CreateSession(new RawStringSource("a = foo()")).Init();
+        var session = environment.CreateSession("a = foo()");
         session.ExecuteUntilEnd();
 
         session.AssertInterpreterHasVariable("a", "Hello world!");

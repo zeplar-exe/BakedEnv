@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Interpreter;
@@ -21,45 +22,12 @@ public class VariableReference
     /// The qualifying path of the referenced variable (path1.path2.path3...Name)
     /// </summary>
     /// <remarks>If the path is empty, the variable is assumed to be top-level.</remarks>
-    public IReadOnlyCollection<string> Path { get; }
+    public ReadOnlyCollection<string> Path { get; }
 
     public IEnumerable<string> FullPath => Path.Concat(new[] { Name });
 
-    private IBakedScope? b_scope;
-
-    public IBakedScope Scope
-    {
-        get
-        {
-            if (b_scope != null)
-                return b_scope;
-            
-            Interpreter.AssertReady();
-
-            return Interpreter.Context;
-        }
-        set => b_scope = value;
-    }
-
-    /// <summary>
-    /// Initialize a VariableReference with a full qualifying path.
-    /// </summary>
-    /// <param name="fullPath">The full path.</param>
-    /// <param name="interpreter">The target interpreter.</param>
-    /// <exception cref="ArgumentException">The full path is empty.</exception>
-    public VariableReference(IEnumerable<string> fullPath, BakedInterpreter interpreter)
-    {
-        Interpreter = interpreter;
-        
-        var array = fullPath.ToArray();
-        
-        if (array.Length < 1)
-            throw new ArgumentException("The full path cannot be empty.");
-
-        Name = array.Last();
-        Path = array.Take(array.Length - 1).ToList().AsReadOnly();
-    }
-
+    public IBakedScope Scope { get; set; }
+    
     public VariableReference(IEnumerable<string> fullPath, BakedInterpreter interpreter, IBakedScope scope)
     {
         Interpreter = interpreter;
@@ -73,34 +41,6 @@ public class VariableReference
         Path = array.Take(array.Length - 1).ToList().AsReadOnly(); 
         Scope = scope;
     }
-    
-    public VariableReference(IEnumerable<string> fullPath, InvocationContext context)
-    {
-        Interpreter = context.Interpreter;
-        
-        var array = fullPath.ToArray();
-        
-        if (array.Length < 1)
-            throw new ArgumentException("The full path cannot be empty.");
-
-        Name = array.Last();
-        Path = array.Take(array.Length - 1).ToList().AsReadOnly(); 
-        Scope = context.Scope;
-    }
-    
-    /// <summary>
-    /// Initialize a VariableReference.
-    /// </summary>
-    /// <param name="name">The referenced variable's name.</param>
-    /// <param name="path">The qualifying path/</param>
-    /// <param name="interpreter">The target interpreter.</param>
-    public VariableReference(string name, IEnumerable<string> path, BakedInterpreter interpreter)
-    {
-        Interpreter = interpreter;
-        
-        Name = name;
-        Path = path.ToList().AsReadOnly();
-    }
 
     public VariableReference(string name, IEnumerable<string> path, BakedInterpreter interpreter, IBakedScope scope)
     {
@@ -110,14 +50,41 @@ public class VariableReference
         Path = path.ToList().AsReadOnly();
         Scope = scope;
     }
+
+    public VariableReference(IEnumerable<string> fullPath, InvocationContext context) 
+        : this(fullPath, context.Interpreter)
+    {
+        
+    }
+    
+    /// <summary>
+    /// Initialize a VariableReference with a full qualifying path.
+    /// </summary>
+    /// <param name="fullPath">The full path.</param>
+    /// <param name="interpreter">The target interpreter.</param>
+    /// <exception cref="ArgumentException">The full path is empty.</exception>
+    public VariableReference(IEnumerable<string> fullPath, BakedInterpreter interpreter)
+        : this(fullPath, interpreter, interpreter.Context)
+    {
+        
+    }
+    
+    /// <summary>
+    /// Initialize a VariableReference.
+    /// </summary>
+    /// <param name="name">The referenced variable's name.</param>
+    /// <param name="path">The qualifying path/</param>
+    /// <param name="interpreter">The target interpreter.</param>
+    public VariableReference(string name, IEnumerable<string> path, BakedInterpreter interpreter)
+        : this(name, path, interpreter, interpreter.Context)
+    {
+        
+    }
     
     public VariableReference(string name, IEnumerable<string> path, InvocationContext context)
+        : this(name, path, context.Interpreter, context.Interpreter.Context)
     {
-        Interpreter = context.Interpreter;
-
-        Name = name;
-        Path = path.ToList().AsReadOnly();
-        Scope = context.Scope;
+        
     }
     
     /// <summary>
@@ -126,20 +93,15 @@ public class VariableReference
     /// <param name="name">The referenced variable name.</param>
     /// <param name="interpreter">The target interpreter.</param>
     public VariableReference(string name, BakedInterpreter interpreter)
+        : this(name, interpreter, interpreter.Context)
     {
-        Interpreter = interpreter;
-
-        Name = name;
-        Path = new List<string>().AsReadOnly();
+        
     }
 
-    public VariableReference(string name, BakedInterpreter interpreter, IBakedScope scope)
+    public VariableReference(string name, BakedInterpreter interpreter, IBakedScope scope) 
+        : this(name, Enumerable.Empty<string>(), interpreter, scope)
     {
-        Interpreter = interpreter;
-
-        Name = name;
-        Path = new List<string>().AsReadOnly();
-        Scope = scope;
+        
     }
 
     public bool IsLocal()
@@ -168,8 +130,6 @@ public class VariableReference
     /// <returns>Whether the variable could be set (false only if the variable is read-only or part of its path does not exist).</returns>
     public bool TrySetVariable(BakedObject value)
     {
-        Interpreter.AssertReady();
-        
         if (Path.Count > 0)
         {
             if (TryFindVariable(out var variable))

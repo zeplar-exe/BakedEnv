@@ -17,7 +17,7 @@ public class ProcessorInstructions
     {
         ProcessorStatementInstruction? processorStatement = null;
         
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("[BakeType: \"Cake\"]")).Init();
+        var session = InterpreterTestHelper.CreateSession("[BakeType: \"Cake\"]");
         session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
         
         if (processorStatement == null)
@@ -35,8 +35,7 @@ public class ProcessorInstructions
     {
         var session = new BakedEnvironmentBuilder()
             .WithStatementHandlers(new MockStatementHandler()).Build()
-            .CreateSession(new RawStringSource($"[Pizza: \"Time\"]"))
-            .Init();
+            .CreateSession("[Pizza: \"Time\"]");
         session.ExecuteUntilEnd();
         
         session.AssertInterpreterHasVariable("Pizza", "Time");
@@ -46,9 +45,9 @@ public class ProcessorInstructions
     public void TestWhitespace()
     {
         var session = new BakedEnvironmentBuilder()
-            .WithStatementHandlers(new MockStatementHandler()).Build()
-            .CreateSession(new RawStringSource($"[    NaN: \t 0 \n ]"))
-            .Init();
+            .WithStatementHandlers(new MockStatementHandler())
+            .Build()
+            .CreateSession("[    NaN: \t 0 \n ]");
         session.ExecuteUntilEnd();
 
         session.AssertInterpreterHasVariable("NaN", 0);
@@ -58,8 +57,6 @@ public class ProcessorInstructions
     {
         public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
         {
-            context.Interpreter.AssertReady();
-
             var key = instruction.Key.Evaluate(context);
             
             context.Interpreter.Context.Variables.Add(key.ToString(), instruction.Expression.Evaluate(context));

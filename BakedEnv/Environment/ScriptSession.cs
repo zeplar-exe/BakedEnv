@@ -11,7 +11,7 @@ namespace BakedEnv.Environment;
 /// <summary>
 /// Singular unit of a BakedEnv script session. 
 /// </summary>
-public class ScriptSession : IDisposable
+public sealed class ScriptSession : IDisposable
 {
     private bool Disposed { get; set; }
     
@@ -20,16 +20,8 @@ public class ScriptSession : IDisposable
     /// </summary>
     public BakedInterpreter Interpreter { get; }
 
-    public VariableContainer TopVariables
-    {
-        get
-        {
-            Interpreter.AssertReady();
-            
-            return Interpreter.Context.Variables;
-        }
-    }
-    
+    public VariableContainer TopVariables => Interpreter.Context.Variables;
+
     /// <summary>
     /// Event which fires before the ScriptSession is disposed. Useful for last-minute cleanup.
     /// </summary>
@@ -42,27 +34,6 @@ public class ScriptSession : IDisposable
     public ScriptSession(BakedInterpreter interpreter)
     {
         Interpreter = interpreter;
-    }
-    
-    /// <summary>
-    /// Init the ScriptSession (and Interpreter)
-    /// </summary>
-    public ScriptSession Init()
-    {
-        Interpreter.Init();
-
-        return this;
-    }
-
-    /// <summary>
-    /// Update the interpreter's IBakedSource.
-    /// </summary>
-    /// <param name="source">The new source.</param>
-    public ScriptSession WithSource(IBakedSource source)
-    {
-        Interpreter.WithSource(source);
-
-        return this;
     }
 
     /// <summary>
@@ -92,13 +63,18 @@ public class ScriptSession : IDisposable
         ExecuteUntil(_ => false);
     }
 
+    public void ExecuteUntilError()
+    {
+        ExecuteUntil(_ => Interpreter.Error.AnyError);
+    }
+
     /// <summary>
     /// Execute instructions until the predicate returns true.
     /// </summary>
     /// <param name="predicate">Instruction conditional function.</param>
     public void ExecuteUntil(Func<InterpreterInstruction, bool> predicate)
     {
-        AssertDisposed();
+        AssertNotDisposed();
 
         foreach (var instruction in EnumerateInstructions())
         {
@@ -117,7 +93,7 @@ public class ScriptSession : IDisposable
     /// <returns>Enumeration of instructions from the interpreter.</returns>
     public IEnumerable<InterpreterInstruction> EnumerateInstructions(AutoExecutionMode executionMode = AutoExecutionMode.None)
     {
-        AssertDisposed();
+        AssertNotDisposed();
         
         while (Interpreter.TryGetNextInstruction(out var instruction))
         {
@@ -135,7 +111,7 @@ public class ScriptSession : IDisposable
     /// <returns>Whether the attempt was successful.</returns>
     public bool TryGetNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
-        AssertDisposed();
+        AssertNotDisposed();
         
         return Interpreter.TryGetNextInstruction(out instruction);
     }
@@ -161,18 +137,16 @@ public class ScriptSession : IDisposable
     /// <remarks>Invokes the <see cref="OnDisposing"/> event.</remarks>
     public void Dispose()
     {
-        AssertDisposed();
+        AssertNotDisposed();
         
         OnDisposing?.Invoke(this, EventArgs.Empty);
-        Interpreter.TearDown();
+        Interpreter.Dispose();
         Disposed = true;
     }
 
-    private void AssertDisposed()
+    private void AssertNotDisposed()
     {
         if (Disposed)
             throw new ObjectDisposedException(nameof(ScriptSession), "Session has already been disposed.");
-        
-        Interpreter.AssertReady();
     }
 }

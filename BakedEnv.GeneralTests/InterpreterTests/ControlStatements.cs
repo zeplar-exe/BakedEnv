@@ -18,7 +18,7 @@ public class ControlStatements
             .WithVariable("target", new BakedInteger(0))
             .WithControlStatement(new IfStatementDefinition())
             .Build();
-        var session = environment.CreateSession(new RawStringSource("if (condition) { target = 1 }")).Init();
+        var session = environment.CreateSession("if (condition) { target = 1 }");
         session.ExecuteUntilEnd();
 
         environment.AssertEnvironmentHasVariable("target", 1);
@@ -32,7 +32,7 @@ public class ControlStatements
             .WithVariable("target", new BakedInteger(0))
             .WithControlStatement(new IfStatementDefinition())
             .Build();
-        var session = environment.CreateSession(new RawStringSource("if (condition) { target = 1 }")).Init();
+        var session = environment.CreateSession("if (condition) { target = 1 }");
         session.ExecuteUntilEnd();
 
         environment.AssertEnvironmentHasVariable("target", 0);

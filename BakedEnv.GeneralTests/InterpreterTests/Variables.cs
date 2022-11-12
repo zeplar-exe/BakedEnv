@@ -1,4 +1,5 @@
 using BakedEnv.Environment;
+using BakedEnv.Interpreter;
 using BakedEnv.Objects;
 using BakedEnv.Sources;
 using BakedEnv.Variables;
@@ -13,7 +14,7 @@ public class Variables
     [Test]
     public void TestVariableAssignment()
     {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("pizza = 1")).Init();
+        var session = InterpreterTestHelper.CreateSession("pizza = 1");
         session.ExecuteUntilEnd();
 
         session.AssertInterpreterHasVariable("pizza", 1);
@@ -22,7 +23,7 @@ public class Variables
     [Test]
     public void TestMultipleVariableAssignment()
     {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n bar=2")).Init();
+        var session = InterpreterTestHelper.CreateSession("foo = 1 \n bar = 2");
         session.ExecuteUntilEnd();
         
         session.AssertInterpreterHasVariable("bar", 2);
@@ -31,7 +32,7 @@ public class Variables
     [Test]
     public void TestMultiAssignment()
     {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = 1 \n foo=2")).Init();
+        var session = InterpreterTestHelper.CreateSession("foo = 1 \n foo = 2");
         session.ExecuteUntilEnd();
         
         session.AssertInterpreterHasVariable("foo", 2);
@@ -43,7 +44,7 @@ public class Variables
         var environment = new BakedEnvironmentBuilder()
             .WithVariable("Foo", new BakedInteger(1), VariableFlags.ReadOnly)
             .Build();
-        var session = environment.CreateSession(new RawStringSource("Foo = 0")).Init();
+        var session = environment.CreateSession("Foo = 0");
         session.ExecuteUntilEnd();
         
         environment.AssertEnvironmentHasVariable("Foo", 1);
@@ -55,7 +56,7 @@ public class Variables
         var environment = new BakedEnvironmentBuilder()
             .WithVariable("pizza", new MockPropertyObject())
             .Build();
-        var session = environment.CreateSession(new RawStringSource("a = pizza.foo")).Init();
+        var session = environment.CreateSession("a = pizza.foo");
         session.ExecuteUntilEnd();
 
         session.AssertInterpreterHasVariable("a", "bar");
