@@ -94,7 +94,7 @@ public sealed class BakedInterpreter : IDisposable
         {
             var root = new AnyParser();
             var lexer = new TextLexer(Source.EnumerateCharacters());
-            var iterator = new ParserIterator(lexer);
+            var iterator = new LexerIterator(lexer);
             
             Iterator = new InterpreterIterator(root.Parse(iterator));
         }

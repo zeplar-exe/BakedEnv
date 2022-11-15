@@ -18,7 +18,7 @@ public class IdentifierParser : MatchParser
         return IdentifierTokenTypes.Contains(first.Type);
     }
 
-    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
     {
         var identifier = new IdentifierToken();
 

@@ -15,7 +15,7 @@ public class StringParser : MatchParser
         return TestTokenIs(first, TextualTokenType.SingleQuotation, TextualTokenType.DoubleQuotation);
     }
 
-    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
     {
         var token = new StringToken
         {

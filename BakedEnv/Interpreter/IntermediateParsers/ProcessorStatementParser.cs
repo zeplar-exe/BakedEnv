@@ -17,7 +17,7 @@ public class ProcessorStatementParser : MatchParser
         return TestTokenIs(first, TextualTokenType.LeftBracket);
     }
 
-    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
     {
         var token = new ProcessorStatementToken
         {

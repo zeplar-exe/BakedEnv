@@ -45,7 +45,7 @@ public class AnyParser : ParserBase
         return this;
     }
 
-    public IEnumerable<IntermediateToken> Parse(ParserIterator input)
+    public IEnumerable<IntermediateToken> Parse(LexerIterator input)
     {
         while (TryParseOne(input, out var next))
         {
@@ -55,7 +55,7 @@ public class AnyParser : ParserBase
         yield return new EndOfFileToken(input.Current?.EndIndex ?? 0);
     }
     
-    public bool TryParseOne(ParserIterator input, [NotNullWhen(true)] out IntermediateToken? token)
+    public bool TryParseOne(LexerIterator input, [NotNullWhen(true)] out IntermediateToken? token)
     {
         token = null;
         

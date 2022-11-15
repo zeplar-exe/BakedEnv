@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 public abstract class MatchParser : ParserBase
 {
     public abstract bool Match(TextualToken first);
-    public abstract IntermediateToken Parse(TextualToken first, ParserIterator iterator);
+    public abstract IntermediateToken Parse(TextualToken first, LexerIterator iterator);
     
     protected bool TestTokenIs(TextualToken token, params TextualTokenType[] types)
     {

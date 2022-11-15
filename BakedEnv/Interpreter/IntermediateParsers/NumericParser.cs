@@ -16,7 +16,7 @@ public class NumericParser : MatchParser
         return TestTokenIs(first, TextualTokenType.Numeric);
     }
 
-    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
     {
         var token = new IntegerToken
         {
@@ -46,7 +46,7 @@ public class NumericParser : MatchParser
         return token.AsComplete();
     }
 
-    private DecimalToken ParseDecimalToken(ParserIterator iterator, IntegerToken integerToken, PeriodToken period)
+    private DecimalToken ParseDecimalToken(LexerIterator iterator, IntegerToken integerToken, PeriodToken period)
     {
         var decimalToken = new DecimalToken { DecimalPoint = period };
         decimalToken.Digits.AddRange(integerToken.Digits);

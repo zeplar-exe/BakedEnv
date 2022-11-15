@@ -13,7 +13,7 @@ public class CommentParser : MatchParser
         return TestTokenIs(first, TextualTokenType.Hashtag);
     }
 
-    public override IntermediateToken Parse(TextualToken first, ParserIterator iterator)
+    public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
     {
         var token = new SingleLineCommentToken();
         
@@ -47,7 +47,7 @@ public class CommentParser : MatchParser
         return token.AsComplete();
     }
 
-    private MultiLineCommentToken ParseMultiLine(MultiLineCommentToken target, ParserIterator iterator)
+    private MultiLineCommentToken ParseMultiLine(MultiLineCommentToken target, LexerIterator iterator)
     {
         void AppendContent(TextualToken token)
         {

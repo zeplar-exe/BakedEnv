@@ -15,10 +15,10 @@ namespace BakedEnv.GeneralTests.IntermediateParserTests;
 
 internal static class ParserHelper
 {
-    public static ParserIterator CreateIterator(string text)
+    public static LexerIterator CreateIterator(string text)
     {
         var lexer = new TextLexer(text);
-        var iterator = new ParserIterator(lexer);
+        var iterator = new LexerIterator(lexer);
 
         return iterator;
     }

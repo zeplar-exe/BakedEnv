@@ -7,9 +7,9 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
-public class ParserIterator : EnumerableIterator<TextualToken>
+public class LexerIterator : EnumerableIterator<TextualToken>
 {
-    public ParserIterator(IEnumerable<TextualToken> enumerable) : base(enumerable)
+    public LexerIterator(IEnumerable<TextualToken> enumerable) : base(enumerable)
     {
         
     }
