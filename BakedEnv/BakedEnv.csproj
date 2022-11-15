@@ -13,9 +13,5 @@
     <ItemGroup>
         <ProjectReference Include="..\SourceGeneration\ErrorSourceGen\ErrorSourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Interpreter\InstructionParsers" />
-    </ItemGroup>
     
 </Project>

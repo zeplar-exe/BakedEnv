@@ -18,7 +18,7 @@ public class AnyParser : ParserBase
     public static AnyParser Default()
     {
         return new AnyParser()
-            .WithParser<ProcessorStatementParser>()
+            .WithParser<IdentifierParser>()
             .WithParser<StringParser>()
             .WithParser<NumericParser>()
             .WithParser<CommentParser>();
