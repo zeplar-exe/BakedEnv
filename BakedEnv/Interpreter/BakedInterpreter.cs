@@ -5,6 +5,8 @@ using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
+using BakedEnv.Interpreter.IntermediateTokens.Pure;
+using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
@@ -90,6 +92,19 @@ public sealed class BakedInterpreter : IDisposable
     {
         instruction = null;
 
+        EnsureIterator();
+
+        if (!Iterator.TryPeekNext(out var next))
+            return false;
+
+        // A loooot of methods, which requires multiple module classes...
+        
+        return instruction != null;
+    }
+
+    [MemberNotNull(nameof(Iterator))]
+    private void EnsureIterator()
+    {
         if (Iterator == null)
         {
             var root = new AnyParser();
@@ -98,8 +113,6 @@ public sealed class BakedInterpreter : IDisposable
             
             Iterator = new InterpreterIterator(root.Parse(iterator));
         }
-
-        return instruction != null;
     }
 
     public void Dispose()
