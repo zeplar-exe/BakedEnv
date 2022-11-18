@@ -16,16 +16,13 @@ public sealed class BakedEnvironment : IDisposable
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
     public VariableContainer GlobalVariables { get; }
-    
     /// <summary>
     /// Processor statement handlers.
     /// </summary>
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
-
     public List<KeywordDefinition> Keywords { get; }
-    
     public List<ControlStatementDefinition> ControlStatements { get; }
-
+    public List<LibraryEnvironment> Libraries { get; }
     public VariableReferenceOrder VariableReferenceOrder { get; set; }
     
     public TextWriter? OutputWriter { get; set; }
@@ -39,6 +36,7 @@ public sealed class BakedEnvironment : IDisposable
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
         Keywords = new List<KeywordDefinition>();
         ControlStatements = new List<ControlStatementDefinition>();
+        Libraries = new List<LibraryEnvironment>();
         VariableReferenceOrder = VariableReferenceOrder.Default();
     }
 
