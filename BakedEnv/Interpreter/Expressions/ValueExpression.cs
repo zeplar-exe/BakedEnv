@@ -3,7 +3,7 @@ using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.Expressions;
 
-public class ValueExpression : BakedExpression
+public class ValueExpression : BakedExpression, IConstantExpression
 {
     public BakedObject Value { get; }
     
@@ -13,6 +13,11 @@ public class ValueExpression : BakedExpression
     }
     
     public override BakedObject Evaluate(InvocationContext context)
+    {
+        return Value;
+    }
+
+    public BakedObject EvaluateConstant()
     {
         return Value;
     }

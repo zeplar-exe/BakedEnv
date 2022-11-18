@@ -10,10 +10,10 @@ public abstract class InterpreterInstruction
     /// <summary>
     /// Helper value to determine this instruction's location within an IBakedSource.
     /// </summary>
-    public int SourceIndex { get; }
+    public ulong SourceIndex { get; }
 
     /// <param name="sourceIndex">The source index of this instruction.</param>
-    protected InterpreterInstruction(int sourceIndex)
+    protected InterpreterInstruction(ulong sourceIndex)
     {
         SourceIndex = sourceIndex;
     }
@@ -23,7 +23,7 @@ public abstract class InterpreterInstruction
     /// </summary>
     /// <param name="interpreter">The target interpreter.</param>
     /// <remarks>This overload implicitly passes the interpreter's context to
-    /// <see cref="Execute(BakedEnv.Interpreter.BakedInterpreter, BakedEnv.Interpreter.IBakedScope)"/></remarks>
+    /// <see cref="Execute(BakedEnv.Interpreter.BakedInterpreter, IBakedScope)"/></remarks>
     public virtual void Execute(BakedInterpreter interpreter)
     {
         Execute(new InvocationContext(interpreter, interpreter.Context, SourceIndex));

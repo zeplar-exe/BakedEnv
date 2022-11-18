@@ -3,7 +3,7 @@ using BakedEnv.Interpreter.Scopes;
 namespace BakedEnv.Interpreter.Instructions;
 
 /// <summary>
-/// An 'instruction' which is usually placed alongside a <see cref="BakedError"/>.
+/// An 'instruction' which is usually placed alongside a <see cref="BakedEnv.BakedError"/>.
 /// </summary>
 public class InvalidInstruction : InterpreterInstruction
 {

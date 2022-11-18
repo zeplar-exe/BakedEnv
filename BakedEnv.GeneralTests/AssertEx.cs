@@ -1,3 +1,4 @@
+using BakedEnv.Environment;
 using BakedEnv.Interpreter;
 using NUnit.Framework;
 
@@ -12,8 +13,6 @@ public static class AssertEx
     
     public static void AssertInterpreterHasVariable(this BakedInterpreter interpreter, string name, object value)
     {
-        interpreter.AssertReady();
-        
         Assert.True(interpreter.Context.Variables[name].Value.Equals(value));
     }
 

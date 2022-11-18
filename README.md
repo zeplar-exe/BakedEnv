@@ -4,7 +4,7 @@ Compatible with .NET 6 or higher.
 
 ![license](https://img.shields.io/github/license/zeplar-exe/BakedEnv)
 ![version](https://img.shields.io/nuget/v/BakedEnv)
-![build](https://github.com/zeplar-exe/BakedEnv/actions/workflows/ci.yml/badge.svg)
+![build](https://github.com/zeplar-exe/BakedEnv/actions/workflows/dotnet.yml/badge.svg)
 ![coverage](https://img.shields.io/codecov/c/github/zeplar-exe/BakedEnv)
 
 [See the change log](...)
@@ -46,7 +46,7 @@ appear in the solution until the next build.
 
 ## Samples
 
-See [issue/#3](https://github.com/zeplar-exe/BakedEnv/blob/issue/%233/README.md).
+- [Functions - samples/function-caller.md](./samples/function-caller.md)
 
 ## Featured Uses
 

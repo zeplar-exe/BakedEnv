@@ -98,10 +98,6 @@ public class BakedInteger : BakedObject
             Value = value;
         else if (decimal.TryParse(stringValue, out var decimalValue))
             Value = new BigInteger(decimalValue);
-        else if (double.TryParse(stringValue, out var doubleValue))
-            Value = new BigInteger(doubleValue);
-        else if (float.TryParse(stringValue, out var floatValue))
-            Value = new BigInteger(floatValue);
     }
 
     /// <inheritdoc />

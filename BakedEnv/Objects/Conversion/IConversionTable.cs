@@ -2,7 +2,6 @@
 
 public interface IConversionTable
 {
-    public object? ToObject(BakedObject bakedObject);
-    public object? ToObject(BakedObject bakedObject, Type targetType);
-    public BakedObject ToBakedObject(object? o);
+    public bool TryToObject(BakedObject bakedObject, Type targetType, out object? result);
+    public bool TryToBakedObject(object? o, out BakedObject result);
 }

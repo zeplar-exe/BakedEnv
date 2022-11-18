@@ -1,8 +1,10 @@
+using BakedEnv.Environment;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Interpreter.Sources;
+using BakedEnv.Sources;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -15,7 +17,7 @@ public class ProcessorInstructions
     {
         ProcessorStatementInstruction? processorStatement = null;
         
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("[BakeType: \"Cake\"]")).Init();
+        var session = InterpreterTestHelper.CreateSession("[BakeType: \"Cake\"]");
         session.ExecuteUntil(i => TestHelper.ObjectIs(i, out processorStatement));
         
         if (processorStatement == null)
@@ -31,10 +33,9 @@ public class ProcessorInstructions
     [Test]
     public void TestProcessorStatementExecution()
     {
-        var session = new BakedEnvironment()
-            .WithStatementHandlers(new MockStatementHandler())
-            .CreateSession(new RawStringSource($"[Pizza: \"Time\"]"))
-            .Init();
+        var session = new BakedEnvironmentBuilder()
+            .WithStatementHandlers(new MockStatementHandler()).Build()
+            .CreateSession("[Pizza: \"Time\"]");
         session.ExecuteUntilEnd();
         
         session.AssertInterpreterHasVariable("Pizza", "Time");
@@ -43,10 +44,10 @@ public class ProcessorInstructions
     [Test]
     public void TestWhitespace()
     {
-        var session = new BakedEnvironment()
+        var session = new BakedEnvironmentBuilder()
             .WithStatementHandlers(new MockStatementHandler())
-            .CreateSession(new RawStringSource($"[    NaN: \t 0 \n ]"))
-            .Init();
+            .Build()
+            .CreateSession("[    NaN: \t 0 \n ]");
         session.ExecuteUntilEnd();
 
         session.AssertInterpreterHasVariable("NaN", 0);
@@ -56,9 +57,9 @@ public class ProcessorInstructions
     {
         public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
         {
-            context.Interpreter.AssertReady();
+            var key = instruction.Key.Evaluate(context);
             
-            context.Interpreter.Context.Variables.Add(instruction.Name, instruction.Expression.Evaluate(context));
+            context.Interpreter.Context.Variables.Add(key.ToString(), instruction.Expression.Evaluate(context));
             
             return true;
         }

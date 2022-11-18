@@ -1,6 +1,9 @@
 using System.Numerics;
-using BakedEnv.Interpreter.Sources;
+
+using BakedEnv.Environment;
 using BakedEnv.Objects;
+using BakedEnv.Sources;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -14,8 +17,8 @@ public class Methods
         var target = 0;
         var del = new DelegateObject(delegate() { target = 1; });
 
-        var environment = new BakedEnvironment().WithVariable("foo", del);
-        var session = environment.CreateSession(new RawStringSource("foo()")).Init();
+        var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
+        var session = environment.CreateSession("foo()");
         session.ExecuteUntilEnd();
         
         Assert.True(target == 1);
@@ -29,8 +32,8 @@ public class Methods
         
         // TODO: Right parenthesis after number is ignored? (ParserTools Lexer)
 
-        var environment = new BakedEnvironment().WithVariable("foo", del);
-        var session = environment.CreateSession(new RawStringSource("foo(5)")).Init();
+        var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
+        var session = environment.CreateSession("foo(5)");
         session.ExecuteUntilEnd();
 
         Assert.True(target == 5);
@@ -41,8 +44,8 @@ public class Methods
     {
         var del = new DelegateObject(delegate() { return "Hello world!"; });
         
-        var environment = new BakedEnvironment().WithVariable("foo", del);
-        var session = environment.CreateSession(new RawStringSource("a = foo()")).Init();
+        var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
+        var session = environment.CreateSession("a = foo()");
         session.ExecuteUntilEnd();
 
         session.AssertInterpreterHasVariable("a", "Hello world!");

@@ -1,4 +1,6 @@
-using BakedEnv.Interpreter.Sources;
+using BakedEnv.Environment;
+using BakedEnv.Sources;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -9,7 +11,7 @@ public class Expressions
     [Test]
     public void TestParenthesisNumber()
     {
-        var session = new BakedEnvironment().CreateSession(new RawStringSource("foo = ((1))")).Init();
+        var session = InterpreterTestHelper.CreateSession("foo = ((1))");
         session.ExecuteUntilEnd();
         
         session.AssertInterpreterHasVariable("foo", 1);

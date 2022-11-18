@@ -1,4 +1,4 @@
-using BakedEnv.Interpreter.Variables;
+using BakedEnv.Variables;
 
 namespace BakedEnv.Interpreter.Scopes;
 

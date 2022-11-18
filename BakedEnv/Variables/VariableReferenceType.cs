@@ -1,0 +1,7 @@
+namespace BakedEnv.Variables;
+
+public enum VariableReferenceType
+{
+    Globals,
+    ScopeVariables
+}
