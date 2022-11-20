@@ -65,5 +65,15 @@
         "name" : "InvalidIndexAssignment",
         "short" : "Cannot assign a value of type '{valueType}' to the index '{valueStringList}' of {targetType}.",
         "long" : ""
+    },
+    "1013": {
+        "name": "UnknownTokenSequence",
+        "short": "This sequence of tokens cannot handled by the interpreter.",
+        "long": ""
+    },
+    "1014": {
+        "name": "IncompleteIntermediateToken",
+        "short": "This ({tokenTypeName}) is incomplete and cannot be parsed.",
+        "long": ""
     }
 }

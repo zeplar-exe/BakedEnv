@@ -45,9 +45,4 @@ internal class InterpreterIterator : EnumerableIterator<IntermediateToken>
             yield return token;
         }
     }
-
-    public void PushCurrent()
-    {
-        Backlog.Push(Current);
-    }
 }

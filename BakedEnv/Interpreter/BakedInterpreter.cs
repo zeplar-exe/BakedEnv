@@ -7,6 +7,7 @@ using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
+using BakedEnv.Interpreter.InterpreterParsers;
 using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
@@ -87,7 +88,6 @@ public sealed class BakedInterpreter : IDisposable
     /// <param name="instruction">Interpreted instruction information.</param>
     /// <returns>Whether an instruction could be parsed. Should only return false upon reaching the
     /// end of an IBakedSource's content.</returns>
-    /// <exception cref="InvalidOperationException">The interpreter has not been initialized.</exception>
     public bool TryGetNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
         instruction = null;
@@ -96,6 +96,24 @@ public sealed class BakedInterpreter : IDisposable
 
         if (!Iterator.TryPeekNext(out var next))
             return false;
+
+        if (!next.IsComplete)
+        {
+            instruction = new InvalidInstruction(
+                BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
+        }
+        
+        var root = new InterpreterParserTree();
+        var result = root.Descend(next);
+
+        if (result.Success)
+        {
+            instruction = result.Parser.Parse(next, Iterator);
+        }
+        else
+        {
+            instruction = new InvalidInstruction(BakedError.EUnknownTokenSequence(next.StartIndex));
+        }
 
         // A loooot of methods, which requires multiple module classes...
         
