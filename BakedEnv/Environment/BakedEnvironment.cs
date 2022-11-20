@@ -1,8 +1,7 @@
 ﻿using BakedEnv.ControlStatements;
-using BakedEnv.Interpreter;
+using BakedEnv.Environment.Library;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Keywords;
-using BakedEnv.Sources;
 using BakedEnv.Variables;
 
 namespace BakedEnv.Environment;
@@ -22,7 +21,7 @@ public sealed class BakedEnvironment : IDisposable
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
     public List<KeywordDefinition> Keywords { get; }
     public List<ControlStatementDefinition> ControlStatements { get; }
-    public List<LibraryEnvironment> Libraries { get; }
+    public LibraryContainer Libraries { get; }
     public VariableReferenceOrder VariableReferenceOrder { get; set; }
     
     public TextWriter? OutputWriter { get; set; }
@@ -36,7 +35,7 @@ public sealed class BakedEnvironment : IDisposable
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
         Keywords = new List<KeywordDefinition>();
         ControlStatements = new List<ControlStatementDefinition>();
-        Libraries = new List<LibraryEnvironment>();
+        Libraries = new LibraryContainer();
         VariableReferenceOrder = VariableReferenceOrder.Default();
     }
 

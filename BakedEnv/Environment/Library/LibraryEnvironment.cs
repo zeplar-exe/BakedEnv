@@ -3,7 +3,7 @@ using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Keywords;
 using BakedEnv.Variables;
 
-namespace BakedEnv.Environment;
+namespace BakedEnv.Environment.Library;
 
 public class LibraryEnvironment
 {
