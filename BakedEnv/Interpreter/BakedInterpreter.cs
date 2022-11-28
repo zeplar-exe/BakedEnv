@@ -5,8 +5,6 @@ using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.InterpreterParsers;
 using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
@@ -22,6 +20,8 @@ public sealed class BakedInterpreter : IDisposable
 {
     private InterpreterIterator? Iterator { get; set; }
     private IBakedScope CurrentScope { get; set; }
+    
+    private InterpreterParserTreeCreator ParserTreeCreator { get; set; } = InterpreterParserTreeCreator.Default();
 
     /// <summary>
     /// The current environment used during interpretation.
@@ -52,14 +52,13 @@ public sealed class BakedInterpreter : IDisposable
     
     public ErrorReporter Error { get; }
 
-    public BakedInterpreter(IBakedSource source) : this(new BakedEnvironment(), source)
+    public BakedInterpreter(IBakedSource source) : this(null, source)
     {
         
     }
 
-    public BakedInterpreter(BakedEnvironment environment, IBakedSource source)
+    public BakedInterpreter(BakedEnvironment? environment, IBakedSource source)
     {
-        ArgumentNullException.ThrowIfNull(environment);
         ArgumentNullException.ThrowIfNull(source);
         
         Source = source;
@@ -69,13 +68,23 @@ public sealed class BakedInterpreter : IDisposable
         ResetState();
     }
 
+    public void UseParserTreeCreator(InterpreterParserTreeCreator creator)
+    {
+        ArgumentNullException.ThrowIfNull(creator);
+        
+        ParserTreeCreator = creator;
+    }
+
     /// <summary>
-    /// Reset interpreter state (parser iteration, scopes).
+    /// Reset interpreter state (parser iteration, scopes, errors).
     /// </summary>
     [MemberNotNull(nameof(Context))]
     [MemberNotNull(nameof(CurrentScope))]
     public void ResetState()
     {
+        Iterator?.Dispose();
+        Environment?.Dispose();
+        
         Iterator = null;
         Context = new InterpreterContext();
         CurrentScope = Context;
@@ -102,9 +111,9 @@ public sealed class BakedInterpreter : IDisposable
             instruction = new InvalidInstruction(
                 BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
         }
-        
-        var root = new InterpreterParserTree();
-        var result = root.Descend(next);
+
+        var tree = ParserTreeCreator.Create();
+        var result = tree.Descend(next);
 
         if (result.Success)
         {
@@ -115,9 +124,7 @@ public sealed class BakedInterpreter : IDisposable
             instruction = new InvalidInstruction(BakedError.EUnknownTokenSequence(next.StartIndex));
         }
 
-        // A loooot of methods, which requires multiple module classes...
-        
-        return instruction != null;
+        return true;
     }
 
     [MemberNotNull(nameof(Iterator))]
