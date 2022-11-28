@@ -41,6 +41,14 @@ public class TypeList<T> : IEnumerable<Type>
         return true;
     }
 
+    public void AddFrom(TypeList<T> other)
+    {
+        foreach (var pair in other.Types.Values)
+        {
+            Add(pair.Type, pair.Creator);
+        }
+    }
+
     public bool Remove<T2>() where T2 : T
     {
         return Remove(typeof(T2));

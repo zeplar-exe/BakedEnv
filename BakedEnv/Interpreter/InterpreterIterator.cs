@@ -6,7 +6,7 @@ using BakedEnv.Interpreter.IntermediateTokens;
 
 namespace BakedEnv.Interpreter;
 
-internal class InterpreterIterator : EnumerableIterator<IntermediateToken>
+public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 {
     public BacklogEnumerable<IntermediateToken> Backlog { get; }
 

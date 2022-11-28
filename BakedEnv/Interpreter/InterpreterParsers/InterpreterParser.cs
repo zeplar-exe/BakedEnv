@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 
-using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateTokens;
 
 namespace BakedEnv.Interpreter.InterpreterParsers;
 
-internal abstract class InterpreterParser
+public abstract class InterpreterParser
 {
     public abstract DescendResult Descend(IntermediateToken token);
 

@@ -3,18 +3,18 @@ using BakedEnv.Interpreter.IntermediateTokens;
 
 namespace BakedEnv.Interpreter.InterpreterParsers;
 
-internal class InterpreterParserTree : InterpreterParser
+public class InterpreterParserTree : InterpreterParser
 {
-    public TypeList<InterpreterParser> RootParsers { get; }
+    public TypeList<InterpreterParser> RootParserNodes { get; }
 
     public InterpreterParserTree()
     {
-        RootParsers = new TypeList<InterpreterParser>();
+        RootParserNodes = new TypeList<InterpreterParser>();
     }
     
     public override DescendResult Descend(IntermediateToken token)
     {
-        foreach (var parser in RootParsers.EnumerateInstances())
+        foreach (var parser in RootParserNodes.EnumerateInstances())
         {
             var result = parser.Descend(token);
 
