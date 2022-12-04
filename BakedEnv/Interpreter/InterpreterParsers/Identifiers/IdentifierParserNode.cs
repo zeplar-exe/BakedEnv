@@ -4,7 +4,7 @@ using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Identifiers;
 
-internal class IdentifierParserNode : InterpreterParserNode
+public class IdentifierParserNode : InterpreterParserNode
 {
     public override DescendResult Descend(IntermediateToken token)
     {

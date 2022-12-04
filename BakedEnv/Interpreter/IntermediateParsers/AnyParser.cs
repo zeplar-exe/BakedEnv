@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.IntermediateTokens.Raw;
+using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
@@ -17,7 +19,18 @@ public class AnyParser : ParserBase
 
     public static AnyParser Default()
     {
+        var mappedCharacters = new MappedTokenTypeParser();
+        
+        mappedCharacters.TypeMap.Map(TextualTokenType.Period, token => new PeriodToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.Hashtag, token => new HashToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.LeftBracket, token => new LeftBracketToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.RightBracket, token => new RightBracketToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.LeftParenthesis, token => new LeftParenthesisToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.RightParenthesis, token => new RightParenthesisToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.Equals, token => new EqualsToken(token));
+        
         return new AnyParser()
+            .WithParser<MappedTokenTypeParser>(_ => mappedCharacters)
             .WithParser<IdentifierParser>()
             .WithParser<StringParser>()
             .WithParser<NumericParser>()
@@ -27,6 +40,13 @@ public class AnyParser : ParserBase
     public AnyParser WithParser<T>() where T : MatchParser, new()
     {
         ContinueParsers.Add<T>();
+
+        return this;
+    }
+    
+    public AnyParser WithParser<T>(TypeList<MatchParser>.TypeCreator creator) where T : MatchParser, new()
+    {
+        ContinueParsers.Add<T>(creator);
 
         return this;
     }

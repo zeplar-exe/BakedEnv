@@ -13,13 +13,13 @@ public abstract class RawIntermediateToken : IntermediateToken
     public override int Length => RawToken.Get().Length;
     public override ulong EndIndex => StartIndex + (ulong)Length;
 
-    public RawIntermediateToken(TextualToken token, TextualTokenType expected)
+    protected RawIntermediateToken(TextualToken token, TextualTokenType expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
         IsComplete = true;
     }
 
-    public RawIntermediateToken(TextualToken token, params TextualTokenType[] expected)
+    protected RawIntermediateToken(TextualToken token, params TextualTokenType[] expected)
     {
         RawToken = new GuardedLexerToken(token, expected);
         IsComplete = true;
