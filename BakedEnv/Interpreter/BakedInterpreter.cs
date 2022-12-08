@@ -6,6 +6,7 @@ using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.InterpreterParsers;
+using BakedEnv.Interpreter.InterpreterParsers.Identifiers;
 using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
@@ -104,6 +105,8 @@ public sealed class BakedInterpreter : IDisposable
         }
 
         var tree = new InterpreterParserTree();
+        tree.RootParserNodes.Add<IdentifierParserNode>();
+        
         var result = tree.Descend(next);
 
         if (result.Success)

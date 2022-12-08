@@ -11,8 +11,6 @@ public class InterpreterParserTree : InterpreterParser
     public InterpreterParserTree()
     {
         RootParserNodes = new TypeList<InterpreterParser>();
-
-        RootParserNodes.Add<IdentifierParserNode>();
     }
     
     public override DescendResult Descend(IntermediateToken token)
