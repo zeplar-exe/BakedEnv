@@ -7,8 +7,6 @@ Compatible with .NET 6 or higher.
 ![build](https://github.com/zeplar-exe/BakedEnv/actions/workflows/dotnet.yml/badge.svg)
 ![coverage](https://img.shields.io/codecov/c/github/zeplar-exe/BakedEnv)
 
-[See the change log](...)
-
 BakedEnv is a scripting language made in C#, for C#. Designed after Lua, it is built for extensibility between C# and
 written scripts.
 
@@ -31,9 +29,11 @@ cross-language typing via functions and objects contribute to its applicability.
 - Extensions to skip the boring environment setup
 - Extensible variable/member access handling
 
-[Try the live demo](...)
+[Try the live demo](https://nbviewer.jupyter.org)
 
 ## Getting Started
+
+For developers, see the [Developer Wiki](https://github.com/zeplar-exe/BakedEnv/wiki).
 
 ### [Nuget](https://www.nuget.org/packages/BakedEnv/)
 
