@@ -5,7 +5,7 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class IdentifierParser : MatchParser
+public class IdentifierIntermediateParser : MatchIntermediateParser
 {
     private static HashSet<TextualTokenType> IdentifierTokenTypes = new()
     {

@@ -4,11 +4,11 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class MappedTokenTypeParser : MatchParser
+public class MappedTokenTypeIntermediateParser : MatchIntermediateParser
 {
     public TokenTypeMap TypeMap { get; }
 
-    public MappedTokenTypeParser()
+    public MappedTokenTypeIntermediateParser()
     {
         TypeMap = new TokenTypeMap();
     }

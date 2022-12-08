@@ -13,7 +13,7 @@ public class RootParserCore
     [Test]
     public void EmptyInputIsEndOfFile()
     {
-        var parser = new AnyParser();
+        var parser = new AnyIntermediateParser();
         var iterator = ParserHelper.CreateIterator(string.Empty);
 
         var resultEnumerable = parser.Parse(iterator);
@@ -25,7 +25,7 @@ public class RootParserCore
     [Test]
     public void EndOfFileIsCreated()
     {
-        var parser = new AnyParser();
+        var parser = new AnyIntermediateParser();
         var iterator = ParserHelper.CreateIterator("abc");
 
         var resultEnumerable = parser.Parse(iterator);

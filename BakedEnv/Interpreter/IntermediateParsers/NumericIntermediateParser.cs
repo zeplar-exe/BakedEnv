@@ -9,7 +9,7 @@ using IntegerToken = BakedEnv.Interpreter.IntermediateTokens.Pure.IntegerToken;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class NumericParser : MatchParser
+public class NumericIntermediateParser : MatchIntermediateParser
 {
     public override bool Match(TextualToken first)
     {

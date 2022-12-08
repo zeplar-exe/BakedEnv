@@ -20,8 +20,6 @@ public sealed class BakedInterpreter : IDisposable
 {
     private InterpreterIterator? Iterator { get; set; }
     private IBakedScope CurrentScope { get; set; }
-    
-    private InterpreterParserTreeCreator ParserTreeCreator { get; set; } = InterpreterParserTreeCreator.Default();
 
     /// <summary>
     /// The current environment used during interpretation.
@@ -49,7 +47,7 @@ public sealed class BakedInterpreter : IDisposable
             b_source = value;
         }
     }
-    
+
     public ErrorReporter Error { get; }
 
     public BakedInterpreter(IBakedSource source) : this(null, source)
@@ -66,13 +64,6 @@ public sealed class BakedInterpreter : IDisposable
         Error = new ErrorReporter();
         
         ResetState();
-    }
-
-    public void UseParserTreeCreator(InterpreterParserTreeCreator creator)
-    {
-        ArgumentNullException.ThrowIfNull(creator);
-        
-        ParserTreeCreator = creator;
     }
 
     /// <summary>
@@ -112,7 +103,7 @@ public sealed class BakedInterpreter : IDisposable
                 BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
         }
 
-        var tree = ParserTreeCreator.Create();
+        var tree = new InterpreterParserTree();
         var result = tree.Descend(next);
 
         if (result.Success)
@@ -132,7 +123,7 @@ public sealed class BakedInterpreter : IDisposable
     {
         if (Iterator == null)
         {
-            var root = new AnyParser();
+            var root = new AnyIntermediateParser();
             var lexer = new TextLexer(Source.EnumerateCharacters());
             var iterator = new LexerIterator(lexer);
             

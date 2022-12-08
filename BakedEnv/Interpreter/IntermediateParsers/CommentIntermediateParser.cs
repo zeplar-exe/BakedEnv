@@ -6,7 +6,7 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class CommentParser : MatchParser
+public class CommentIntermediateParser : MatchIntermediateParser
 {
     public override bool Match(TextualToken first)
     {

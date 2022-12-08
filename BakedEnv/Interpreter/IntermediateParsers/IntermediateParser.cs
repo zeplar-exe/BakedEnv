@@ -3,18 +3,18 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public abstract class ParserBase
+public abstract class IntermediateParser
 {
     private List<BakedError> Errors { get; }
     protected ErrorReporter Error { get; private set; }
 
-    protected ParserBase()
+    protected IntermediateParser()
     {
         Errors = new List<BakedError>();
         Error = new ErrorReporter();
     }
     
-    protected T CreateParser<T>() where T : ParserBase, new()
+    protected T CreateParser<T>() where T : IntermediateParser, new()
     {
         var parser = new T();
 
@@ -23,8 +23,8 @@ public abstract class ParserBase
         return parser;
     }
 
-    protected void RegisterParser(ParserBase parser)
+    protected void RegisterParser(IntermediateParser intermediateParser)
     {
-        parser.Error = Error;
+        intermediateParser.Error = Error;
     }
 }

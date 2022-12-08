@@ -25,7 +25,7 @@ internal static class ParserHelper
 
     public static bool TryGetFirst(string text, [NotNullWhen(true)] out IntermediateToken? token)
     {
-        var root = AnyParser.Default();
+        var root = new AnyIntermediateParser();
 
         token = root.Parse(CreateIterator(text)).FirstOrDefault();
 

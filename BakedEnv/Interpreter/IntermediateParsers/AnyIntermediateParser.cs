@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
@@ -8,18 +7,15 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class AnyParser : ParserBase
+public class AnyIntermediateParser : IntermediateParser
 {
-    public TypeList<MatchParser> ContinueParsers { get; }
+    private List<MatchIntermediateParser> ContinueParsers { get; }
 
-    public AnyParser()
+    public AnyIntermediateParser()
     {
-        ContinueParsers = new TypeList<MatchParser>();
-    }
-
-    public static AnyParser Default()
-    {
-        var mappedCharacters = new MappedTokenTypeParser();
+        ContinueParsers = new List<MatchIntermediateParser>();
+        
+        var mappedCharacters = new MappedTokenTypeIntermediateParser();
         
         mappedCharacters.TypeMap.Map(TextualTokenType.Period, token => new PeriodToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.Hashtag, token => new HashToken(token));
@@ -29,38 +25,30 @@ public class AnyParser : ParserBase
         mappedCharacters.TypeMap.Map(TextualTokenType.RightParenthesis, token => new RightParenthesisToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.Equals, token => new EqualsToken(token));
         
-        return new AnyParser()
-            .WithParser<MappedTokenTypeParser>(_ => mappedCharacters)
-            .WithParser<IdentifierParser>()
-            .WithParser<StringParser>()
-            .WithParser<NumericParser>()
-            .WithParser<CommentParser>();
+        this.WithParser(mappedCharacters)
+            .WithParser<IdentifierIntermediateParser>()
+            .WithParser<StringIntermediateParser>()
+            .WithParser<NumericIntermediateParser>()
+            .WithParser<CommentIntermediateParser>();
     }
 
-    public AnyParser WithParser<T>() where T : MatchParser, new()
+    public AnyIntermediateParser WithParser<T>() where T : MatchIntermediateParser, new()
     {
-        ContinueParsers.Add<T>();
+        ContinueParsers.Add(new T());
 
         return this;
     }
     
-    public AnyParser WithParser<T>(TypeList<MatchParser>.TypeCreator creator) where T : MatchParser, new()
+    public AnyIntermediateParser WithParser<T>(T parser) where T : MatchIntermediateParser, new()
     {
-        ContinueParsers.Add<T>(creator);
+        ContinueParsers.Add(parser);
 
         return this;
     }
 
-    public AnyParser WithParser(Type parserType)
+    public AnyIntermediateParser WithoutParser<T>() where T : MatchIntermediateParser, new()
     {
-        ContinueParsers.Add(parserType);
-
-        return this;
-    }
-
-    public AnyParser WithoutParser<T>() where T : MatchParser, new()
-    {
-        ContinueParsers.Remove<T>();
+        ContinueParsers.Remove(new T());
 
         return this;
     }
@@ -84,8 +72,7 @@ public class AnyParser : ParserBase
             return false;
         }
         
-        var parser = ContinueParsers.EnumerateInstances()
-            .FirstOrDefault(p => p.Match(next));
+        var parser = ContinueParsers.FirstOrDefault(p => p.Match(next));
 
         if (parser == null)
         {

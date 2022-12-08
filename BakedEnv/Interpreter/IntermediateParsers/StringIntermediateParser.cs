@@ -8,7 +8,7 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
-public class StringParser : MatchParser
+public class StringIntermediateParser : MatchIntermediateParser
 {
     public override bool Match(TextualToken first)
     {
