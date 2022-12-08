@@ -13,6 +13,15 @@ public class InterpreterParserTree : InterpreterParser
         RootParserNodes = new TypeList<InterpreterParser>();
     }
     
+    public static InterpreterParserTree Default()
+    {
+        var tree = new InterpreterParserTree();
+        
+        tree.RootParserNodes.Add<IdentifierParserNode>();
+
+        return tree;
+    }
+    
     public override DescendResult Descend(IntermediateToken token)
     {
         foreach (var parser in RootParserNodes.EnumerateInstances())

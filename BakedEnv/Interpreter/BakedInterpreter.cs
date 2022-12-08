@@ -104,8 +104,7 @@ public sealed class BakedInterpreter : IDisposable
                 BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
         }
 
-        var tree = new InterpreterParserTree();
-        tree.RootParserNodes.Add<IdentifierParserNode>();
+        var tree = InterpreterParserTree.Default();
         
         var result = tree.Descend(next);
 
