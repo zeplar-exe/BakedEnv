@@ -30,9 +30,4 @@ public class VariableExpression : BakedExpression
         
         return variable?.Value ?? new BakedNull();
     }
-    
-    public override bool TryAssign(BakedObject value, InvocationContext context)
-    {
-        return Reference.TrySetVariable(value);
-    }
 }

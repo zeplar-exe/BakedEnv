@@ -24,9 +24,4 @@ public class NegateExpression : BakedExpression
 
         return negated;
     }
-    
-    public override bool TryAssign(BakedObject value, InvocationContext context)
-    {
-        return TryAssignForExpression(Expression, value, context);
-    }
 }

@@ -16,9 +16,4 @@ public class ParenthesisExpression : BakedExpression
     {
         return Expression.Evaluate(context);
     }
-    
-    public override bool TryAssign(BakedObject value, InvocationContext context)
-    {
-        return TryAssignForExpression(Expression, value, context);
-    }
 }

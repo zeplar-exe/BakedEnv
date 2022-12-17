@@ -35,9 +35,4 @@ public class InvocationExpression : BakedExpression
 
         return callable.Invoke(parameters, context);
     }
-    
-    public override bool TryAssign(BakedObject value, InvocationContext context)
-    {
-        return TryAssignForExpression(Expression, value, context);
-    }
 }
