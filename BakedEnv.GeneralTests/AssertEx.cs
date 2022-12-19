@@ -18,6 +18,6 @@ public static class AssertEx
 
     public static void AssertEnvironmentHasVariable(this BakedEnvironment environment, string name, object value)
     {
-        Assert.True(environment.GlobalVariables[name].Value.Equals(value));
+        Assert.True(environment.Variables[name].Value.Equals(value));
     }
 }

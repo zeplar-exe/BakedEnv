@@ -9,18 +9,16 @@ namespace BakedEnv.Environment;
 /// <summary>
 /// An script environment to load and execute scripts.
 /// </summary>
-public sealed class BakedEnvironment : IDisposable
+public sealed class BakedEnvironment : ILibraryEnvironment, IDisposable
 {
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
     /// </summary>
-    public VariableContainer GlobalVariables { get; }
-    /// <summary>
-    /// Processor statement handlers.
-    /// </summary>
+    public VariableContainer Variables { get; }
     public List<IProcessorStatementHandler> ProcessorStatementHandlers { get; }
     public List<KeywordDefinition> Keywords { get; }
     public List<ControlStatementDefinition> ControlStatements { get; }
+    
     public LibraryContainer Libraries { get; }
     public VariableReferenceOrder VariableReferenceOrder { get; set; }
     
@@ -31,12 +29,27 @@ public sealed class BakedEnvironment : IDisposable
     /// </summary>
     public BakedEnvironment()
     {
-        GlobalVariables = new VariableContainer();
+        Variables = new VariableContainer();
         ProcessorStatementHandlers = new List<IProcessorStatementHandler>();
         Keywords = new List<KeywordDefinition>();
         ControlStatements = new List<ControlStatementDefinition>();
         Libraries = new LibraryContainer();
         VariableReferenceOrder = VariableReferenceOrder.Default();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>This methods yields this <see cref="BakedEnvironment"/> first before the items in <see cref="Libraries"/>.</remarks>
+    public IEnumerable<ILibraryEnvironment> EnumerateAllLibraries()
+    {
+        yield return this;
+
+        foreach (var library in Libraries)
+        {
+            yield return library;
+        }
     }
 
     public void Dispose()

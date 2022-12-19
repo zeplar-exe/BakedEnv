@@ -4,27 +4,27 @@ using System.Collections.Specialized;
 
 namespace BakedEnv.Environment.Library;
 
-public class LibraryContainer : IEnumerable<LibraryEnvironment>
+public class LibraryContainer : IEnumerable<ILibraryEnvironment>
 {
-    private List<LibraryEnvironment> Libraries { get; }
+    private List<ILibraryEnvironment> Libraries { get; }
     
-    public event EventHandler<LibraryEnvironment>? LibraryAdded;
-    public event EventHandler<LibraryEnvironment>? LibraryRemoved;
+    public event EventHandler<ILibraryEnvironment>? LibraryAdded;
+    public event EventHandler<ILibraryEnvironment>? LibraryRemoved;
         
     public int Count => Libraries.Count;
 
     public LibraryContainer()
     {
-        Libraries = new List<LibraryEnvironment>();
+        Libraries = new List<ILibraryEnvironment>();
     }
 
-    public void Add(LibraryEnvironment library)
+    public void Add(ILibraryEnvironment library)
     {
         Libraries.Add(library);
         LibraryAdded?.Invoke(this, library);
     }
 
-    public bool Remove(LibraryEnvironment library)
+    public bool Remove(ILibraryEnvironment library)
     {
         if (Libraries.Remove(library))
         {
@@ -44,7 +44,7 @@ public class LibraryContainer : IEnumerable<LibraryEnvironment>
         }
     }
 
-    public IEnumerator<LibraryEnvironment> GetEnumerator()
+    public IEnumerator<ILibraryEnvironment> GetEnumerator()
     {
         return Libraries.GetEnumerator();
     }

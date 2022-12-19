@@ -209,7 +209,7 @@ public class VariableReference
                 switch (variableType)
                 {
                     case VariableReferenceType.Globals:
-                        if (Interpreter.Environment?.GlobalVariables.TryGetValue(Name, out bakedVariable) ?? false)
+                        if (Interpreter.Environment?.Variables.TryGetValue(Name, out bakedVariable) ?? false)
                         {
                             return true;
                         }
