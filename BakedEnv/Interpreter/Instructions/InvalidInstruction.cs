@@ -24,6 +24,6 @@ public class InvalidInstruction : InterpreterInstruction
     /// <inheritdoc />
     public override void Execute(InvocationContext context)
     {
-        
+        context.Interpreter.Error.Report(AssociatedError);
     }
 }
