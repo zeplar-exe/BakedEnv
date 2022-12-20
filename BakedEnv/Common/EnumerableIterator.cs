@@ -30,7 +30,7 @@ public class EnumerableIterator<T> : IDisposable
         return TryMoveNext(out _);
     }
 
-    public bool TryMoveNext([NotNullWhen(true)] out T? next)
+    public virtual bool TryMoveNext([NotNullWhen(true)] out T? next)
     {
         next = default;
 
