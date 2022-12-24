@@ -11,7 +11,8 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 {
     private IntermediateToken? Previous { get; set; }
     
-    public BacklogEnumerable<IntermediateToken> Backlog { get; }
+    private BacklogEnumerable<IntermediateToken> Backlog { get; }
+    private TypeList<IntermediateToken> IgnoreTokens { get; }
 
     public InterpreterIterator(IEnumerable<IntermediateToken> enumerable) :
         this(new BacklogEnumerable<IntermediateToken>(enumerable))
@@ -22,6 +23,12 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
     public InterpreterIterator(BacklogEnumerable<IntermediateToken> backlog) : base(backlog)
     {
         Backlog = backlog;
+        IgnoreTokens = new TypeList<IntermediateToken>();
+    }
+
+    public void Ignore<T>() where T : IntermediateToken
+    {
+        IgnoreTokens.Add<T>();
     }
 
     public override bool TryMoveNext([NotNullWhen(true)] out IntermediateToken? next)

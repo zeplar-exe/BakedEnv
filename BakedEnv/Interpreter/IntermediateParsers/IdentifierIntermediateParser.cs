@@ -7,15 +7,9 @@ namespace BakedEnv.Interpreter.IntermediateParsers;
 
 public class IdentifierIntermediateParser : MatchIntermediateParser
 {
-    private static HashSet<TextualTokenType> IdentifierTokenTypes = new()
-    {
-        TextualTokenType.Alphabetic, 
-        TextualTokenType.Underscore
-    };
-    
     public override bool Match(TextualToken first)
     {
-        return IdentifierTokenTypes.Contains(first.Type);
+        return IdentifierToken.InitialTokenTypes.Contains(first.Type);
     }
 
     public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
@@ -26,7 +20,7 @@ public class IdentifierIntermediateParser : MatchIntermediateParser
 
         while (!iterator.Ended)
         {
-            if (iterator.NextIsAny(IdentifierTokenTypes, out var next))
+            if (iterator.NextIsAny(IdentifierToken.TokenTypes, out var next))
             {
                 identifier.RawTokens.Add(next);
             }

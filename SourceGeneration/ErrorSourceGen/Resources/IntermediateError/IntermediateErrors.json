@@ -1,9 +1,0 @@
-{
-    "$schema" : "../ErrorSpec.schema.json",
-    
-    "1000" : {
-        "name" : "Foo",
-        "short" : "Bar",
-        "long" : "Baz"
-    }
-}

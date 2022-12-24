@@ -4,48 +4,28 @@ namespace BakedEnv.Common;
 
 public class TypeList<T> : IEnumerable<Type>
 {
-    private Dictionary<int, TypePair> Types { get; }
-
-    public delegate T TypeCreator(Type type);
+    private HashSet<Type> Types { get; }
 
     public TypeList()
     {
-        Types = new Dictionary<int, TypePair>();
+        Types = new HashSet<Type>();
     }
     
-    public bool Add<T2>() where T2 : T, new()
+    public void Add<T2>() where T2 : T
     {
-        return Add(typeof(T2), _ => new T2());
+        Types.Add(typeof(T2));
     }
     
-    public bool Add<T2>(TypeCreator creator) where T2 : T
+    public void Add(Type type)
     {
-        return Add(typeof(T2), creator);
-    }
-    
-    public bool Add(Type type)
-    {
-        return Add(type, t => (T)Activator.CreateInstance(t));
-    }
-
-    public bool Add(Type type, TypeCreator creator)
-    {
-        if (!type.IsAssignableTo(typeof(T)))
-            throw new ArgumentException($"Type ({type.Name}) must be assignable to {typeof(T)}.");
-
-        if (Types.ContainsKey(type.GetHashCode()))
-            return false;
-
-        Types[type.GetHashCode()] = new TypePair(type, creator);
-
-        return true;
+        Types.Add(type);
     }
 
     public void AddFrom(TypeList<T> other)
     {
-        foreach (var pair in other.Types.Values)
+        foreach (var type in other.Types)
         {
-            Add(pair.Type, pair.Creator);
+            Add(type);
         }
     }
 
@@ -56,29 +36,19 @@ public class TypeList<T> : IEnumerable<Type>
 
     public bool Remove(Type type)
     {
-        if (!Types.ContainsKey(type.GetHashCode()))
+        if (!Types.Contains(type))
             return false;
         
-        return Types.Remove(type.GetHashCode());
-    }
-
-    public IEnumerable<T> EnumerateInstances()
-    {
-        foreach (var (hash, pair) in Types)
-        {
-            yield return pair.Creator.Invoke(pair.Type);
-        }
+        return Types.Remove(type);
     }
     
     public IEnumerator<Type> GetEnumerator()
     {
-        return Types.Select(item => item.Value.Type).GetEnumerator();
+        return Types.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
     }
-
-    private readonly record struct TypePair(Type Type, TypeCreator Creator);
 }

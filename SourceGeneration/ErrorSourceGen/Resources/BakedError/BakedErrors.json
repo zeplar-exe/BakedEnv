@@ -75,5 +75,10 @@
         "name": "IncompleteIntermediateToken",
         "short": "This ({tokenTypeName}) is incomplete and cannot be parsed.",
         "long": ""
+    },
+    "1015": {
+        "name": "UnknownExpression",
+        "short": "An expression starting with '{firstTokenType}' does not exist.",
+        "long": ""
     }
 }

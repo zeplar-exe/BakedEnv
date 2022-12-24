@@ -26,9 +26,9 @@ public class AnyIntermediateParser : IntermediateParser
         mappedCharacters.TypeMap.Map(TextualTokenType.Equals, token => new EqualsToken(token));
         
         this.WithParser(mappedCharacters)
-            .WithParser<IdentifierIntermediateParser>()
             .WithParser<StringIntermediateParser>()
-            .WithParser<NumericIntermediateParser>()
+            .WithParser<NumericIntermediateParser>() 
+            .WithParser<IdentifierIntermediateParser>()
             .WithParser<CommentIntermediateParser>();
     }
 

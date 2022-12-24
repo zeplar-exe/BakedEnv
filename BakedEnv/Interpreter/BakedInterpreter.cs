@@ -5,8 +5,9 @@ using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
+using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.InterpreterParsers;
-using BakedEnv.Interpreter.InterpreterParsers.Identifiers;
+using BakedEnv.Interpreter.InterpreterParsers.Expressions;
 using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
@@ -104,13 +105,17 @@ public sealed class BakedInterpreter : IDisposable
                 BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
         }
 
-        var tree = InterpreterParserTree.Default();
+        var tree = new InterpreterParserTree();
+        
+        tree.RootParserNodes.Add<ExpressionParserNode>();
         
         var result = tree.Descend(next);
 
         if (result.Success)
         {
-            instruction = result.Parser.Parse(next, Iterator);
+            var context = new ParserContext(this, Context);
+            
+            instruction = result.Parser.Parse(next, Iterator, context);
         }
         else
         {
@@ -130,6 +135,10 @@ public sealed class BakedInterpreter : IDisposable
             var iterator = new LexerIterator(lexer);
             
             Iterator = new InterpreterIterator(root.Parse(iterator));
+            
+            Iterator.Ignore<SingleLineCommentToken>();
+            Iterator.Ignore<MultiLineCommentToken>();
+            Iterator.Ignore<MultiLineCommentDelimiterToken>();
         }
     }
 

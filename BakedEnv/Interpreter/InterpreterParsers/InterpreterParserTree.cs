@@ -1,25 +1,15 @@
 using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.InterpreterParsers.Identifiers;
 
 namespace BakedEnv.Interpreter.InterpreterParsers;
 
-public class InterpreterParserTree : InterpreterParser
+public class InterpreterParserTree : BranchParser
 {
-    public TypeList<InterpreterParser> RootParserNodes { get; }
+    public TypeInstanceList<BranchParser> RootParserNodes { get; }
 
     public InterpreterParserTree()
     {
-        RootParserNodes = new TypeList<InterpreterParser>();
-    }
-    
-    public static InterpreterParserTree Default()
-    {
-        var tree = new InterpreterParserTree();
-        
-        tree.RootParserNodes.Add<IdentifierParserNode>();
-
-        return tree;
+        RootParserNodes = new TypeInstanceList<BranchParser>();
     }
     
     public override DescendResult Descend(IntermediateToken token)
