@@ -5,7 +5,7 @@ using BakedEnv.Variables;
 
 namespace BakedEnv.Interpreter.Expressions;
 
-public class VariableExpression : BakedExpression
+public class VariableExpression : BakedExpression, IAssignableExpression
 {
     public VariableExpression(VariableReference reference)
     {
@@ -29,5 +29,10 @@ public class VariableExpression : BakedExpression
         }
         
         return variable?.Value ?? new BakedNull();
+    }
+
+    public bool TryAssign(BakedExpression other, InvocationContext context)
+    {
+        return Reference.TrySetVariable(other.Evaluate(context));
     }
 }

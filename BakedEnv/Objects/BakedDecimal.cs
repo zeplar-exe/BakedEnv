@@ -91,9 +91,7 @@ public class BakedDecimal : BakedObject
     /// If conversion is unsuccessful, the default value of 0 is used.</remarks>
     public BakedDecimal(string stringValue)
     {
-        if (BigInteger.TryParse(stringValue, out var value))
-            Value = (decimal)value;
-        else if (decimal.TryParse(stringValue, out var decimalValue))
+        if (decimal.TryParse(stringValue, out var decimalValue))
             Value = decimalValue;
     }
 

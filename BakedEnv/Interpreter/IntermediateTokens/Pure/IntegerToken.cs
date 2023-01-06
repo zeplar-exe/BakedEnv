@@ -1,13 +1,12 @@
 using System.Numerics;
 
 using BakedEnv.Interpreter.Expressions;
-using BakedEnv.Interpreter.IntermediateTokens.Interfaces;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.IntermediateTokens.Pure;
 
-public class IntegerToken : PureIntermediateToken, IExpressionToken
+public class IntegerToken : PureIntermediateToken
 {
     public List<DigitsToken> Digits { get; }
 

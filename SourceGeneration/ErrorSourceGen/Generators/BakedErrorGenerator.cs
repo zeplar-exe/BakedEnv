@@ -51,24 +51,28 @@ namespace BakedEnv
 
     private string CreateErrorMethod(KeyValuePair<string, ErrorContract> contract)
     {
-        var formatTags = FindFormatTags(
-            contract.Value.ShortDescription, contract.Value.LongDescription);
-        var formatParams = formatTags.Select(f => ($"@{f}", "object")).ToList();
-        formatParams.Add(("sourceIndex", "ulong"));
+        var shortFormatTags = FindFormatTags(contract.Value.ShortDescription);
+        var longFormatTags = FindFormatTags(contract.Value.LongDescription);
+        var shortFormatParams = shortFormatTags.Select(f => ($"@{f}", "object")).ToList();
+        var longFormatParams = longFormatTags.Select(f => ($"@{f}", "object")).ToList();
 
         var builder = new MethodBuilder()
             .WithName($"E{contract.Value.Name}")
-            .WithParameters(formatParams)
+            .WithParameters(shortFormatParams.Concat(longFormatParams))
+            .WithParameter("sourceIndex", "ulong")
             .AsStatic()
             .WithAccessibility(Accessibility.Public)
             .WithReturnType("BakedError");
 
+        var shortFormatString = shortFormatTags.Count != 0 ? $", {string.Join(", ", shortFormatTags)}" : "";
+        var longFormatString = longFormatTags.Count != 0 ? $", {string.Join(", ", longFormatTags)}" : "";
+        
         builder.Body
             .AppendLine("return new BakedError(")
             .AppendLine($"\"{contract.Key}\",")
             .AppendLine($"\"{contract.Value.Name}\",")
-            .AppendLine($"\"{contract.Value.ShortDescription}\",")
-            .AppendLine($"\"{contract.Value.LongDescription}\",")
+            .AppendLine($"string.Format(\"{contract.Value.ShortDescription}\"{shortFormatString}),")
+            .AppendLine($"string.Format(\"{contract.Value.LongDescription}\"{longFormatString}),")
             .AppendLine("sourceIndex);");
 
         builder.XmlDoc.Name = "summary";

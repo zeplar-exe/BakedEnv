@@ -80,5 +80,15 @@
         "name": "UnknownExpression",
         "short": "An expression starting with '{firstTokenType}' does not exist.",
         "long": ""
+    },
+    "1016": {
+        "name": "NonAssignable",
+        "short": "An expression of type '{type}' is not assignable.",
+        "long": ""
+    },
+    "1017": {
+        "name": "UnknownStatement",
+        "short": "Invalid statement.",
+        "long" : ""
     }
 }

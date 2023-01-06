@@ -8,6 +8,7 @@ using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Interpreter.InterpreterParsers;
 using BakedEnv.Interpreter.InterpreterParsers.Expressions;
+using BakedEnv.Interpreter.InterpreterParsers.Statements;
 using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
@@ -107,7 +108,7 @@ public sealed class BakedInterpreter : IDisposable
 
         var tree = new InterpreterParserTree();
         
-        tree.RootParserNodes.Add<ExpressionParserNode>();
+        tree.RootParserNodes.Add<StatementParserNode>();
         
         var result = tree.Descend(next);
 

@@ -9,8 +9,6 @@ namespace BakedEnv.Interpreter;
 
 public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 {
-    private IntermediateToken? Previous { get; set; }
-    
     private BacklogEnumerable<IntermediateToken> Backlog { get; }
     private TypeList<IntermediateToken> IgnoreTokens { get; }
 
@@ -33,11 +31,7 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 
     public override bool TryMoveNext([NotNullWhen(true)] out IntermediateToken? next)
     {
-        var result = base.TryMoveNext(out next);
-
-        Previous = next;
-
-        return result;
+        return base.TryMoveNext(out next);
     }
 
     public bool TryTakeNextOfType<T>(
@@ -49,7 +43,7 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
         
         if (!TryPeekNext(out var peekToken))
         {
-            error = BakedError.EEarlyEndOfFile(Previous?.EndIndex ?? 0).ToInstruction();
+            error = BakedError.EEarlyEndOfFile(Current?.EndIndex ?? 0).ToInstruction();
         } 
         else if (!peekToken.IsComplete)
         {

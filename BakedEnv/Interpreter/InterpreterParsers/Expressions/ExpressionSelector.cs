@@ -15,7 +15,10 @@ public class ExpressionSelector
     public ExpressionSelector()
     {
         ExpressionParsers = new TypeInstanceList<SingleExpressionParser>();
+        
         ExpressionParsers.Add<StringExpressionParser>();
+        ExpressionParsers.Add<IntegerExpressionParser>();
+        ExpressionParsers.Add<DecimalExpressionParser>();
     }
     
     public SingleExpressionParser? SelectParser(IntermediateToken token)
