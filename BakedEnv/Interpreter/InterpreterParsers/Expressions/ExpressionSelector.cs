@@ -19,6 +19,7 @@ public class ExpressionSelector
         ExpressionParsers.Add<StringExpressionParser>();
         ExpressionParsers.Add<IntegerExpressionParser>();
         ExpressionParsers.Add<DecimalExpressionParser>();
+        ExpressionParsers.Add<IdentifierExpressionParser>();
     }
     
     public SingleExpressionParser? SelectParser(IntermediateToken token)

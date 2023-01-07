@@ -31,7 +31,19 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 
     public override bool TryMoveNext([NotNullWhen(true)] out IntermediateToken? next)
     {
-        return base.TryMoveNext(out next);
+        next = null;
+        
+        while (base.TryMoveNext(out var nextTemp))
+        {
+            if (IgnoreTokens.Any(t => t == nextTemp.GetType()))
+                continue;
+
+            next = nextTemp;
+
+            return true;
+        }
+
+        return false;
     }
 
     public bool TryTakeNextOfType<T>(

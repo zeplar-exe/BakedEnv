@@ -36,10 +36,7 @@ public class LexerIterator : EnumerableIterator<TextualToken>
 
         var type = token.Type;
 
-        if (types.Any(t => t == type))
-            return false;
-
-        return true;
+        return types.Any(t => t == type);
     }
     
     public bool SkipTrivia([NotNullWhen(true)] out TextualToken? token)

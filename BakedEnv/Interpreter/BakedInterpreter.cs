@@ -97,7 +97,7 @@ public sealed class BakedInterpreter : IDisposable
 
         EnsureIterator();
 
-        if (!Iterator.TryPeekNext(out var next))
+        if (!Iterator.TryMoveNext(out var next))
             return false;
 
         if (!next.IsComplete)

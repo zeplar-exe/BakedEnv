@@ -16,7 +16,6 @@ public class StatementParserNode : InterpreterParserNode
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         var expressionParser = new ExpressionParser();
-
         var expression = expressionParser.Parse(first, iterator, context, out var error);
 
         if (error != null)

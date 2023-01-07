@@ -63,16 +63,13 @@ namespace BakedEnv
             .AsStatic()
             .WithAccessibility(Accessibility.Public)
             .WithReturnType("BakedError");
-
-        var shortFormatString = shortFormatTags.Count != 0 ? $", {string.Join(", ", shortFormatTags)}" : "";
-        var longFormatString = longFormatTags.Count != 0 ? $", {string.Join(", ", longFormatTags)}" : "";
         
         builder.Body
             .AppendLine("return new BakedError(")
             .AppendLine($"\"{contract.Key}\",")
             .AppendLine($"\"{contract.Value.Name}\",")
-            .AppendLine($"string.Format(\"{contract.Value.ShortDescription}\"{shortFormatString}),")
-            .AppendLine($"string.Format(\"{contract.Value.LongDescription}\"{longFormatString}),")
+            .AppendLine($"$\"{contract.Value.ShortDescription}\",")
+            .AppendLine($"$\"{contract.Value.LongDescription}\",")
             .AppendLine("sourceIndex);");
 
         builder.XmlDoc.Name = "summary";
