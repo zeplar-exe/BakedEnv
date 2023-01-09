@@ -23,13 +23,18 @@ public class AnyIntermediateParser : IntermediateParser
         mappedCharacters.TypeMap.Map(TextualTokenType.RightBracket, token => new RightBracketToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.LeftParenthesis, token => new LeftParenthesisToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.RightParenthesis, token => new RightParenthesisToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.LeftCurlyBracket, token => new LeftCurlyBracketToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.RightCurlyBracket, token => new RightCurlyBracketToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.Equals, token => new EqualsToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.Colon, token => new ColonToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.SingleQuotation, token => new QuotationToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.DoubleQuotation, token => new QuotationToken(token));
         
-        this.WithParser(mappedCharacters)
-            .WithParser<StringIntermediateParser>()
+        this.WithParser<StringIntermediateParser>()
             .WithParser<NumericIntermediateParser>() 
             .WithParser<IdentifierIntermediateParser>()
-            .WithParser<CommentIntermediateParser>();
+            .WithParser<CommentIntermediateParser>()
+            .WithParser(mappedCharacters);
     }
 
     public AnyIntermediateParser WithParser<T>() where T : MatchIntermediateParser, new()

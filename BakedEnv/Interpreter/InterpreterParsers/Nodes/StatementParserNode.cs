@@ -4,7 +4,7 @@ using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
-namespace BakedEnv.Interpreter.InterpreterParsers.Statements;
+namespace BakedEnv.Interpreter.InterpreterParsers.Nodes;
 
 public class StatementParserNode : InterpreterParserNode
 {

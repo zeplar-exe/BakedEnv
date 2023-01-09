@@ -14,7 +14,8 @@ public class StringExpressionParser : SingleExpressionParser
 
     public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
-        var str = new BakedString(first.ToString());
+        var token = (StringToken)first;
+        var str = new BakedString(string.Concat(token.Content));
         
         return new ValueExpression(str);
     }

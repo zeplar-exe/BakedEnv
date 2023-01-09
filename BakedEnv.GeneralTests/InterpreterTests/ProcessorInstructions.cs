@@ -35,7 +35,7 @@ public class ProcessorInstructions
     {
         var session = new BakedEnvironmentBuilder()
             .WithStatementHandlers(new MockStatementHandler()).Build()
-            .CreateSession("[Pizza: \"Time\"]");
+            .CreateSession("[\"Pizza\": \"Time\"]");
         session.ExecuteUntilEnd();
         
         session.AssertInterpreterHasVariable("Pizza", "Time");
