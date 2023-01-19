@@ -90,5 +90,10 @@
         "name": "UnknownStatement",
         "short": "Invalid statement.",
         "long" : ""
+    },
+    "1018": {
+        "name": "ExpectedArgumentDelimiter",
+        "short": "Expected comma between function arguments, got {actualTypeName}.",
+        "long": ""
     }
 }

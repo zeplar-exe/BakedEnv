@@ -26,26 +26,11 @@ public class StatementParserNode : InterpreterParserNode
         if (!TryMoveNext(iterator, out var next, out var nextError))
             return nextError.ToInstruction();
 
-        switch (next)
-        {
-            case EqualsToken:
-            {
-                if (expression is not IAssignableExpression assignable)
-                    return BakedError.ENonAssignable(expression.GetType().Name, next.StartIndex).ToInstruction();
+        var continuation = new StatementContinuationNode(expression, first);
+        var descend = continuation.Descend(next);
 
-                if (!TryMoveNext(iterator, out next, out nextError))
-                    return nextError.ToInstruction();
-                
-                var assignExpression = expressionParser.Parse(next, iterator, context, out error);
-
-                if (error != null)
-                {
-                    return error.Value.ToInstruction();
-                }
-
-                return new AssignmentInstruction(assignable, assignExpression, next.StartIndex);
-            }
-        }
+        if (descend.Success)
+            return descend.Parser.Parse(next, iterator, context);
         
         return BakedError.EUnknownStatement(next.StartIndex).ToInstruction();
     }

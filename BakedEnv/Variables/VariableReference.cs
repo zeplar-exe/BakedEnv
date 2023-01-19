@@ -270,20 +270,17 @@ public class VariableReference
 
     private VariableReferenceType[] GetReferenceOrder()
     {
+        VariableReferenceType[]? order = null;
+        
         if (Interpreter.Environment != null)
         {
-            var order = Interpreter.Environment.VariableReferenceOrder.ToArray();
-            
-            return order.Length > 0 ? order : new[]
-            {
-                VariableReferenceType.Globals,
-                VariableReferenceType.ScopeVariables
-            };
+            order = Interpreter.Environment.VariableReferenceOrder.ToArray();
         }
 
-        return new[]
+        return order ?? new[]
         {
             VariableReferenceType.Globals,
+            VariableReferenceType.Libraries,
             VariableReferenceType.ScopeVariables
         };
     }

@@ -22,6 +22,8 @@ public class ExpressionParser
         }
 
         var expression = parser.Parse(first, iterator, context);
+        
+        // check for parens and stuff here, then create invocation object
 
         return expression;
     }

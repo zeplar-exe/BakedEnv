@@ -14,7 +14,7 @@ public readonly struct DescendResult
     }
 
     [MemberNotNull(nameof(Parser))]
-    public static DescendResult SuccessfulIf(InterpreterParserNode? item, Func<InterpreterParserNode?, bool> predicate) => new(predicate.Invoke(item), item);
+    public static DescendResult SuccessfulIf(InterpreterParserNode? item, Func<bool> predicate) => new(predicate.Invoke(), item);
     public static DescendResult Successful(InterpreterParserNode item) => new(true, item);
     public static DescendResult Failure() => new(false, default);
 }

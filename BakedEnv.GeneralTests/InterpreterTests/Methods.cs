@@ -29,8 +29,6 @@ public class Methods
     {
         var target = BigInteger.Zero;
         var del = new DelegateObject(delegate(BigInteger i) { target = i; });
-        
-        // TODO: Right parenthesis after number is ignored? (ParserTools Lexer)
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("foo(5)");

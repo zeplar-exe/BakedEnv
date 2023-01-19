@@ -29,6 +29,7 @@ public class AnyIntermediateParser : IntermediateParser
         mappedCharacters.TypeMap.Map(TextualTokenType.Colon, token => new ColonToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.SingleQuotation, token => new QuotationToken(token));
         mappedCharacters.TypeMap.Map(TextualTokenType.DoubleQuotation, token => new QuotationToken(token));
+        mappedCharacters.TypeMap.Map(TextualTokenType.Comma, token => new CommaToken(token));
         
         this.WithParser<StringIntermediateParser>()
             .WithParser<NumericIntermediateParser>() 
