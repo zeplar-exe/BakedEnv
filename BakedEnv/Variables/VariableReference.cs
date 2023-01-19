@@ -210,16 +210,23 @@ public class VariableReference
                 {
                     case VariableReferenceType.Globals:
                         if (Interpreter.Environment?.Variables.TryGetValue(Name, out bakedVariable) ?? false)
-                        {
                             return true;
+
+                        break;
+                    case VariableReferenceType.Libraries:
+                        if (Interpreter.Environment == null)
+                            continue;
+
+                        foreach (var library in Interpreter.Environment.Libraries)
+                        {
+                            if (library.Variables.TryGetValue(Name, out bakedVariable))
+                                return true;
                         }
                         
                         break;
                     case VariableReferenceType.ScopeVariables:
                         if (Scope.Variables.TryGetValue(Name, out bakedVariable))
-                        {
                             return true;
-                        }
                         
                         break;
                 }
