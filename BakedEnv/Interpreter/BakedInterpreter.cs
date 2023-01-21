@@ -1,12 +1,17 @@
 using System.Diagnostics.CodeAnalysis;
-using BakedEnv.Interpreter.Expressions;
+
+using BakedEnv.Common;
+using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
-using BakedEnv.Interpreter.Parsers;
+using BakedEnv.Interpreter.IntermediateParsers;
+using BakedEnv.Interpreter.IntermediateParsers.Common;
+using BakedEnv.Interpreter.IntermediateTokens.Pure;
+using BakedEnv.Interpreter.InterpreterParsers;
+using BakedEnv.Interpreter.InterpreterParsers.Expressions;
+using BakedEnv.Interpreter.InterpreterParsers.Nodes;
+using BakedEnv.Interpreter.Lexer;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Interpreter.Sources;
-using BakedEnv.Interpreter.Variables;
-using Jammo.ParserTools.Lexing;
-using Jammo.ParserTools.Tools;
+using BakedEnv.Sources;
 
 namespace BakedEnv.Interpreter;
 
@@ -14,157 +19,70 @@ namespace BakedEnv.Interpreter;
 /// <summary>
 /// Main interface for interpreting BakedEnv scripts.
 /// </summary>
-public class BakedInterpreter
+public sealed class BakedInterpreter : IDisposable
 {
-    private CommonErrorReporter ErrorReporter { get; set; }
-    
     private InterpreterIterator? Iterator { get; set; }
-    private IteratorTools? IteratorTools { get; set; }
-    private StateMachine<ParserState>? State { get; set; }
-    private IBakedScope? CurrentScope { get; set; }
+    private IBakedScope CurrentScope { get; set; }
 
     /// <summary>
     /// The current environment used during interpretation.
     /// </summary>
-    public BakedEnvironment? Environment { get; private set; }
+    public BakedEnvironment? Environment { get; set; }
     
     /// <summary>
     /// Externally accessible context of the interpreter. Can be used to edit variables and such at runtime.
     /// </summary>
-    public InterpreterContext? Context { get; private set; }
+    public InterpreterContext Context { get; private set; }
 
-    /// <summary>
-    /// Informative property of whether the interpreter is ready for parsing.
-    /// </summary>
-    [MemberNotNullWhen(true, nameof(Context))]
-    [MemberNotNullWhen(true, nameof(CurrentScope))]
-    [MemberNotNullWhen(true, nameof(Iterator))]
-    [MemberNotNullWhen(true, nameof(Source))]
-    [MemberNotNullWhen(true, nameof(State))]
-    [MemberNotNullWhen(true, nameof(IteratorTools))]
-    public bool IsReady { get; private set; }
-    
+    private IBakedSource b_source;
+
     /// <summary>
     /// The current source being interpreted.
     /// </summary>
-    public IBakedSource? Source { get; private set; }
-    
-    /// <summary>
-    /// Informative property of whether or not the interpreter's source is locked.
-    /// </summary>
-    public bool SourceLocked { get; private set; }
-    
-    /// <summary>
-    /// Event invoked via <see cref="ReportError(BakedError)"/>. Retrieves error information during parsing or execution.
-    /// </summary>
-    public event EventHandler<BakedError>? ErrorReported;
-
-    /// <summary>
-    /// Initialize a BakedInterpreter.
-    /// </summary>
-    public BakedInterpreter()
+    public IBakedSource Source
     {
-        ErrorReporter = new CommonErrorReporter(this);
+        get => b_source;
+        [MemberNotNull(nameof(b_source))]
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+
+            b_source = value;
+        }
     }
 
-    /// <summary>
-    /// Initialize the interpreter and reset necessary values.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">The source has not been set.</exception>
-    public void Init()
+    public ErrorReporter Error { get; }
+
+    public BakedInterpreter(IBakedSource source) : this(null, source)
     {
-        if (Source == null)
-            throw new InvalidOperationException(
-                $"Cannot initialize from an unset source. Call '{nameof(WithSource)}' first.");
         
-        Iterator = new InterpreterIterator(new Lexer(Source.EnumerateCharacters()));
-        IteratorTools = new IteratorTools(this, Iterator);
-        State = new StateMachine<ParserState>(ParserState.Any);
-        Context = new InterpreterContext();
-        CurrentScope = Context;
-        IsReady = true;
-
-        SourceLocked = true;
     }
-    
-    /// <summary>
-    /// Specify the IBakedSource to be parsed.
-    /// </summary>
-    /// <param name="source">The IBakedSource to be parsed.</param>
-    /// <exception cref="InvalidOperationException">The interpreter is locked and disallows manipulation of its source.</exception>
-    public BakedInterpreter WithSource(IBakedSource source)
+
+    public BakedInterpreter(BakedEnvironment? environment, IBakedSource source)
     {
-        if (SourceLocked)
-            throw new InvalidOperationException("Cannot use a source while the interpreter is locked.");
+        ArgumentNullException.ThrowIfNull(source);
         
         Source = source;
-
-        return this;
-    }
-
-    /// <summary>
-    /// Specify the environment the interpreter should run in.
-    /// </summary>
-    /// <param name="environment"></param>
-    /// <exception cref="InvalidOperationException">The interpreter is locked and disallows manipulation of its environment.</exception>
-    public BakedInterpreter WithEnvironment(BakedEnvironment? environment)
-    {
         Environment = environment;
-
-        return this;
+        Error = new ErrorReporter();
+        
+        ResetState();
     }
 
     /// <summary>
-    /// Tear down values used for parsing. Resets the state.
+    /// Reset interpreter state (parser iteration, scopes, errors).
     /// </summary>
-    public void TearDown()
+    [MemberNotNull(nameof(Context))]
+    [MemberNotNull(nameof(CurrentScope))]
+    public void ResetState()
     {
+        Iterator?.Dispose();
+        Environment?.Dispose();
+        
         Iterator = null;
-        State = null;
-        Context = null;
-        IsReady = false;
-        IteratorTools = null;
-        CurrentScope = null;
-
-        SourceLocked = false;
-    }
-    
-    /// <summary>
-    /// Report an error using the current token as a source.
-    /// </summary>
-    /// <param name="id">Optional error ID.</param>
-    /// <param name="message">Error message.</param>
-    public BakedError ReportError(string? id, string message)
-    {
-        AssertReady();
-        
-        return ReportError(id, message, Iterator.Current.Span.Start);
-    }
-
-    /// <summary>
-    /// Report an error with the required arguments to create a <see cref="BakedError"/>.
-    /// </summary>
-    /// <param name="id">Optional error ID.</param>
-    /// <param name="message">Error message.</param>
-    /// <param name="sourceIndex">Error index.</param>
-    public BakedError ReportError(string? id, string message, int sourceIndex)
-    {
-        AssertReady();
-        
-        return ReportError(new BakedError(id, message, sourceIndex));
-    }
-
-    /// <summary>
-    /// Report a raw <see cref="BakedError"/>.
-    /// </summary>
-    /// <param name="error">Error to report.</param>
-    public BakedError ReportError(BakedError error)
-    {
-        AssertReady();
-        
-        ErrorReported?.Invoke(this, error);
-
-        return error;
+        Context = new InterpreterContext();
+        CurrentScope = Context;
+        Error.Clear();
     }
 
     /// <summary>
@@ -173,183 +91,62 @@ public class BakedInterpreter
     /// <param name="instruction">Interpreted instruction information.</param>
     /// <returns>Whether an instruction could be parsed. Should only return false upon reaching the
     /// end of an IBakedSource's content.</returns>
-    /// <exception cref="InvalidOperationException">The interpreter has not been initialized.</exception>
     public bool TryGetNextInstruction([NotNullWhen(true)] out InterpreterInstruction? instruction)
     {
-        AssertReady();
-        
         instruction = null;
 
-        IteratorTools.SkipWhitespaceAndNewlinesReserved();
+        EnsureIterator();
 
-        if (!Iterator.TryMoveNext(out var first))
+        if (!Iterator.TryMoveNext(out var next))
             return false;
-        
-        var stride = IteratorTools.SkipWhitespaceAndNewlinesReserved();
 
-        if (stride != 0)
+        if (!next.IsComplete)
         {
-            if (!Iterator.TryMoveNext(out first))
-                return false;
+            instruction = new InvalidInstruction(
+                BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
         }
 
-        switch (first.Id)
-        {
-            case LexerTokenId.OpenBracket: // Processor statement
-            {
-                var parser = CreateProcessorStatementParser();
-
-                instruction = parser.Parse();
-                
-                break;
-            }
-            case LexerTokenId.Alphabetic:
-            case LexerTokenId.AlphaNumeric: // 
-            {
-                switch (first.ToString())
-                {
-                    case "return":
-                    {
-                        break; // TODO
-                    }
-                    case "break":
-                    {
-                        break; // TODO
-                    }
-                    case "continue":
-                    {
-                        break; // TODO
-                    }
-                    default: // Variable, invocation, control statement
-                    {
-                        Iterator.PushCurrent();
-                        
-                        var topExpressionParser = CreateExpressionParser();
-                        var topExpressionResult = topExpressionParser.TryParseExpression(out var topExpression);
-                        
-                        if (!topExpressionResult.Success)
-                        {
-                            instruction = new InvalidInstruction(topExpressionResult.Error);
-
-                            break;
-                        }
-
-                        IteratorTools.SkipWhitespaceAndNewlinesReserved();
-
-                        if (!Iterator.TryMoveNext(out var next))
-                        {
-                            instruction = new InvalidInstruction(ErrorReporter.ReportEndOfFile(Iterator.Current));
-
-                            break;
-                        }
-
-                        switch (next.Id)
-                        {
-                            case LexerTokenId.Equals:
-                            {
-                                if (topExpression is not VariableExpression variableExpression)
-                                {
-                                    instruction = new InvalidInstruction(new BakedError()); // TODO: Expected variable
-                                    
-                                    break;
-                                }
-                                
-                                IteratorTools.SkipWhitespaceAndNewlines();
-
-                                var expressionParser = CreateExpressionParser();
-                                var expResult = expressionParser.TryParseExpression(out var expression);
-                                
-                                if (!expResult.Success)
-                                {
-                                    instruction = new InvalidInstruction(expResult.Error);
-                                    
-                                    break;
-                                }
-                                
-                                instruction = new VariableAssignmentInstruction(
-                                    variableExpression.Reference, 
-                                    expression, 
-                                    Iterator.Current.Span.Start);
-
-                                break;
-                            }
-                            default:
-                            {
-                                Iterator.PushCurrent();
-                                break;
-                            }
-                        }
-
-                        break;
-                    }
-                }
-                
-                break;
-            }
-            case LexerTokenId.CloseCurlyBracket:
-            {
-                if (State.Current != ParserState.StatementBody)
-                {
-                    instruction = new InvalidInstruction(new BakedError()); // TODO
-
-                    break;
-                }
-
-                instruction = new EmptyInstruction(Iterator.Current.Span.Start);
-
-                State.MoveLast();
-                
-                break;
-            }
-        }
+        var tree = new InterpreterParserTree();
         
-        return instruction != null;
+        tree.RootParserNodes.Add<ProcessorStatementParserNode>();
+        tree.RootParserNodes.Add<StatementParserNode>();
+        
+        var result = tree.Descend(next);
+
+        if (result.Success)
+        {
+            var context = new ParserContext(this, Context);
+            
+            instruction = result.Parser.Parse(next, Iterator, context);
+        }
+        else
+        {
+            instruction = new InvalidInstruction(BakedError.EUnknownTokenSequence(next.StartIndex));
+        }
+
+        return true;
     }
-    
-    /// <summary>
-    /// Assert whether the BakedInterpreter has been initialized,
-    /// following with an <see cref="InvalidOperationException"/> if it is not.
-    /// </summary>
-    [MemberNotNull(nameof(Context))]
-    [MemberNotNull(nameof(CurrentScope))]
+
     [MemberNotNull(nameof(Iterator))]
-    [MemberNotNull(nameof(Source))]
-    [MemberNotNull(nameof(State))]
-    [MemberNotNull(nameof(IteratorTools))]
-    public void AssertReady()
+    private void EnsureIterator()
     {
-        if (!IsReady)
-            throw new InvalidOperationException(
-                $"The interpreter has not been initialized. Try calling '{nameof(Init)}' or '{nameof(WithSource)}' first.");
+        if (Iterator == null)
+        {
+            var root = new AnyIntermediateParser();
+            var lexer = new TextLexer(Source.EnumerateCharacters());
+            var iterator = new LexerIterator(lexer);
+            
+            Iterator = new InterpreterIterator(root.Parse(iterator));
+            
+            Iterator.Ignore<SingleLineCommentToken>();
+            Iterator.Ignore<MultiLineCommentToken>();
+            Iterator.Ignore<MultiLineCommentDelimiterToken>();
+        }
     }
 
-    internal ValueParser CreateValueParser()
+    public void Dispose()
     {
-        return new ValueParser(CreateInternals());
-    }
-    
-    internal ParameterParser CreateParameterParser()
-    {
-        return new ParameterParser(CreateInternals());
-    }
-
-    internal ProcessorStatementParser CreateProcessorStatementParser()
-    {
-        return new ProcessorStatementParser(CreateInternals());
-    }
-
-    internal InvocationParser CreateInvocationParser(BakedExpression expression)
-    {
-        return new InvocationParser(CreateInternals(), expression);
-    }
-
-    internal ExpressionParser CreateExpressionParser()
-    {
-        return new ExpressionParser(CreateInternals());
-    }
-
-    private InterpreterInternals CreateInternals()
-    {
-        return new InterpreterInternals(this, Iterator, IteratorTools, ErrorReporter, State, Context);
+        Iterator?.Dispose();
+        Environment?.Dispose();
     }
 }

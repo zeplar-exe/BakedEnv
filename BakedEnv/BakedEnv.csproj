@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Jammo.ParserTools" Version="1.8.0" />
+        <ProjectReference Include="..\SourceGeneration\ErrorSourceGen\ErrorSourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
-
+    
 </Project>

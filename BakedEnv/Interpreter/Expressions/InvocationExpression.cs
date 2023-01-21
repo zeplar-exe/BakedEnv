@@ -1,4 +1,3 @@
-using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
 
@@ -22,20 +21,14 @@ public class InvocationExpression : BakedExpression
 
         if (value is BakedNull)
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvokeNull,
-                "Cannot invoke a null value.",
-                context.SourceIndex));
+            context.ReportError(BakedError.ENullInvocation(context.SourceIndex));
 
             return value;
         }
 
         if (value is not IBakedCallable callable)
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvokeNonCallable,
-                "Cannot invoke a non-callable object.",
-                context.SourceIndex));
+            context.ReportError(BakedError.ENonCallableInvocation(context.SourceIndex));
             
             return new BakedNull();
         }

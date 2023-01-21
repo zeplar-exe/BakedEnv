@@ -14,7 +14,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// </summary>
     public BakedExpression Expression { get; set; }
     /// <summary>
-    /// Parameters to use during invocation.
+    /// NameList to use during invocation.
     /// </summary>
     public BakedExpression[] Parameters { get; set; }
 
@@ -22,9 +22,9 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// Initialize an ObjectInvocationInstruction.
     /// </summary>
     /// <param name="callable">Callable object to invoke.</param>
-    /// <param name="parameters">Parameters to use during invocation.</param>
+    /// <param name="parameters">NameList to use during invocation.</param>
     /// /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public ObjectInvocationInstruction(BakedExpression expression, BakedExpression[] parameters, int sourceIndex) : base(sourceIndex)
+    public ObjectInvocationInstruction(BakedExpression expression, BakedExpression[] parameters, ulong sourceIndex) : base(sourceIndex)
     {
         Expression = expression;
         Parameters = parameters;
@@ -43,20 +43,14 @@ public class ObjectInvocationInstruction : InterpreterInstruction
 
         if (value is BakedNull)
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvokeNull,
-                "Cannot invoke a null value.",
-                context.SourceIndex));
+            context.ReportError(BakedError.ENullInvocation(context.SourceIndex));
 
             return value;
         }
 
         if (value is not IBakedCallable callable)
         {
-            context.Interpreter.ReportError(new BakedError(
-                ErrorCodes.InvokeNonCallable,
-                "Cannot invoke a non-callable object.",
-                context.SourceIndex));
+            context.ReportError(BakedError.ENonCallableInvocation(context.SourceIndex));
             
             return new BakedNull();
         }

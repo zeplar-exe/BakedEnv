@@ -4,9 +4,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakedEnv", "BakedEnv\BakedE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakedEnv.GeneralTests", "BakedEnv.GeneralTests\BakedEnv.GeneralTests.csproj", "{1B50328B-7312-446D-95E4-AF1E4CF72950}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakedEnv.CLI", "BakedEnv.CLI\BakedEnv.CLI.csproj", "{756714C3-5B14-4CCB-99CD-60ABE0EBA15F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorSourceGen", "SourceGeneration\ErrorSourceGen\ErrorSourceGen.csproj", "{32E2A88A-F35A-484A-B662-9E633F05DB78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BakedEnv.ApiInjection", "BakedEnv.ApiInjection\BakedEnv.ApiInjection.csproj", "{C8574FEA-886A-4A47-B6DC-32962E84C881}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGeneration.Tests", "SourceGeneration\SourceGeneration.Tests\SourceGeneration.Tests.csproj", "{8D13FD46-407F-4380-8B80-88C0DBA63D0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceGeneration", "SourceGeneration\", "{EB998B32-F9BE-445F-9E72-E2FEF472FD63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,13 +24,17 @@ Global
 		{1B50328B-7312-446D-95E4-AF1E4CF72950}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B50328B-7312-446D-95E4-AF1E4CF72950}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B50328B-7312-446D-95E4-AF1E4CF72950}.Release|Any CPU.Build.0 = Release|Any CPU
-		{756714C3-5B14-4CCB-99CD-60ABE0EBA15F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{756714C3-5B14-4CCB-99CD-60ABE0EBA15F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{756714C3-5B14-4CCB-99CD-60ABE0EBA15F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{756714C3-5B14-4CCB-99CD-60ABE0EBA15F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8574FEA-886A-4A47-B6DC-32962E84C881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8574FEA-886A-4A47-B6DC-32962E84C881}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8574FEA-886A-4A47-B6DC-32962E84C881}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8574FEA-886A-4A47-B6DC-32962E84C881}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E2A88A-F35A-484A-B662-9E633F05DB78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E2A88A-F35A-484A-B662-9E633F05DB78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E2A88A-F35A-484A-B662-9E633F05DB78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E2A88A-F35A-484A-B662-9E633F05DB78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D13FD46-407F-4380-8B80-88C0DBA63D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D13FD46-407F-4380-8B80-88C0DBA63D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D13FD46-407F-4380-8B80-88C0DBA63D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D13FD46-407F-4380-8B80-88C0DBA63D0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{32E2A88A-F35A-484A-B662-9E633F05DB78} = {EB998B32-F9BE-445F-9E72-E2FEF472FD63}
+		{8D13FD46-407F-4380-8B80-88C0DBA63D0A} = {EB998B32-F9BE-445F-9E72-E2FEF472FD63}
 	EndGlobalSection
 EndGlobal

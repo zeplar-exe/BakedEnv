@@ -1,4 +1,6 @@
 using System.Reflection;
+using BakedEnv.Extensions;
+using BakedEnv.Helpers;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects.Conversion;
@@ -25,9 +27,17 @@ public class DelegateObject : BakedObject, IBakedCallable
     
     public BakedObject Invoke(BakedObject[] parameters, InvocationContext context)
     {
+        var delegateParameters = Delegate.Method.GetParameters();
+        
         try
         {
-            var objectParameters = parameters.Select(p => ConversionTable.ToObject(p)).ToArray();
+            var objectParameters = parameters.Select((p, i) =>
+            {
+                if (i >= delegateParameters.Length)
+                    throw new TargetParameterCountException();
+
+                return ConversionTable.ToObject(p, delegateParameters[i].ParameterType);;
+            }).ToArray();
             var result = Delegate.Method.Invoke(Delegate.Target, objectParameters);
 
             return ConversionTable.ToBakedObject(result);
@@ -36,17 +46,18 @@ public class DelegateObject : BakedObject, IBakedCallable
         {
             switch (e)
             {
-                case ArgumentException args:
-                    context.Interpreter.ReportError(new BakedError(
-                        null,
-                        "Invalid arguments.",
+                case ArgumentException:
+                    var delegateParametersString = string.Join(", ", 
+                        delegateParameters.Select(p => p.ParameterType.Name));
+                    
+                    context.ReportError(BakedError.EInvocationArgumentMismatch(
+                        StringHelper.CreateTypeList(parameters), delegateParametersString, 
                         context.SourceIndex));
                     break;
-                case TargetParameterCountException paramCount:
-                    context.Interpreter.ReportError(new BakedError(
-                        null,
-                        "Expected {} parameters, got {}.",
-                        context.SourceIndex));
+                case TargetParameterCountException:
+                    context.ReportError(BakedError.EInvocationArgumentCountMismatch(
+                        delegateParameters.Length,
+                        parameters.Length, context.SourceIndex));
                     break;
                 default:
                     throw;

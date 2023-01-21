@@ -1,6 +1,9 @@
-using BakedEnv.Interpreter.Sources;
-using BakedEnv.Interpreter.Variables;
+using BakedEnv.Environment;
+using BakedEnv.Interpreter;
 using BakedEnv.Objects;
+using BakedEnv.Sources;
+using BakedEnv.Variables;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
@@ -11,7 +14,7 @@ public class VariableReferences
     [Test]
     public void TestGet()
     {
-        var session = CreateSession("hello = \"world\"");
+        var session = InterpreterTestHelper.CreateSession("hello = \"world\"");
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("hello", session.Interpreter);
@@ -22,7 +25,7 @@ public class VariableReferences
     [Test]
     public void TestGetInvalid()
     {
-        var session = CreateSession("foo = \"bar\"");
+        var session = InterpreterTestHelper.CreateSession("foo = \"bar\"");
         session.ExecuteUntilEnd();
         
         var reference = new VariableReference("baz", session.Interpreter);
@@ -33,7 +36,7 @@ public class VariableReferences
     [Test]
     public void TestSet()
     {
-        var session = CreateSession("foo = 50");
+        var session = InterpreterTestHelper.CreateSession("foo = 50");
         session.ExecuteUntilEnd();
 
         var reference = new VariableReference("foo", session.Interpreter);
@@ -44,7 +47,7 @@ public class VariableReferences
     [Test]
     public void TestSetInvalid()
     {
-        var session = CreateSession("");
+        var session = InterpreterTestHelper.CreateSession("");
         session.ExecuteUntilEnd();
 
         var reference = new VariableReference(new[] { "does", "not", "exist" }, session.Interpreter);
@@ -55,9 +58,10 @@ public class VariableReferences
     [Test]
     public void TestContainedVariable()
     {
-        var environment = new BakedEnvironment()
-            .WithVariable("pizza", new MockPropertyObject());
-        var session = environment.CreateSession(new RawStringSource("")).Init();
+        var environment = new BakedEnvironmentBuilder()
+            .WithVariable("pizza", new MockPropertyObject())
+            .Build();
+        var session = new ScriptSession(new BakedInterpreter(environment, new RawStringSource("")));
         session.ExecuteUntilEnd();
 
         var reference = new VariableReference(new[] { "pizza", "foo" }, session.Interpreter);
@@ -65,11 +69,6 @@ public class VariableReferences
         Assert.True(reference.VariableEquals("bar"));
     }
 
-    private ScriptSession CreateSession(string text)
-    {
-        return new BakedEnvironment().CreateSession(new RawStringSource(text)).Init();
-    }
-    
     public class MockPropertyObject : BakedObject
     {
         public const string PropertyName = "foo";
