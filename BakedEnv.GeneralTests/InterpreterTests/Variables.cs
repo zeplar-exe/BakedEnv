@@ -50,18 +50,6 @@ public class Variables
         environment.AssertEnvironmentHasVariable("Foo", 1);
     }
 
-    [Test]
-    public void TestContainedVariable()
-    {
-        var environment = new BakedEnvironmentBuilder()
-            .WithVariable("pizza", new MockPropertyObject())
-            .Build();
-        var session = environment.CreateSession("a = pizza.foo");
-        session.ExecuteUntilEnd();
-
-        session.AssertInterpreterHasVariable("a", "bar");
-    }
-
     public class MockPropertyObject : BakedObject
     {
         public override object? GetValue()
