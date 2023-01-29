@@ -31,6 +31,9 @@ public class StatementParserNode : InterpreterParserNode
 
         if (descend.Success)
             return descend.Parser.Parse(next, iterator, context);
+
+        if (expression is InvocationExpression invocation)
+            return new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, first.StartIndex);
         
         return BakedError.EUnknownStatement(next.StartIndex).ToInstruction();
     }

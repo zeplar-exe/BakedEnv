@@ -4,6 +4,7 @@ using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Sources;
+using BakedEnv.Variables;
 
 using NUnit.Framework;
 
@@ -57,9 +58,18 @@ public class ProcessorInstructions
     {
         public bool TryHandle(ProcessorStatementInstruction instruction, InvocationContext context)
         {
-            var key = instruction.Key.Evaluate(context);
+            string key;
+
+            if (instruction.Key is VariableExpression variableExpression)
+            {
+                key = string.Concat(variableExpression.Reference.FullPath);
+            }
+            else
+            {
+                key = instruction.Key.Evaluate(context).ToString();
+            }
             
-            context.Interpreter.Context.Variables.Add(key.ToString(), instruction.Expression.Evaluate(context));
+            context.Interpreter.Context.Variables.Add(key, instruction.Expression.Evaluate(context));
             
             return true;
         }

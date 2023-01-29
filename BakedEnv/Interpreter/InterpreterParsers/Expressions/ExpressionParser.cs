@@ -1,6 +1,7 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
@@ -22,8 +23,24 @@ public class ExpressionParser
         }
 
         var expression = parser.Parse(first, iterator, context);
-        
-        // check for parens and stuff here, then create invocation object
+
+        if (iterator.TryMoveNext(out var next))
+        {
+            switch (next)
+            {
+                case LeftParenthesisToken:
+                    var tupleParser = new TupleParser();
+                    var parameters = tupleParser.Parse(next, iterator, context, out error);
+
+                    if (error != null)
+                        return new NullExpression();
+
+                    return new InvocationExpression(expression, parameters);
+                default:
+                    iterator.Reserve();
+                    break;
+            }
+        }
 
         return expression;
     }
