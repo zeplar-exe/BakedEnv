@@ -12,7 +12,7 @@ public class Expressions
     public void TestParenthesisNumber()
     {
         var session = InterpreterTestHelper.CreateSession("foo = ((1))");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         session.AssertInterpreterHasVariable("foo", 1);
     }

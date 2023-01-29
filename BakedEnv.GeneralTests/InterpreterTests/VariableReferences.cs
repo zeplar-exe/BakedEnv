@@ -15,7 +15,7 @@ public class VariableReferences
     public void TestGet()
     {
         var session = InterpreterTestHelper.CreateSession("hello = \"world\"");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         var reference = new VariableReference("hello", session.Interpreter);
         
@@ -26,7 +26,7 @@ public class VariableReferences
     public void TestGetInvalid()
     {
         var session = InterpreterTestHelper.CreateSession("foo = \"bar\"");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         var reference = new VariableReference("baz", session.Interpreter);
 
@@ -37,7 +37,7 @@ public class VariableReferences
     public void TestSet()
     {
         var session = InterpreterTestHelper.CreateSession("foo = 50");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         var reference = new VariableReference("foo", session.Interpreter);
         
@@ -48,7 +48,7 @@ public class VariableReferences
     public void TestSetInvalid()
     {
         var session = InterpreterTestHelper.CreateSession("");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         var reference = new VariableReference(new[] { "does", "not", "exist" }, session.Interpreter);
 
@@ -62,7 +62,7 @@ public class VariableReferences
             .WithVariable("pizza", new MockPropertyObject())
             .Build();
         var session = new ScriptSession(new BakedInterpreter(environment, new RawStringSource("")));
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         var reference = new VariableReference(new[] { "pizza", "foo" }, session.Interpreter);
 

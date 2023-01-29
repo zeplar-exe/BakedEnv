@@ -19,7 +19,7 @@ public class ControlStatements
             .WithControlStatement(new IfStatementDefinition())
             .Build();
         var session = environment.CreateSession("if (condition) { target = 1 }");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         environment.AssertEnvironmentHasVariable("target", 1);
     }
@@ -33,7 +33,7 @@ public class ControlStatements
             .WithControlStatement(new IfStatementDefinition())
             .Build();
         var session = environment.CreateSession("if (condition) { target = 1 }");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         environment.AssertEnvironmentHasVariable("target", 0);
     }

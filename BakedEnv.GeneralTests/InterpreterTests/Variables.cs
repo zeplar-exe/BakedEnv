@@ -15,7 +15,7 @@ public class Variables
     public void TestVariableAssignment()
     {
         var session = InterpreterTestHelper.CreateSession("pizza = 1");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         session.AssertInterpreterHasVariable("pizza", 1);
     }
@@ -24,7 +24,7 @@ public class Variables
     public void TestMultipleVariableAssignment()
     {
         var session = InterpreterTestHelper.CreateSession("foo = 1 \n bar = 2");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         session.AssertInterpreterHasVariable("bar", 2);
     }
@@ -33,7 +33,7 @@ public class Variables
     public void TestMultiAssignment()
     {
         var session = InterpreterTestHelper.CreateSession("foo = 1 \n foo = 2");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         session.AssertInterpreterHasVariable("foo", 2);
     }
@@ -45,7 +45,7 @@ public class Variables
             .WithVariable("Foo", new BakedInteger(1), VariableFlags.ReadOnly)
             .Build();
         var session = environment.CreateSession("Foo = 0");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         environment.AssertEnvironmentHasVariable("Foo", 1);
     }

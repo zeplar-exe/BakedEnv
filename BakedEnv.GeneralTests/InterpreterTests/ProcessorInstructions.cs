@@ -37,7 +37,7 @@ public class ProcessorInstructions
         var session = new BakedEnvironmentBuilder()
             .WithStatementHandlers(new MockStatementHandler()).Build()
             .CreateSession("[\"Pizza\": \"Time\"]");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         session.AssertInterpreterHasVariable("Pizza", "Time");
     }
@@ -49,7 +49,7 @@ public class ProcessorInstructions
             .WithStatementHandlers(new MockStatementHandler())
             .Build()
             .CreateSession("[    NaN: \t 0 \n ]");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         session.AssertInterpreterHasVariable("NaN", 0);
     }

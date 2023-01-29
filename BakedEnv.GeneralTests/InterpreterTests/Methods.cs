@@ -19,7 +19,7 @@ public class Methods
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("foo()");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
         
         Assert.True(target == 1);
     }
@@ -32,7 +32,7 @@ public class Methods
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("foo(5)");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         Assert.True(target == 5);
     }
@@ -44,7 +44,7 @@ public class Methods
         
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("a = foo()");
-        session.ExecuteUntilEnd();
+        session.ExecuteUntilError();
 
         session.AssertInterpreterHasVariable("a", "Hello world!");
     }
