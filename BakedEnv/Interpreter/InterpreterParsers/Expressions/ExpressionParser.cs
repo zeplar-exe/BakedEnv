@@ -22,15 +22,18 @@ public class ExpressionParser
             return new NullExpression();
         }
 
-        var expression = parser.Parse(first, iterator, context);
+        var expression = parser.Parse(first, iterator, context, out error);
+
+        if (error != null)
+            return expression;
 
         if (iterator.TryMoveNext(out var next))
         {
             switch (next)
             {
                 case LeftParenthesisToken:
-                    var tupleParser = new TupleParser();
-                    var parameters = tupleParser.Parse(next, iterator, context, out error);
+                    var tupleParser = new ExpressionListParser();
+                    var parameters = tupleParser.Parse(iterator, context, out error);
 
                     if (error != null)
                         return new NullExpression();
@@ -38,6 +41,8 @@ public class ExpressionParser
                     return new InvocationExpression(expression, parameters);
                 default:
                     iterator.Reserve();
+                    error = BakedError.EIncompleteStatement(next.GetType().Name, next.StartIndex);
+                    
                     break;
             }
         }

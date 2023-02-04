@@ -11,6 +11,7 @@ public class EndOfFileToken : IntermediateToken
         StartIndex = index;
         Length = 0;
         EndIndex = index;
+        IsComplete = true;
     }
 
     public override string ToString()

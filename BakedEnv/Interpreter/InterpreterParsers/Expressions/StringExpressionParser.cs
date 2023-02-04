@@ -12,8 +12,10 @@ public class StringExpressionParser : SingleExpressionParser
         return token is StringToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context,
+        out BakedError? error)
     {
+        error = null;
         var token = (StringToken)first;
         var str = new BakedString(string.Concat(token.Content));
         

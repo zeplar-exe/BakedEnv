@@ -12,8 +12,10 @@ public class DecimalExpressionParser : SingleExpressionParser
         return token is DecimalToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context,
+        out BakedError? error)
     {
+        error = null;
         var bakedDecimal = new BakedDecimal(first.ToString());
 
         return new ValueExpression(bakedDecimal);

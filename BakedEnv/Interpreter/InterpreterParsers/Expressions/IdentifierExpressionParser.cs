@@ -12,8 +12,10 @@ public class IdentifierExpressionParser : SingleExpressionParser
         return token is IdentifierToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context,
+        out BakedError? error)
     {
+        error = null;
         var reference = new VariableReference(first.ToString(), context.Interpreter, context.Scope);
 
         return new VariableExpression(reference);

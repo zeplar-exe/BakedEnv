@@ -12,8 +12,10 @@ public class IntegerExpressionParser : SingleExpressionParser
         return token is IntegerToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context, 
+        out BakedError? error)
     {
+        error = null;
         var i = new BakedInteger(first.ToString());
 
         return new ValueExpression(i);

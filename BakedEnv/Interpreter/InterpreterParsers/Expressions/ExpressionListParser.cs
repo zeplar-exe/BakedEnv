@@ -4,21 +4,13 @@ using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
-public class TupleParser
+public class ExpressionListParser
 {
-    public BakedExpression[] Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context, out BakedError? error)
+    public BakedExpression[] Parse(InterpreterIterator iterator, ParserContext context, out BakedError? error)
     {
         error = null;
+        
         var items = new List<BakedExpression>();
-        
-        if (first is not LeftParenthesisToken)
-        {
-            error = BakedError.EUnexpectedTokenType(
-                nameof(LeftParenthesisToken), first.GetType().Name, first.StartIndex);
-
-            return items.ToArray();
-        }
-        
         var expressionParser = new ExpressionParser();
         var expectComma = false;
 

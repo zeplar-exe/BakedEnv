@@ -95,5 +95,10 @@
         "name": "ExpectedArgumentDelimiter",
         "short": "Expected comma between function arguments, got {actualTypeName}.",
         "long": ""
+    },
+    "1019": {
+        "name": "IncompleteStatement",
+        "short": "Expected arithmetic, invocation, or assignment, got {actual}.",
+        "long": ""
     }
 }

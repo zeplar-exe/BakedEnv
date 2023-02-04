@@ -48,25 +48,25 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 
     public bool TryTakeNextOfType<T>(
         [NotNullWhen(true)] out T? token, 
-        [NotNullWhen(false)] out InvalidInstruction? error) where T : IntermediateToken
+        [NotNullWhen(false)] out BakedError? error) where T : IntermediateToken
     {
         token = null;
         error = null;
         
         if (!TryPeekNext(out var peekToken))
         {
-            error = BakedError.EEarlyEndOfFile(Current?.EndIndex ?? 0).ToInstruction();
+            error = BakedError.EEarlyEndOfFile(Current?.EndIndex ?? 0);
         } 
         else if (!peekToken.IsComplete)
         {
-            error = BakedError.EIncompleteIntermediateToken(peekToken.GetType().Name, peekToken.StartIndex).ToInstruction();
+            error = BakedError.EIncompleteIntermediateToken(peekToken.GetType().Name, peekToken.StartIndex);
         }
         else if (peekToken is not T)
         {
             error = BakedError.EUnexpectedTokenType(
                 typeof(T).Name, 
                 peekToken.GetType().Name,
-                peekToken.StartIndex).ToInstruction();
+                peekToken.StartIndex);
         }
 
         if (error != null)

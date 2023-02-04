@@ -26,7 +26,7 @@ public class ProcessorStatementParserNode : InterpreterParserNode
             return error.Value.ToInstruction();
 
         if (!iterator.TryTakeNextOfType<ColonToken>(out var colonToken, out var invalid))
-            return invalid;
+            return invalid.Value.ToInstruction();
         
         if (!iterator.TryMoveNext(out next))
             return BakedError.EEarlyEndOfFile(first.EndIndex).ToInstruction();
@@ -37,7 +37,7 @@ public class ProcessorStatementParserNode : InterpreterParserNode
             return error.Value.ToInstruction();
         
         if (!iterator.TryTakeNextOfType<RightBracketToken>(out var rightBracket, out invalid))
-            return invalid;
+            return invalid.Value.ToInstruction();
 
         return new ProcessorStatementInstruction(key, value, first.StartIndex);
     }

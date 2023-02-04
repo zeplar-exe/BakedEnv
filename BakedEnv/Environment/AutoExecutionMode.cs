@@ -6,7 +6,7 @@ namespace BakedEnv.Environment;
 public enum AutoExecutionMode
 {
     /// <summary>
-    /// Instructions are not executed during invocation.
+    /// Instructions are not executed during iteration.
     /// </summary>
     None = 0,
     /// <summary>
