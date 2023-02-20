@@ -1,7 +1,4 @@
-using BakedEnv.Environment;
-using BakedEnv.Interpreter;
 using BakedEnv.Objects;
-using BakedEnv.Sources;
 
 using NUnit.Framework;
 

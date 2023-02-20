@@ -1,5 +1,3 @@
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
-
 namespace BakedEnv.Interpreter.IntermediateTokens;
 
 internal static class TokenExtensions

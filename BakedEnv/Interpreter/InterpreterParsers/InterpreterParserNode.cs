@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.Scopes;
 
 namespace BakedEnv.Interpreter.InterpreterParsers;
 

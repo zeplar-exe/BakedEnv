@@ -1,7 +1,6 @@
 using System.Reflection;
 using BakedEnv.Extensions;
 using BakedEnv.Helpers;
-using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects.Conversion;
 

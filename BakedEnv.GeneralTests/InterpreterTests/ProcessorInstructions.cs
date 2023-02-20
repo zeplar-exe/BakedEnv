@@ -3,8 +3,6 @@ using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.ProcessorStatementHandling;
 using BakedEnv.Interpreter.Scopes;
-using BakedEnv.Sources;
-using BakedEnv.Variables;
 
 using NUnit.Framework;
 

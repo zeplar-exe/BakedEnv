@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Objects;
-using BakedEnv.Sources;
 using BakedEnv.Variables;
 
 namespace BakedEnv.Environment;

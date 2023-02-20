@@ -1,5 +1,3 @@
-using System.Collections;
-
 using BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 namespace BakedEnv.Environment;
