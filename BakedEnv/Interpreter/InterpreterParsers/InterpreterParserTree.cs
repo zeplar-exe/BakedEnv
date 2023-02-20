@@ -5,16 +5,16 @@ namespace BakedEnv.Interpreter.InterpreterParsers;
 
 public class InterpreterParserTree : BranchParser
 {
-    public TypeInstanceList<BranchParser> RootParserNodes { get; }
+    public List<BranchParser> RootParserNodes { get; }
 
     public InterpreterParserTree()
     {
-        RootParserNodes = new TypeInstanceList<BranchParser>();
+        RootParserNodes = new List<BranchParser>();
     }
     
     public override DescendResult Descend(IntermediateToken token)
     {
-        foreach (var parser in RootParserNodes.EnumerateInstances())
+        foreach (var parser in RootParserNodes)
         {
             var result = parser.Descend(token);
 

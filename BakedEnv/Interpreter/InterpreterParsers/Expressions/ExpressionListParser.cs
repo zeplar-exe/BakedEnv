@@ -10,9 +10,11 @@ public class ExpressionListParser
     {
         error = null;
         
-        var items = new List<BakedExpression>();
+        var expressions = new List<BakedExpression>();
         var expressionParser = new ExpressionParser();
         var expectComma = false;
+        
+        // Note that a non-expression (comma, right parens, etc) following a comma denotes an null value
 
         while (true)
         {
@@ -20,13 +22,16 @@ public class ExpressionListParser
             {
                 error = BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex);
 
-                return items.ToArray();
+                return expressions.ToArray();
             }
 
             if (next is RightParenthesisToken)
             {
-                if (items.Count > 0 && !expectComma) // If no params, we don't need a null fill-in
-                    items.Add(new NullExpression());
+                if (expressions.Count == 0) // If no params, we don't need a null fill-in
+                    break;
+                
+                if (!expectComma)
+                    expressions.Add(new NullExpression());
                 
                 break;
             }
@@ -38,7 +43,7 @@ public class ExpressionListParser
                 }
                 else
                 {
-                    items.Add(new NullExpression());
+                    expressions.Add(new NullExpression());
                 }
             } 
             else
@@ -47,19 +52,19 @@ public class ExpressionListParser
                 {
                     error = BakedError.EExpectedArgumentDelimiter(next.GetType().Name, next.StartIndex);
 
-                    return items.ToArray();
+                    return expressions.ToArray();
                 }
 
                 var expression = expressionParser.Parse(next, iterator, context, out error);
 
                 if (error != null)
-                    return items.ToArray();
+                    return expressions.ToArray();
                 
-                items.Add(expression);
+                expressions.Add(expression);
                 expectComma = true;
             }
         }
 
-        return items.ToArray();
+        return expressions.ToArray();
     }
 }

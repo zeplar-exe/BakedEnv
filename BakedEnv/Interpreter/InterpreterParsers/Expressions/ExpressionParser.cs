@@ -5,14 +5,14 @@ using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
-public class ExpressionParser
+internal class ExpressionParser
 {
     public BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context, 
         out BakedError? error)
     {
         error = null;
         
-        var selector = new ExpressionSelector();
+        var selector = new ExpressionSelector(context.Interpreter.Environment);
         var parser = selector.SelectParser(first);
 
         if (parser == null)

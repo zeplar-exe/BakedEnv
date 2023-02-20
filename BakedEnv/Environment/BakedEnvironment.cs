@@ -23,6 +23,8 @@ public sealed class BakedEnvironment : ILibraryEnvironment, IDisposable
     public VariableReferenceOrder VariableReferenceOrder { get; set; }
     
     public TextWriter? OutputWriter { get; set; }
+    
+    public ExpressionParserContainer ExpressionParsers { get; }
 
     /// <summary>
     /// Instantiate a BakedEnvironment.
@@ -35,13 +37,15 @@ public sealed class BakedEnvironment : ILibraryEnvironment, IDisposable
         ControlStatements = new List<ControlStatementDefinition>();
         Libraries = new LibraryContainer();
         VariableReferenceOrder = VariableReferenceOrder.Default();
+        ExpressionParsers = new ExpressionParserContainer();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <returns></returns>
-    /// <remarks>This methods yields this <see cref="BakedEnvironment"/> first before the items in <see cref="Libraries"/>.</remarks>
+    /// <returns>This methods yields the current <see cref="BakedEnvironment"/>
+    /// before items in <see cref="Libraries"/>.</returns>
+    /// <remarks></remarks>
     public IEnumerable<ILibraryEnvironment> EnumerateAllLibraries()
     {
         yield return this;

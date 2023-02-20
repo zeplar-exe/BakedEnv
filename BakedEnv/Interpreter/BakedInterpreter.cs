@@ -108,8 +108,8 @@ public sealed class BakedInterpreter : IDisposable
 
         var tree = new InterpreterParserTree();
         
-        tree.RootParserNodes.Add<ProcessorStatementParserNode>();
-        tree.RootParserNodes.Add<StatementParserNode>();
+        tree.RootParserNodes.Add(new ProcessorStatementParserNode());
+        tree.RootParserNodes.Add(new StatementParserNode());
         
         var result = tree.Descend(next);
 
