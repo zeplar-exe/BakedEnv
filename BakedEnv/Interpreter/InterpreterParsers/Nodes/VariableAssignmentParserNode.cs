@@ -31,13 +31,21 @@ public class VariableAssignmentParserNode : InterpreterParserNode
             return nextError.ToInstruction();
 
         var expressionParser = new ExpressionParser();
-        var assignExpression = expressionParser.Parse(next, iterator, context, out var error);
+        var valueExpression = expressionParser.Parse(next, iterator, context);
 
-        if (error != null)
+        if (valueExpression.HasError)
         {
-            return error.Value.ToInstruction();
+            return valueExpression.Error.ToInstruction();
         }
 
-        return new AssignmentInstruction(assignable, assignExpression, next.StartIndex);
+        var expressionContinuation = new ExpressionContinuationParser();
+        var continuationResult = expressionContinuation.Parse(valueExpression.Value, iterator, context);
+
+        if (continuationResult.HasError)
+        {
+            return continuationResult.Error.ToInstruction();
+        }
+        
+        return new AssignmentInstruction(assignable, continuationResult.Value, next.StartIndex);
     }
 }

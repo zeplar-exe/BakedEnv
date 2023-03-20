@@ -1,3 +1,4 @@
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
@@ -12,12 +13,10 @@ public class IdentifierExpressionParser : SingleExpressionParser
         return token is IdentifierToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context,
-        out BakedError? error)
+    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
-        error = null;
         var reference = new VariableReference(first.ToString(), context.Interpreter, context.Scope);
 
-        return new VariableExpression(reference);
+        return OperationResult<BakedExpression>.Success(new VariableExpression(reference));
     }
 }

@@ -1,3 +1,4 @@
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
@@ -11,27 +12,24 @@ public class ParenthesisExpressionParser : SingleExpressionParser
         return token is LeftParenthesisToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context, 
-        out BakedError? error)
+    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         if (!iterator.TryMoveNext(out var next))
         {
-            error = BakedError.EEarlyEndOfFile(first.EndIndex);
-
-            return new NullExpression();
+            return OperationResult<BakedExpression>.Failure(BakedError.EEarlyEndOfFile(first.EndIndex));
         }
         
         var expressionParser = new ExpressionParser();
-        var expression = expressionParser.Parse(next, iterator, context, out error);
+        var expression = expressionParser.Parse(next, iterator, context);
 
-        if (error != null)
+        if (expression.HasError)
         {
             return expression;
         }
 
-        if (!iterator.TryTakeNextOfType<RightParenthesisToken>(out _, out error))
+        if (!iterator.TryTakeNextOfType<RightParenthesisToken>(out _, out var error))
         {
-            return expression;
+            return OperationResult<BakedExpression>.Failure(error.Value);
         }
 
         return expression;

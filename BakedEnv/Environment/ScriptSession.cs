@@ -62,9 +62,12 @@ public sealed class ScriptSession : IDisposable
         ExecuteUntil(_ => false);
     }
 
-    public void ExecuteUntilError()
+    public BakedError? ExecuteUntilError()
     {
         ExecuteUntil(_ => Interpreter.Error.AnyError);
+
+        // Need this ternary cause it can finish without any error
+        return Interpreter.Error.AnyError ? Interpreter.Error.Extract().Single() : null;
     }
 
     /// <summary>
@@ -81,6 +84,9 @@ public sealed class ScriptSession : IDisposable
                 break;
             
             instruction.Execute(Interpreter);
+            
+            if (predicate.Invoke(instruction))
+                break;
         }
     }
 

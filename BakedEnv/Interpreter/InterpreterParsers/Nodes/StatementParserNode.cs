@@ -15,23 +15,23 @@ public class StatementParserNode : InterpreterParserNode
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         var expressionParser = new ExpressionParser();
-        var expression = expressionParser.Parse(first, iterator, context, out var error);
-
-        if (error != null)
+        var expression = expressionParser.Parse(first, iterator, context);
+        
+        if (expression.HasError)
         {
-            return error.Value.ToInstruction();
+            return expression.Error.ToInstruction();
         }
 
         if (!TryMoveNext(iterator, out var next, out var nextError))
             return nextError.ToInstruction();
 
-        var continuation = new StatementContinuationNode(expression, first);
+        var continuation = new StatementContinuationNode(expression.Value, first);
         var descend = continuation.Descend(next);
 
         if (descend.Success)
             return descend.Parser.Parse(next, iterator, context);
 
-        if (expression is InvocationExpression invocation)
+        if (expression.Value is InvocationExpression invocation)
             return new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, first.StartIndex);
         
         return BakedError.EUnknownStatement(next.StartIndex).ToInstruction();

@@ -1,3 +1,4 @@
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
@@ -12,13 +13,11 @@ public class StringExpressionParser : SingleExpressionParser
         return token is StringToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context,
-        out BakedError? error)
+    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
-        error = null;
         var token = (StringToken)first;
         var str = new BakedString(string.Concat(token.Content));
         
-        return new ValueExpression(str);
+        return OperationResult<BakedExpression>.Success(new ValueExpression(str));
     }
 }

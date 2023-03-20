@@ -1,3 +1,4 @@
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
@@ -5,10 +6,8 @@ namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 public class ExpressionListParser
 {
-    public BakedExpression[] Parse(InterpreterIterator iterator, ParserContext context, out BakedError? error)
+    public OperationResult<BakedExpression[]> Parse(InterpreterIterator iterator, ParserContext context)
     {
-        error = null;
-        
         var expressions = new List<BakedExpression>();
         var expressionParser = new ExpressionParser();
         var expectComma = false;
@@ -19,9 +18,9 @@ public class ExpressionListParser
         {
             if (!iterator.TryMoveNext(out var next))
             {
-                error = BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex);
+                var error = BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex);
 
-                return expressions.ToArray();
+                return OperationResult<BakedExpression[]>.Failure(error);
             }
 
             if (next is RightParenthesisToken)
@@ -49,21 +48,21 @@ public class ExpressionListParser
             {
                 if (expectComma)
                 {
-                    error = BakedError.EExpectedArgumentDelimiter(next.GetType().Name, next.StartIndex);
+                    var error = BakedError.EExpectedArgumentDelimiter(next.GetType().Name, next.StartIndex);
 
-                    return expressions.ToArray();
+                    return OperationResult<BakedExpression[]>.Failure(error);
                 }
 
-                var expression = expressionParser.Parse(next, iterator, context, out error);
+                var expression = expressionParser.Parse(next, iterator, context);
 
-                if (error != null)
-                    return expressions.ToArray();
+                if (expression.HasError)
+                    return OperationResult<BakedExpression[]>.Failure(expression.Error);
                 
-                expressions.Add(expression);
+                expressions.Add(expression.Value);
                 expectComma = true;
             }
         }
 
-        return expressions.ToArray();
+        return OperationResult<BakedExpression[]>.Success(expressions.ToArray());
     }
 }

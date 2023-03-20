@@ -16,7 +16,7 @@ namespace BakedEnv.Interpreter;
 
 
 /// <summary>
-/// Main interface for interpreting BakedEnv scripts.
+/// Main interface for interpreting scripts.
 /// </summary>
 public sealed class BakedInterpreter : IDisposable
 {

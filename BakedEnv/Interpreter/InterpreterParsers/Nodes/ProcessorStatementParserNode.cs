@@ -15,15 +15,14 @@ public class ProcessorStatementParserNode : InterpreterParserNode
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         var expressionParser = new ExpressionParser();
-        var leftBracket = (LeftBracketToken)first;
 
         if (!iterator.TryMoveNext(out var next))
             return BakedError.EEarlyEndOfFile(first.EndIndex).ToInstruction();
         
-        var key = expressionParser.Parse(next, iterator, context, out var error);
+        var key = expressionParser.Parse(next, iterator, context);
 
-        if (error != null)
-            return error.Value.ToInstruction();
+        if (key.HasError)
+            return key.Error.ToInstruction();
 
         if (!iterator.TryTakeNextOfType<ColonToken>(out var colonToken, out var invalid))
             return invalid.Value.ToInstruction();
@@ -31,14 +30,14 @@ public class ProcessorStatementParserNode : InterpreterParserNode
         if (!iterator.TryMoveNext(out next))
             return BakedError.EEarlyEndOfFile(first.EndIndex).ToInstruction();
 
-        var value = expressionParser.Parse(next, iterator, context, out error);
+        var value = expressionParser.Parse(next, iterator, context);
         
-        if (error != null)
-            return error.Value.ToInstruction();
+        if (value.HasError)
+            return value.Error.ToInstruction();
         
         if (!iterator.TryTakeNextOfType<RightBracketToken>(out var rightBracket, out invalid))
             return invalid.Value.ToInstruction();
 
-        return new ProcessorStatementInstruction(key, value, first.StartIndex);
+        return new ProcessorStatementInstruction(key.Value, value.Value, first.StartIndex);
     }
 }

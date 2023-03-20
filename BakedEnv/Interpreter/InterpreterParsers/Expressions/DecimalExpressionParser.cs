@@ -1,3 +1,4 @@
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
@@ -12,12 +13,10 @@ public class DecimalExpressionParser : SingleExpressionParser
         return token is DecimalToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context,
-        out BakedError? error)
+    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
-        error = null;
         var bakedDecimal = new BakedDecimal(first.ToString());
 
-        return new ValueExpression(bakedDecimal);
+        return OperationResult<BakedExpression>.Success(new ValueExpression(bakedDecimal));
     }
 }

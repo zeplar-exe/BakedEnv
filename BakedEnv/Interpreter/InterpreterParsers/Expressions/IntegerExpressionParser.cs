@@ -1,3 +1,4 @@
+using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.IntermediateTokens.Pure;
@@ -12,12 +13,10 @@ public class IntegerExpressionParser : SingleExpressionParser
         return token is IntegerToken;
     }
 
-    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context, 
-        out BakedError? error)
+    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
-        error = null;
         var i = new BakedInteger(first.ToString());
 
-        return new ValueExpression(i);
+        return OperationResult<BakedExpression>.Success(new ValueExpression(i));
     }
 }
