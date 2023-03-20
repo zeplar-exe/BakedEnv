@@ -30,22 +30,14 @@ public class VariableAssignmentParserNode : InterpreterParserNode
         if (!TryMoveNext(iterator, out var next, out var nextError))
             return nextError.ToInstruction();
 
-        var expressionParser = new ExpressionParser();
+        var expressionParser = new FullExpressionParser();
         var valueExpression = expressionParser.Parse(next, iterator, context);
 
         if (valueExpression.HasError)
         {
             return valueExpression.Error.ToInstruction();
         }
-
-        var expressionContinuation = new ExpressionContinuationParser();
-        var continuationResult = expressionContinuation.Parse(valueExpression.Value, iterator, context);
-
-        if (continuationResult.HasError)
-        {
-            return continuationResult.Error.ToInstruction();
-        }
         
-        return new AssignmentInstruction(assignable, continuationResult.Value, next.StartIndex);
+        return new AssignmentInstruction(assignable, valueExpression.Value, next.StartIndex);
     }
 }
