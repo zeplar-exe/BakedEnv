@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
+using BakedEnv.Environment;
 using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Objects;
@@ -204,31 +205,15 @@ public class VariableReference
         }
         else
         {
-            foreach (var variableType in GetReferenceOrder())
+            foreach (var referenceDelegate in GetReferenceOrder())
             {
-                switch (variableType)
+                var result = referenceDelegate.Invoke(Name, Interpreter, Scope);
+
+                if (result.IsSuccess)
                 {
-                    case VariableReferenceType.Globals:
-                        if (Interpreter.Environment?.Variables.TryGetValue(Name, out bakedVariable) ?? false)
-                            return true;
+                    bakedVariable = result.Value;
 
-                        break;
-                    case VariableReferenceType.Libraries:
-                        if (Interpreter.Environment == null)
-                            continue;
-
-                        foreach (var library in Interpreter.Environment.Libraries)
-                        {
-                            if (library.Variables.TryGetValue(Name, out bakedVariable))
-                                return true;
-                        }
-                        
-                        break;
-                    case VariableReferenceType.ScopeVariables:
-                        if (Scope.Variables.TryGetValue(Name, out bakedVariable))
-                            return true;
-                        
-                        break;
+                    return true;
                 }
             }
         }
@@ -268,20 +253,15 @@ public class VariableReference
         return true;
     }
 
-    private VariableReferenceType[] GetReferenceOrder()
+    private VariableReferenceOrder GetReferenceOrder()
     {
-        VariableReferenceType[]? order = null;
+        VariableReferenceOrder? order = null;
         
         if (Interpreter.Environment != null)
         {
-            order = Interpreter.Environment.VariableReferenceOrder.ToArray();
+            order = Interpreter.Environment.VariableReferenceOrder;
         }
 
-        return order ?? new[]
-        {
-            VariableReferenceType.Globals,
-            VariableReferenceType.Libraries,
-            VariableReferenceType.ScopeVariables
-        };
+        return order ?? VariableReferenceOrder.Default();
     }
 }
