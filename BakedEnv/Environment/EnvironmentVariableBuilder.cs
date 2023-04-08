@@ -11,15 +11,18 @@ public class EnvironmentVariableBuilder
     
     private string? Name { get; set; }
     private VariableFlags Flags { get; set; }
-    private BakedObject? Value { get; set; }
+    private BakedObject Value { get; set; }
 
     internal EnvironmentVariableBuilder(BakedEnvironmentBuilder source)
     {
         Source = source;
+        Value = new BakedNull();
     }
 
     public EnvironmentVariableBuilder WithName(string name)
     {
+        ArgumentNullException.ThrowIfNull(name);
+        
         Name = name;
 
         return this;
@@ -27,6 +30,8 @@ public class EnvironmentVariableBuilder
 
     public EnvironmentVariableBuilder WithValue(BakedObject value)
     {
+        ArgumentNullException.ThrowIfNull(value);
+        
         Value = value;
 
         return this;
