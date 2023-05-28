@@ -20,7 +20,7 @@ public class DivisionExpression : BakedExpression
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
         
-        if (!left.TryDivide(Right.Evaluate(context), out var result))
+        if (!left.TryDivide(right, out var result) && !right.TryDivide(left, out result))
         {
             context.ReportError(BakedError.EInvalidBinaryOperation(
                 "divide", 

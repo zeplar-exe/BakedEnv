@@ -19,18 +19,18 @@ public class Variables
     }
 
     [Test]
-    public void TestMultipleVariableAssignment()
+    public void TestAssignmentOfDifferentVariables()
     {
-        var session = InterpreterTestHelper.CreateSession("foo = 1 \n bar = 2");
+        var session = InterpreterTestHelper.CreateSession("foo = 1; bar = 2;");
         session.ExecuteUntilError();
         
         session.AssertInterpreterHasVariable("bar", 2);
     }
 
     [Test]
-    public void TestMultiAssignment()
+    public void TestMultiAssignmentOfSameVariable()
     {
-        var session = InterpreterTestHelper.CreateSession("foo = 1 \n foo = 2");
+        var session = InterpreterTestHelper.CreateSession("foo = 1; foo = 2;");
         session.ExecuteUntilError();
         
         session.AssertInterpreterHasVariable("foo", 2);

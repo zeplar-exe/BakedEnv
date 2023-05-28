@@ -20,7 +20,7 @@ public class AdditionExpression : BakedExpression
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
         
-        if (!left.TryAdd(Right.Evaluate(context), out var result))
+        if (!left.TryAdd(right, out var result) && !right.TryAdd(left, out result))
         {
             context.ReportError(
                     BakedError.EInvalidBinaryOperation(

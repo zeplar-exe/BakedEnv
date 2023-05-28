@@ -20,7 +20,7 @@ public class ExponentiationExpression : BakedExpression
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
         
-        if (!left.TryExponent(Right.Evaluate(context), out var result))
+        if (!left.TryExponent(right, out var result) && !right.TryExponent(left, out result))
         {
             context.ReportError(BakedError.EInvalidBinaryOperation(
                 "raise", 

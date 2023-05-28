@@ -20,7 +20,7 @@ public class MultiplicationExpression : BakedExpression
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
         
-        if (!left.TryMultiply(Right.Evaluate(context), out var result))
+        if (!left.TryMultiply(right, out var result) && !right.TryMultiply(left, out result))
         {
             context.ReportError(BakedError.EInvalidBinaryOperation(
                 "multiply", 

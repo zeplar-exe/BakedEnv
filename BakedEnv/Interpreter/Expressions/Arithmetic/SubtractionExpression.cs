@@ -20,7 +20,7 @@ public class SubtractionExpression : BakedExpression
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
         
-        if (!left.TrySubtract(Right.Evaluate(context), out var result))
+        if (!left.TrySubtract(right, out var result) && !right.TrySubtract(left, out result))
         {
             context.ReportError(BakedError.EInvalidBinaryOperation(
                 "subtract", 

@@ -20,7 +20,7 @@ public class ModulusExpression : BakedExpression
         var left = Left.Evaluate(context);
         var right = Right.Evaluate(context);
         
-        if (!left.TryModulus(Right.Evaluate(context), out var result))
+        if (!left.TryModulus(right, out var result) && !right.TryModulus(left, out result))
         {
             context.ReportError(BakedError.EInvalidBinaryOperation(
                 "modulo", 
