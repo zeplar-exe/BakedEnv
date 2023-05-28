@@ -65,8 +65,6 @@ public class AnyIntermediateParser : IntermediateParser
         {
             yield return next;
         }
-        
-        yield return new EndOfFileToken(input.Current?.EndIndex ?? 0);
     }
     
     public bool TryParseOne(LexerIterator input, [NotNullWhen(true)] out IntermediateToken? token)

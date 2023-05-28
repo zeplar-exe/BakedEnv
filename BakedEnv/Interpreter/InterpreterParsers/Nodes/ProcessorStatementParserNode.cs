@@ -17,27 +17,21 @@ public class ProcessorStatementParserNode : InterpreterParserNode
         var expressionParser = new ExpressionParser();
 
         if (!iterator.TryMoveNext(out var next))
-            return BakedError.EEarlyEndOfFile(first.EndIndex).ToInstruction();
+            BakedError.EEarlyEndOfFile(first.EndIndex).Throw();
         
-        var key = expressionParser.Parse(next, iterator, context);
-
-        if (key.HasError)
-            return key.Error.ToInstruction();
+        var keyExpression = expressionParser.Parse(next, iterator, context);
 
         if (!iterator.TryTakeNextOfType<ColonToken>(out var colonToken, out var invalid))
-            return invalid.Value.ToInstruction();
+            invalid.Throw();
         
         if (!iterator.TryMoveNext(out next))
-            return BakedError.EEarlyEndOfFile(first.EndIndex).ToInstruction();
+            BakedError.EEarlyEndOfFile(first.EndIndex).Throw();
 
-        var value = expressionParser.Parse(next, iterator, context);
-        
-        if (value.HasError)
-            return value.Error.ToInstruction();
-        
+        var valueExpression = expressionParser.Parse(next, iterator, context);
+
         if (!iterator.TryTakeNextOfType<RightBracketToken>(out var rightBracket, out invalid))
-            return invalid.Value.ToInstruction();
+            invalid.Throw();
 
-        return new ProcessorStatementInstruction(key.Value, value.Value, first.StartIndex);
+        return new ProcessorStatementInstruction(keyExpression, valueExpression, first.StartIndex);
     }
 }

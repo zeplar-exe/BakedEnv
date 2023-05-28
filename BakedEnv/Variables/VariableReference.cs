@@ -20,9 +20,10 @@ public class VariableReference
     /// </summary>
     public string Name { get; }
     /// <summary>
-    /// The qualifying path of the referenced variable (path1.path2.path3...Name)
+    /// The qualifying path of the referenced variable (path1.path2.path3...Name).
+    /// This does NOT include the variable name itself.
     /// </summary>
-    /// <remarks>If the path is empty, the variable is assumed to be top-level.</remarks>
+    /// <remarks>If the path is empty, the variable is top-level.</remarks>
     public ReadOnlyCollection<string> Path { get; }
 
     public IEnumerable<string> FullPath => Path.Concat(new[] { Name });

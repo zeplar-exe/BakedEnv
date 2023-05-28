@@ -25,19 +25,18 @@ public class VariableAssignmentParserNode : InterpreterParserNode
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         if (AssignExpression is not IAssignableExpression assignable)
-            return BakedError.ENonAssignable(AssignExpression.GetType().Name, ExpressionFirstToken.StartIndex).ToInstruction();
+        {
+            BakedError.ENonAssignable(AssignExpression.GetType().Name, ExpressionFirstToken.StartIndex).Throw();
+
+            return new EmptyInstruction(0);
+        }
 
         if (!TryMoveNext(iterator, out var next, out var nextError))
-            return nextError.ToInstruction();
+            nextError.Throw();
 
         var expressionParser = new FullExpressionParser();
         var valueExpression = expressionParser.Parse(next, iterator, context);
-
-        if (valueExpression.HasError)
-        {
-            return valueExpression.Error.ToInstruction();
-        }
         
-        return new AssignmentInstruction(assignable, valueExpression.Value, next.StartIndex);
+        return new AssignmentInstruction(assignable, valueExpression, next.StartIndex);
     }
 }

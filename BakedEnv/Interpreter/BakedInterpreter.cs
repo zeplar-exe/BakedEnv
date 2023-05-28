@@ -21,7 +21,7 @@ namespace BakedEnv.Interpreter;
 public sealed class BakedInterpreter : IDisposable
 {
     private InterpreterIterator? Iterator { get; set; }
-    private IBakedScope CurrentScope { get; set; }
+    private IBakedScope? CurrentScope { get; set; }
 
     /// <summary>
     /// The current environment used during interpretation.
@@ -31,7 +31,7 @@ public sealed class BakedInterpreter : IDisposable
     /// <summary>
     /// Externally accessible context of the interpreter. Can be used to edit variables and such at runtime.
     /// </summary>
-    public InterpreterContext Context { get; private set; }
+    public InterpreterContext? Context { get; private set; }
 
     private IBakedSource b_source;
 
@@ -52,20 +52,22 @@ public sealed class BakedInterpreter : IDisposable
 
     public ErrorReporter Error { get; }
 
-    public BakedInterpreter(IBakedSource source) : this(null, source)
-    {
-        
-    }
-
-    public BakedInterpreter(BakedEnvironment? environment, IBakedSource source)
+    public BakedInterpreter(IBakedSource source)
     {
         ArgumentNullException.ThrowIfNull(source);
         
         Source = source;
-        Environment = environment;
         Error = new ErrorReporter();
+    }
+
+    public BakedInterpreter(BakedEnvironment environment, IBakedSource source)
+    {
+        ArgumentNullException.ThrowIfNull(environment);
+        ArgumentNullException.ThrowIfNull(source);
         
-        ResetState();
+        Environment = environment;
+        Source = source;
+        Error = new ErrorReporter();
     }
 
     /// <summary>
@@ -103,30 +105,40 @@ public sealed class BakedInterpreter : IDisposable
         {
             instruction = new InvalidInstruction(
                 BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
-        }
+        } // hmm
 
         var tree = new InterpreterParserTree();
         
         tree.RootParserNodes.Add(new ProcessorStatementParserNode());
         tree.RootParserNodes.Add(new StatementParserNode());
-        
-        var result = tree.Descend(next);
 
-        if (result.Success)
+        try
         {
-            var context = new ParserContext(this, Context);
+            var result = tree.Descend(next);
+
+            if (result.Success)
+            {
+                var context = new ParserContext(this, Context);
             
-            instruction = result.Parser.Parse(next, Iterator, context);
-        }
-        else
-        {
-            instruction = new InvalidInstruction(BakedError.EUnknownTokenSequence(next.StartIndex));
-        }
+                instruction = result.Parser.Parse(next, Iterator, context);
+            }
+            else
+            {
+                instruction = new InvalidInstruction(BakedError.EUnknownTokenSequence(next.StartIndex));
+            }
 
-        return true;
+            return true;
+        }
+        catch (InterpreterInternalException e)
+        {
+            Console.WriteLine(e);
+            instruction = new InvalidInstruction(e.Error);
+
+            return false;
+        }
     }
 
-    [MemberNotNull(nameof(Iterator))]
+    [MemberNotNull(nameof(Iterator), nameof(Context), nameof(CurrentScope))]
     private void EnsureIterator()
     {
         if (Iterator == null)
@@ -141,6 +153,9 @@ public sealed class BakedInterpreter : IDisposable
             Iterator.Ignore<MultiLineCommentToken>();
             Iterator.Ignore<MultiLineCommentDelimiterToken>();
         }
+
+        Context ??= new InterpreterContext();
+        CurrentScope ??= CurrentScope;
     }
 
     public void Dispose()

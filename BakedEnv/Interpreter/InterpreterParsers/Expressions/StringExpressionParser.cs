@@ -13,11 +13,11 @@ public class StringExpressionParser : SingleExpressionParser
         return token is StringToken;
     }
 
-    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         var token = (StringToken)first;
         var str = new BakedString(string.Concat(token.Content));
         
-        return OperationResult<BakedExpression>.Success(new ValueExpression(str));
+        return new ValueExpression(str);
     }
 }

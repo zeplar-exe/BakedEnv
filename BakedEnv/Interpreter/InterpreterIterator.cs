@@ -11,15 +11,9 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
     private BacklogEnumerable<IntermediateToken> Backlog { get; }
     private TypeList<IntermediateToken> IgnoreTokens { get; }
 
-    public InterpreterIterator(IEnumerable<IntermediateToken> enumerable) :
-        this(new BacklogEnumerable<IntermediateToken>(enumerable))
+    public InterpreterIterator(IEnumerable<IntermediateToken> enumerable) : base(enumerable)
     {
-        
-    }
-
-    public InterpreterIterator(BacklogEnumerable<IntermediateToken> backlog) : base(backlog)
-    {
-        Backlog = backlog;
+        Backlog = enumerable as BacklogEnumerable<IntermediateToken> ?? new BacklogEnumerable<IntermediateToken>(enumerable);
         IgnoreTokens = new TypeList<IntermediateToken>();
     }
 
@@ -47,18 +41,22 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 
     public bool TryTakeNextOfType<T>(
         [NotNullWhen(true)] out T? token, 
-        [NotNullWhen(false)] out BakedError? error) where T : IntermediateToken
+        out BakedError error) where T : IntermediateToken
     {
         token = null;
-        error = null;
+        error = default;
         
         if (!TryPeekNext(out var peekToken))
         {
             error = BakedError.EEarlyEndOfFile(Current?.EndIndex ?? 0);
+            
+            return false;
         } 
         else if (!peekToken.IsComplete)
         {
             error = BakedError.EIncompleteIntermediateToken(peekToken.GetType().Name, peekToken.StartIndex);
+            
+            return false;
         }
         else if (peekToken is not T)
         {
@@ -66,10 +64,9 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
                 typeof(T).Name, 
                 peekToken.GetType().Name,
                 peekToken.StartIndex);
-        }
 
-        if (error != null)
             return false;
+        }
 
         TryMoveNext(out _);
         
@@ -84,6 +81,18 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
             return false;
         
         Backlog.Push(token);
+        
+        return true;
+    }
+    
+    public bool TryPeekNextOfType<T>([NotNullWhen(true)] out IntermediateToken? token) 
+        where T : IntermediateToken
+    {
+        if (!TryPeekNext(out token))
+            return false;
+
+        if (token is not T)
+            return false;
         
         return true;
     }

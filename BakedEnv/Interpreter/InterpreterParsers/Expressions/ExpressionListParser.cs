@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 public class ExpressionListParser
 {
-    public OperationResult<BakedExpression[]> Parse(InterpreterIterator iterator, ParserContext context)
+    public BakedExpression[] Parse(InterpreterIterator iterator, ParserContext context)
     {
         var expressions = new List<BakedExpression>();
         var expressionParser = new ExpressionParser();
@@ -18,9 +18,7 @@ public class ExpressionListParser
         {
             if (!iterator.TryMoveNext(out var next))
             {
-                var error = BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex);
-
-                return OperationResult<BakedExpression[]>.Failure(error);
+                BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex).Throw();
             }
 
             if (next is RightParenthesisToken)
@@ -48,21 +46,16 @@ public class ExpressionListParser
             {
                 if (expectComma)
                 {
-                    var error = BakedError.EExpectedArgumentDelimiter(next.GetType().Name, next.StartIndex);
-
-                    return OperationResult<BakedExpression[]>.Failure(error);
+                    BakedError.EExpectedArgumentDelimiter(next.GetType().Name, next.StartIndex).Throw();
                 }
 
                 var expression = expressionParser.Parse(next, iterator, context);
-
-                if (expression.HasError)
-                    return OperationResult<BakedExpression[]>.Failure(expression.Error);
                 
-                expressions.Add(expression.Value);
+                expressions.Add(expression);
                 expectComma = true;
             }
         }
 
-        return OperationResult<BakedExpression[]>.Success(expressions.ToArray());
+        return expressions.ToArray();
     }
 }

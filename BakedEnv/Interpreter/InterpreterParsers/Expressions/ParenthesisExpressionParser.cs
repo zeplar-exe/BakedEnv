@@ -12,24 +12,21 @@ public class ParenthesisExpressionParser : SingleExpressionParser
         return token is LeftParenthesisToken;
     }
 
-    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         if (!iterator.TryMoveNext(out var next))
         {
-            return OperationResult<BakedExpression>.Failure(BakedError.EEarlyEndOfFile(first.EndIndex));
+            BakedError.EEarlyEndOfFile(first.EndIndex).Throw();
         }
         
         var expressionParser = new ExpressionParser();
         var expression = expressionParser.Parse(next, iterator, context);
 
-        if (expression.HasError)
-        {
-            return expression;
-        }
-
         if (!iterator.TryTakeNextOfType<RightParenthesisToken>(out _, out var error))
         {
-            return OperationResult<BakedExpression>.Failure(error.Value);
+            error.Throw();
+
+            return new NullExpression();
         }
 
         return expression;

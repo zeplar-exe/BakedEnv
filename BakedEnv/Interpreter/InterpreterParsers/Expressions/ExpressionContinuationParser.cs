@@ -1,13 +1,14 @@
 using BakedEnv.Common;
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Expressions.Arithmetic;
+using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateTokens.Raw;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 internal class ExpressionContinuationParser
 {
-    public OperationResult<BakedExpression> Parse(BakedExpression initial, InterpreterIterator iterator, ParserContext context)
+    public BakedExpression Parse(BakedExpression initial, InterpreterIterator iterator, ParserContext context)
     {
         if (iterator.TryMoveNext(out var next))
         {
@@ -18,24 +19,21 @@ internal class ExpressionContinuationParser
                     var tupleParser = new ExpressionListParser();
                     var parameters = tupleParser.Parse(iterator, context);
 
-                    if (parameters.HasError)
-                        return OperationResult<BakedExpression>.Failure(parameters.Error);
-
-                    return OperationResult<BakedExpression>.Success(new InvocationExpression(initial, parameters.Value));
+                    return new InvocationExpression(initial, parameters);
                 }
                 // what about chained continuations?
                 default:
                 {
                     iterator.Reserve();
-                    var defaultError = BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex);
-
-                    return OperationResult<BakedExpression>.Failure(defaultError);
+                    BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex).Throw();  
+                    
+                    break;
                 }
             }
         }
         
-        var error = BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex);
+        BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex).Throw();
 
-        return OperationResult<BakedExpression>.Failure(error);
+        return new NullExpression();
     }
 }

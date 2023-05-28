@@ -15,6 +15,8 @@ public class NameAccessBakedTable : BakedTable
     {
         return TrySetIndex(new BakedObject[] { new BakedString(name) }, bakedObject);
     }
+    
+    // TryGetIndex defined in BakedTable
 
     public override bool TrySetIndex(BakedObject[] key, BakedObject value)
     {

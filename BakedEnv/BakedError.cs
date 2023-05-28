@@ -1,11 +1,12 @@
+using BakedEnv.Interpreter;
 using BakedEnv.Interpreter.Instructions;
 
 namespace BakedEnv;
 
 public partial record struct BakedError
 {
-    public InvalidInstruction ToInstruction()
+    internal void Throw()
     {
-        return new InvalidInstruction(this);
+        throw new InterpreterInternalException(this);
     }
 }

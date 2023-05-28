@@ -8,5 +8,5 @@ public abstract class SingleExpressionParser
 {
     public abstract bool AllowToken(IntermediateToken token);
 
-    public abstract OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context);
+    public abstract BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context);
 }

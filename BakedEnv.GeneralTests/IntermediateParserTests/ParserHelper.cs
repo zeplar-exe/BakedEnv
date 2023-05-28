@@ -28,7 +28,7 @@ internal static class ParserHelper
 
         token = root.Parse(CreateIterator(text)).FirstOrDefault();
 
-        return token != null && token is not EndOfFileToken;
+        return token != null;
     }
 
     public static T AssertFirstIs<T>(string input) where T : IntermediateToken

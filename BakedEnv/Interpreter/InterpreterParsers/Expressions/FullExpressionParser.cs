@@ -7,18 +7,16 @@ namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 internal class FullExpressionParser
 {
-    public OperationResult<BakedExpression> Parse(IntermediateToken next, InterpreterIterator iterator, ParserContext context)
+    public BakedExpression Parse(IntermediateToken next, InterpreterIterator iterator, ParserContext context)
     {
         var expressionParser = new ExpressionParser();
         var expression = expressionParser.Parse(next, iterator, context);
-
-        if (expression.HasError)
-        {
+        
+        if (!iterator.TryPeekNext(out _)) // End of file? No need to continue
             return expression;
-        }
 
         var expressionContinuation = new ExpressionContinuationParser();
-        var continuationResult = expressionContinuation.Parse(expression.Value, iterator, context);
+        var continuationResult = expressionContinuation.Parse(expression, iterator, context);
 
         return continuationResult;
     }

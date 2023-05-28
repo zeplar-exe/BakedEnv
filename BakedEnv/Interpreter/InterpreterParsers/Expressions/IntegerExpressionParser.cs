@@ -13,10 +13,10 @@ public class IntegerExpressionParser : SingleExpressionParser
         return token is IntegerToken;
     }
 
-    public override OperationResult<BakedExpression> Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
+    public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
         var i = new BakedInteger(first.ToString());
 
-        return OperationResult<BakedExpression>.Success(new ValueExpression(i));
+        return new ValueExpression(i);
     }
 }
