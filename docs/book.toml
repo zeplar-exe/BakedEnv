@@ -1,0 +1,6 @@
+[book]
+authors = ["zeplar-exe"]
+language = "en"
+multilingual = false
+src = "src"
+title = "BakedEnv Documentation"
