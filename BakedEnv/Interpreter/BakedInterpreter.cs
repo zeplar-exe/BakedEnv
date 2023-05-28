@@ -78,7 +78,6 @@ public sealed class BakedInterpreter : IDisposable
     public void ResetState()
     {
         Iterator?.Dispose();
-        Environment?.Dispose();
         
         Iterator = null;
         Context = new InterpreterContext();
@@ -161,6 +160,5 @@ public sealed class BakedInterpreter : IDisposable
     public void Dispose()
     {
         Iterator?.Dispose();
-        Environment?.Dispose();
     }
 }

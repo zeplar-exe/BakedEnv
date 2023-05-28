@@ -83,13 +83,6 @@ public class BakedEnvironmentBuilder
         return this;
     }
 
-    public BakedEnvironmentBuilder WithOutputWriter(TextWriter? writer)
-    {
-        Environment.OutputWriter = writer;
-
-        return this;
-    }
-
     public BakedEnvironment Build()
     {
         return Environment;

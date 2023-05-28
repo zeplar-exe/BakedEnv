@@ -9,7 +9,7 @@ namespace BakedEnv.Environment;
 /// <summary>
 /// An script environment to load and execute scripts.
 /// </summary>
-public sealed class BakedEnvironment : ILibraryEnvironment, IDisposable
+public sealed class BakedEnvironment : ILibraryEnvironment
 {
     /// <summary>
     /// Global variables accessible anywhere within an executed script.
@@ -21,8 +21,6 @@ public sealed class BakedEnvironment : ILibraryEnvironment, IDisposable
     
     public LibraryContainer Libraries { get; }
     public VariableReferenceOrder VariableReferenceOrder { get; set; }
-    
-    public TextWriter? OutputWriter { get; set; }
     
     public ExpressionParserContainer ExpressionParsers { get; }
 
@@ -54,10 +52,5 @@ public sealed class BakedEnvironment : ILibraryEnvironment, IDisposable
         {
             yield return library;
         }
-    }
-
-    public void Dispose()
-    {
-        OutputWriter?.Dispose();
     }
 }
