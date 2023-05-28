@@ -130,7 +130,6 @@ public sealed class BakedInterpreter : IDisposable
         }
         catch (InterpreterInternalException e)
         {
-            Console.WriteLine(e);
             instruction = new InvalidInstruction(e.Error);
 
             return false;
