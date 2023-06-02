@@ -12,12 +12,12 @@ session.ExecuteUntilError(); // Executes parsed instructions until an error occu
 
 > AutoExecutionMode is an enum for one of two values, None and AfterYield, in ScriptSession, the value determines when an instruction is executed in EnumerateInstructions. In hindsight, this this effectively useless.
 
-However, it should also be noted that a BakedInterpreter can be use on its own without issue;
+However, a BakedInterpreter can be used on its own without issue;
 
 ```cs
 while (interpreter.TryGetNextInstruction(out InterpreterInstruction? instruction)
 {
-    instruction.Execute(interpreter);
+    instruction?.Execute(interpreter);
 }
 ```
 
