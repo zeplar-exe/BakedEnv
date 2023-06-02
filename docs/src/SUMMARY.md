@@ -1,7 +1,6 @@
 # Summary
 
 [Introduction to BakedEnv](intro.md)
-[Features]()
 [Contribution]()
 
 # Getting Started
@@ -9,7 +8,14 @@
 - [Installation](installation.md)
 - [Running a Script](running_a_script.md)
 - [Script Environments](script_environment.md)
+
+# Features
+
 - [Custom Keywords](custom_keywords.md)
+- [Variable Reference Order]()
+- [Custom Expressions]()
+- [Processor Statements]()
+- [Libraries]()
 
 # Syntax
 
@@ -24,6 +30,8 @@
 # Serialization
 
 - [BakedEnv.Serialization]()
-- [BakedSerializer]()
+  - [BakedSerializer]()
+  - [\[BakedProperty\]]()
+  - [\[BakedSerializerIgnore\]]()
 - [Serialization Example]()
 - [Deserialization Example]()
