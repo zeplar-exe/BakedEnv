@@ -1,4 +1,7 @@
 using System.Reflection;
+
+using BakedEnv.Environment;
+using BakedEnv.Environment.ProcessVariables;
 using BakedEnv.Extensions;
 using BakedEnv.Helpers;
 using BakedEnv.Interpreter.Scopes;
@@ -8,13 +11,23 @@ namespace BakedEnv.Objects;
 
 public class DelegateObject : BakedObject, IBakedCallable
 {
+    public static EnvironmentProcessVariable<IConversionTable> DefaultConversionProperty = new();
+
     public Delegate Delegate { get; }
     public IConversionTable ConversionTable { get; }
 
-    public DelegateObject(Delegate d) : this(d, MappedConversionTable.Primitive()) { }
+    public DelegateObject(Delegate d, BakedEnvironment environment)
+    {
+        Delegate = d;
+        ConversionTable = environment.GetProcessVariable(DefaultConversionProperty) ?? throw new NullReferenceException(
+            $"{nameof(DefaultConversionProperty)} is not set on the provided BakedEnvironment.");
+    }
     
     public DelegateObject(Delegate d, IConversionTable conversionTable)
     {
+        ArgumentNullException.ThrowIfNull(d);
+        ArgumentNullException.ThrowIfNull(conversionTable);
+        
         Delegate = d;
         ConversionTable = conversionTable;
     }
@@ -26,6 +39,9 @@ public class DelegateObject : BakedObject, IBakedCallable
     
     public BakedObject Invoke(BakedObject[] parameters, InvocationContext context)
     {
+        ArgumentNullException.ThrowIfNull(parameters);
+        ArgumentNullException.ThrowIfNull(context);
+        
         var delegateParameters = Delegate.Method.GetParameters();
         
         try

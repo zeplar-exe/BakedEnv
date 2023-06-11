@@ -2,6 +2,7 @@ using System.Numerics;
 
 using BakedEnv.Environment;
 using BakedEnv.Objects;
+using BakedEnv.Objects.Conversion;
 
 using NUnit.Framework;
 
@@ -14,7 +15,7 @@ public class Methods
     public void TestMethod()
     {
         var target = 0;
-        var del = new DelegateObject(delegate() { target = 1; });
+        var del = new DelegateObject(delegate() { target = 1; }, MappedConversionTable.Primitive());
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("foo()");
@@ -27,7 +28,7 @@ public class Methods
     public void TestParameterizedMethod()
     {
         var target = BigInteger.Zero;
-        var del = new DelegateObject(delegate(BigInteger i) { target = i; });
+        var del = new DelegateObject(delegate(BigInteger i) { target = i; }, MappedConversionTable.Primitive());
 
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("foo(5)");
@@ -39,7 +40,7 @@ public class Methods
     [Test]
     public void TestMethodReturn()
     {
-        var del = new DelegateObject(delegate() { return "Hello world!"; });
+        var del = new DelegateObject(delegate() { return "Hello world!"; }, MappedConversionTable.Primitive());
         
         var environment = new BakedEnvironmentBuilder().WithVariable("foo", del).Build();
         var session = environment.CreateSession("a = foo()");

@@ -11,8 +11,6 @@ namespace BakedEnv.Objects;
 /// </summary>
 public class BakedFunction : BakedObject, IBakedCallable
 {
-    public static EnvironmentProcessVariable<FunctionScoping> ScopingVariable { get; } = new();
-
     /// <summary>
     /// Expected parameters to use during invocation.
     /// </summary>
@@ -22,19 +20,19 @@ public class BakedFunction : BakedObject, IBakedCallable
     /// </summary>
     public List<InterpreterInstruction> Instructions { get; }
     
-    public IBakedScope DeclarationScope { get; }
+    public FunctionScopeProvider ScopeProvider { get; }
 
     /// <summary>
     /// Initialize this method with a set of parameter names.
     /// </summary>
     /// <param name="parameterNames">Parameter names inserted into the execution scope.</param>
-    public BakedFunction(IEnumerable<string> parameterNames)
+    public BakedFunction(IEnumerable<string> parameterNames, FunctionScopeProvider scopeProvider)
     {
         ParameterNames = parameterNames.ToList();
         Instructions = new List<InterpreterInstruction>();
+        ScopeProvider = scopeProvider;
+        
     }
-
-    public static BakedFunction Empty() => new(Enumerable.Empty<string>());
 
     /// <inheritdoc />
     public override object? GetValue()
@@ -64,17 +62,9 @@ public class BakedFunction : BakedObject, IBakedCallable
 
             context.Scope.Variables.Add(new BakedVariable(paramName, param));
         }
-        
-        var scoping = context.Interpreter.Environment?.GetProcessVariable(ScopingVariable) ?? FunctionScoping.None;
-        var instructionScope = scoping switch
-        {
-            FunctionScoping.None => new BakedScope(null),
-            FunctionScoping.Dynamic => context.Scope,
-            FunctionScoping.Lexical => DeclarationScope,
-            _ => throw new ArgumentOutOfRangeException(nameof(ScopingVariable), scoping.ToString())
-        };
 
-        var instructionContext = context with { Scope = instructionScope };
+        var scope = ScopeProvider.Invoke(context);
+        var instructionContext = context with { Scope = scope };
         
         foreach (var instruction in Instructions)
         {
@@ -91,5 +81,35 @@ public class BakedFunction : BakedObject, IBakedCallable
     public override string ToString()
     {
         return string.Empty;
+    }
+}
+
+public class FunctionScopeProvider
+{
+    private Func<InvocationContext, IBakedScope> Scope { get; }
+
+    public FunctionScopeProvider(Func<InvocationContext, IBakedScope> scope)
+    {
+        Scope = scope;
+    }
+
+    public IBakedScope Invoke(InvocationContext context)
+    {
+        return Scope.Invoke(context);
+    }
+    
+    public static FunctionScopeProvider None()
+    {
+        return new FunctionScopeProvider(c => new EmptyScope());
+    }
+    
+    public static FunctionScopeProvider Dynamic()
+    {
+        return new FunctionScopeProvider(c => c.Scope);
+    }
+    
+    public static FunctionScopeProvider Lexical(IBakedScope declaredScope)
+    {
+        return new FunctionScopeProvider(c => declaredScope);
     }
 }

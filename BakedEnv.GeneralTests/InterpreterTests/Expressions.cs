@@ -1,5 +1,9 @@
 using System;
 
+using BakedEnv.Environment;
+using BakedEnv.Environment.ProcessVariables;
+using BakedEnv.Objects;
+
 using NUnit.Framework;
 
 namespace BakedEnv.GeneralTests.InterpreterTests;
