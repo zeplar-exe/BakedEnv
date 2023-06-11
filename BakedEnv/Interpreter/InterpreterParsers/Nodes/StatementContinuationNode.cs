@@ -20,9 +20,9 @@ public class StatementContinuationNode : BranchParser
         switch (token)
         {
             case EqualsToken:
-                return DescendResult.Successful(new VariableAssignmentParserNode(Expression, ExpressionFirstToken));
+                return DescendResult.Success(new VariableAssignmentParserNode(Expression, ExpressionFirstToken));
             //default:
-            //    return DescendResult.Successful(new ExpressionContinuationParserNode(Expression));
+            //    return DescendResult.Success(new ExpressionContinuationParserNode(Expression));
         }
         
         return DescendResult.Failure();

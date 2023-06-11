@@ -19,7 +19,7 @@ public class VariableAssignmentParserNode : InterpreterParserNode
 
     public override DescendResult Descend(IntermediateToken token)
     {
-        return DescendResult.SuccessfulIf(this, () => token is EqualsToken);
+        return DescendResult.SuccessIf(this, () => token is EqualsToken);
     }
 
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)

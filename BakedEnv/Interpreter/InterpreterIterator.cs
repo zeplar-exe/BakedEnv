@@ -32,6 +32,11 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
                 continue;
 
             next = nextTemp;
+            
+            if (!next.IsComplete)
+            {
+                BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex).Throw();
+            }
 
             return true;
         }

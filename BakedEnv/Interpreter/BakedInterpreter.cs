@@ -104,7 +104,9 @@ public sealed class BakedInterpreter : IDisposable
         {
             instruction = new InvalidInstruction(
                 BakedError.EIncompleteIntermediateToken(next.GetType().Name, next.StartIndex));
-        } // hmm
+
+            return true;
+        }
 
         var tree = new InterpreterParserTree();
         
@@ -115,7 +117,7 @@ public sealed class BakedInterpreter : IDisposable
         {
             var result = tree.Descend(next);
 
-            if (result.Success)
+            if (result.IsSuccess)
             {
                 var context = new ParserContext(this, Context);
             

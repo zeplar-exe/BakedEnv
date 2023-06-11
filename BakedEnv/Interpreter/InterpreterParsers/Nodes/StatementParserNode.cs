@@ -9,7 +9,7 @@ public class StatementParserNode : InterpreterParserNode
 {
     public override DescendResult Descend(IntermediateToken token)
     {
-        return DescendResult.Successful(this);
+        return DescendResult.Success(this);
     }
 
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
@@ -21,15 +21,15 @@ public class StatementParserNode : InterpreterParserNode
             nextError.Throw();
 
         var continuation = new StatementContinuationNode(expression, first);
-        var descend = continuation.Descend(next);
+        var descend = continuation.Descend(next!);
 
-        if (descend.Success)
-            return descend.Parser.Parse(next, iterator, context);
+        if (descend.IsSuccess)
+            return descend.Parser.Parse(next!, iterator, context);
 
         if (expression is InvocationExpression invocation)
             return new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, first.StartIndex);
         
-        BakedError.EUnknownStatement(next.StartIndex).Throw();
+        BakedError.EUnknownStatement(next!.StartIndex).Throw();
 
         return new EmptyInstruction(0);
     }

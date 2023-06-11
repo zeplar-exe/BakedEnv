@@ -17,7 +17,7 @@ public class InterpreterParserTree : BranchParser
         {
             var result = parser.Descend(token);
 
-            if (result.Success)
+            if (result.IsSuccess)
             {
                 return result;
             }

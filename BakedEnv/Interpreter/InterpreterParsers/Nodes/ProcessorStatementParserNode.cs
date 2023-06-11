@@ -9,7 +9,7 @@ public class ProcessorStatementParserNode : InterpreterParserNode
 {
     public override DescendResult Descend(IntermediateToken token)
     {
-        return token is LeftBracketToken ? DescendResult.Successful(this) : DescendResult.Failure();
+        return token is LeftBracketToken ? DescendResult.Success(this) : DescendResult.Failure();
     }
 
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
