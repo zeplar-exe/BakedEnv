@@ -42,13 +42,13 @@ public sealed class BakedEnvironment : ILibraryEnvironment
         ExpressionParsers = new ExpressionParserContainer();
     }
     
-    public bool TryGetProcessVariable<T>(EnvironmentProcessVariable<T> variable, out T value)
+    public bool TryGetProcessVariable<T>(EnvironmentProcessVariable<T> variable, out T? value)
     {
         value = default;
         
         if (EnvironmentProcessVariables.TryGetValue(variable.GetHashCode(), out var existing))
         {
-            value = (T)existing;
+            value = (T?)existing;
 
             return true;
         }
