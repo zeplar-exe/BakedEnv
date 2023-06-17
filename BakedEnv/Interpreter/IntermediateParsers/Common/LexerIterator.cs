@@ -52,9 +52,7 @@ public class LexerIterator : EnumerableIterator<TextualToken>
             {
                 case TextualTokenType.Space:
                 case TextualTokenType.Tab:
-                case TextualTokenType.LineFeed:
-                case TextualTokenType.CarriageReturn:
-                case TextualTokenType.CarriageReturnLineFeed:
+                case TextualTokenType.NewLine:
                 {
                     continue;
                 }

@@ -53,18 +53,18 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
                     {
                         var text = next.ToString() + after;
                         
-                        yield return CreateToken(text, TextualTokenType.CarriageReturnLineFeed);
+                        yield return CreateToken(text, TextualTokenType.NewLine);
                     }
                     else
                     {
-                        yield return CreateToken(next.ToString(), TextualTokenType.CarriageReturn);
+                        yield return CreateToken(next.ToString(), TextualTokenType.NewLine);
                         
                         ReserveCurrent = true;
                     }
                 }
                 else
                 {
-                    yield return CreateToken(next.ToString(), TextualTokenType.CarriageReturn);
+                    yield return CreateToken(next.ToString(), TextualTokenType.NewLine);
                 }
             }
             else
@@ -105,8 +105,8 @@ public class TextLexer : IEnumerable<TextualToken>, IDisposable
                     '/' => TextualTokenType.Slash,
                     ' ' => TextualTokenType.Space,
                     '\t' => TextualTokenType.Tab,
-                    '\r' => TextualTokenType.CarriageReturn,
-                    '\n' => TextualTokenType.LineFeed,
+                    '\r' => TextualTokenType.NewLine,
+                    '\n' => TextualTokenType.NewLine,
                     _ => TextualTokenType.Unhandled
                 };
 

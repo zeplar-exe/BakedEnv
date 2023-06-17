@@ -41,7 +41,5 @@ public enum TextualTokenType
     Slash,
 
     Space, Tab,
-    CarriageReturn,
-    LineFeed,
-    CarriageReturnLineFeed,
+    NewLine
 }

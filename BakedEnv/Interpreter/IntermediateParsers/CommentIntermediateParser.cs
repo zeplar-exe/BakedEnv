@@ -40,7 +40,7 @@ public class CommentIntermediateParser : MatchIntermediateParser
             
             token.Content.Add(any);
             
-            if (next.IsNewline())
+            if (next.Type == TextualTokenType.NewLine)
                 break;
         }
 
