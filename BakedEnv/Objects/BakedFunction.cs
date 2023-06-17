@@ -1,5 +1,3 @@
-using BakedEnv.Environment;
-using BakedEnv.Environment.ProcessVariables;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.Scopes;
 using BakedEnv.Variables;

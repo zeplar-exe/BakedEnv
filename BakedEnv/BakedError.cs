@@ -1,5 +1,4 @@
 using BakedEnv.Interpreter;
-using BakedEnv.Interpreter.Instructions;
 
 namespace BakedEnv;
 
