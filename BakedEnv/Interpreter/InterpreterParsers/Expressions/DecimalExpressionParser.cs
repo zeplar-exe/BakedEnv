@@ -1,6 +1,5 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
 using BakedEnv.Objects;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;

@@ -27,7 +27,7 @@ public class LexerIterator : EnumerableIterator<TextualToken>
         return true;
     }
     
-    public bool NextIsAny(IEnumerable<TextualTokenType> types, [NotNullWhen(true)] out TextualToken? token)
+    public bool NextIs(IEnumerable<TextualTokenType> types, [NotNullWhen(true)] out TextualToken? token)
     {
         token = null;
 
@@ -52,7 +52,6 @@ public class LexerIterator : EnumerableIterator<TextualToken>
             {
                 case TextualTokenType.Space:
                 case TextualTokenType.Tab:
-                case TextualTokenType.NewLine:
                 {
                     continue;
                 }

@@ -1,6 +1,5 @@
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
@@ -9,20 +8,22 @@ public class IdentifierIntermediateParser : MatchIntermediateParser
 {
     public override bool Match(TextualToken first)
     {
-        return IdentifierToken.InitialTokenTypes.Contains(first.Type);
+        return first.Type is TextualTokenType.Underscore or TextualTokenType.Alphabetic;
     }
 
     public override IntermediateToken Parse(TextualToken first, LexerIterator iterator)
     {
         var identifier = new IdentifierToken();
 
-        identifier.RawTokens.Add(first);
+        identifier.Tokens.Add(first);
+
+        var validTokens = new[] { TextualTokenType.Alphabetic, TextualTokenType.Underscore, TextualTokenType.Numeric };
 
         while (!iterator.Ended)
         {
-            if (iterator.NextIsAny(IdentifierToken.TokenTypes, out var next))
+            if (iterator.NextIs(validTokens, out var next))
             {
-                identifier.RawTokens.Add(next);
+                identifier.Tokens.Add(next);
             }
             else
             {

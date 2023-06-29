@@ -4,7 +4,7 @@ namespace BakedEnv.Interpreter.Lexer;
 
 public class TextLexer : IEnumerable<TextualToken>, IDisposable
 {
-    private ulong Index { get; set; }
+    private long Index { get; set; }
     private bool ReserveCurrent { get; set; }
     private IEnumerator<char> Source { get; }
 

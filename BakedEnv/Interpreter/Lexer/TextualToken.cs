@@ -1,14 +1,14 @@
 namespace BakedEnv.Interpreter.Lexer;
 
-public class TextualToken
+public class TextualToken : ILowLevelToken
 {
     public string Text { get; }
     public TextualTokenType Type { get; }
-    public ulong StartIndex { get; }
-    public int Length => Text.Length;
-    public ulong EndIndex => StartIndex + (ulong)Length;
+    public long StartIndex { get; }
+    public long Length => Text.Length;
+    public long EndIndex => StartIndex + Length;
 
-    public TextualToken(string text, TextualTokenType type, ulong index)
+    public TextualToken(string text, TextualTokenType type, long index)
     {
         Text = text;
         Type = type;

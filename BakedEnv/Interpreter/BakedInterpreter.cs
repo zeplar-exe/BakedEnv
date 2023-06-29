@@ -5,7 +5,7 @@ using BakedEnv.Environment;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateParsers;
 using BakedEnv.Interpreter.IntermediateParsers.Common;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
+using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.InterpreterParsers;
 using BakedEnv.Interpreter.InterpreterParsers.Nodes;
 using BakedEnv.Interpreter.Lexer;

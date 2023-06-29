@@ -35,7 +35,7 @@ public class BakedErrorGenerator : ErrorGenerator
         var className = "public partial record struct BakedError(" +
                         "string Id, string Name, " +
                         "string ShortDescription, string LongDescription, " +
-                        "ulong SourceIndex)";
+                        "long SourceIndex)";
         
         context.AddSource("BakedError.g.cs", 
             $@"#nullable enable

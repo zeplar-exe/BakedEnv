@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
@@ -14,28 +13,11 @@ public class AnyIntermediateParser : IntermediateParser
     public AnyIntermediateParser()
     {
         ContinueParsers = new List<MatchIntermediateParser>();
-        
-        var mappedCharacters = new MappedTokenTypeIntermediateParser();
-        
-        mappedCharacters.TypeMap.Map(TextualTokenType.Period, token => new PeriodToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.Hashtag, token => new HashToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.LeftBracket, token => new LeftBracketToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.RightBracket, token => new RightBracketToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.LeftParenthesis, token => new LeftParenthesisToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.RightParenthesis, token => new RightParenthesisToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.LeftCurlyBracket, token => new LeftCurlyBracketToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.RightCurlyBracket, token => new RightCurlyBracketToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.Equals, token => new EqualsToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.Colon, token => new ColonToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.SingleQuotation, token => new QuotationToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.DoubleQuotation, token => new QuotationToken(token));
-        mappedCharacters.TypeMap.Map(TextualTokenType.Comma, token => new CommaToken(token));
-        
+
         this.WithParser<StringIntermediateParser>()
-            .WithParser<NumericIntermediateParser>() 
+            .WithParser<NumericIntermediateParser>()
             .WithParser<IdentifierIntermediateParser>()
-            .WithParser<CommentIntermediateParser>()
-            .WithParser(mappedCharacters);
+            .WithParser<CommentIntermediateParser>();
     }
 
     public AnyIntermediateParser WithParser<T>() where T : MatchIntermediateParser, new()
@@ -80,7 +62,7 @@ public class AnyIntermediateParser : IntermediateParser
 
         if (parser == null)
         {
-            token = new UnexpectedToken(next);
+            token = new RawIntermediateToken(next);
 
             return true;
         }

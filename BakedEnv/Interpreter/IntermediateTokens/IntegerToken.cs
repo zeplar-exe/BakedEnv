@@ -1,29 +1,21 @@
 using System.Numerics;
 
 using BakedEnv.Interpreter.Expressions;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Objects;
 
-namespace BakedEnv.Interpreter.IntermediateTokens.Pure;
+namespace BakedEnv.Interpreter.IntermediateTokens;
 
-public class IntegerToken : PureIntermediateToken
+public class IntegerToken : IntermediateToken
 {
-    public List<DigitsToken> Digits { get; }
+    public List<ILowLevelToken> Digits { get; }
+
+    public override long StartIndex => Digits.First().StartIndex;
+    public override long Length => Digits.Sum(t => t.Length);
+    public override long EndIndex => Digits.Last().EndIndex;
 
     public IntegerToken()
     {
-        Digits = new List<DigitsToken>();
-    }
-    
-    public override IEnumerable<IntermediateToken> ChildTokens
-    {
-        get
-        {
-            foreach (var digit in Digits)
-            {
-                yield return digit;
-            }
-        }
+        Digits = new List<ILowLevelToken>();
     }
 
     public BakedExpression CreateExpression()
@@ -37,5 +29,10 @@ public class IntegerToken : PureIntermediateToken
         var i = new BakedInteger(digitsValue);
 
         return new ValueExpression(i);
+    }
+    
+    public override string ToString()
+    {
+        return string.Concat(Digits);
     }
 }

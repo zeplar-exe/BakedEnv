@@ -1,10 +1,8 @@
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
 
-using IntegerToken = BakedEnv.Interpreter.IntermediateTokens.Pure.IntegerToken;
+using IntegerToken = BakedEnv.Interpreter.IntermediateTokens.IntegerToken;
 
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
@@ -20,7 +18,7 @@ public class NumericIntermediateParser : MatchIntermediateParser
     {
         var token = new IntegerToken
         {
-            Digits = { new DigitsToken(first) }
+            Digits = { new RawIntermediateToken(first) }
         };
 
         while (iterator.TryMoveNext(out var next))
@@ -28,12 +26,12 @@ public class NumericIntermediateParser : MatchIntermediateParser
             switch (next.Type)
             {
                 case TextualTokenType.Numeric:
-                    var digit = new DigitsToken(next);
+                    var digit = new RawIntermediateToken(next);
                     
                     token.Digits.Add(digit);
                     break;
                 case TextualTokenType.Period:
-                    var period = new PeriodToken(next);
+                    var period = new RawIntermediateToken(next);
                     
                     return ParseDecimalToken(iterator, token, period);
                 default:
@@ -46,7 +44,7 @@ public class NumericIntermediateParser : MatchIntermediateParser
         return token.AsComplete();
     }
 
-    private DecimalToken ParseDecimalToken(LexerIterator iterator, IntegerToken integerToken, PeriodToken period)
+    private DecimalToken ParseDecimalToken(LexerIterator iterator, IntegerToken integerToken, RawIntermediateToken period)
     {
         var decimalToken = new DecimalToken { DecimalPoint = period };
         decimalToken.Digits.AddRange(integerToken.Digits);
@@ -56,7 +54,7 @@ public class NumericIntermediateParser : MatchIntermediateParser
             switch (next.Type)
             {
                 case TextualTokenType.Numeric:
-                    var digit = new DigitsToken(next);
+                    var digit = new RawIntermediateToken(next);
                     
                     decimalToken.Mantissa.Add(digit);
                     

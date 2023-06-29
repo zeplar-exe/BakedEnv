@@ -1,10 +1,6 @@
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
-
-
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
 
@@ -19,7 +15,7 @@ public class StringIntermediateParser : MatchIntermediateParser
     {
         var token = new StringToken
         {
-            LeftQuotation = new QuotationToken(first)
+            Open = new RawIntermediateToken(first)
         };
 
         TextualToken? escapeToken = null;
@@ -30,21 +26,21 @@ public class StringIntermediateParser : MatchIntermediateParser
             {
                 if (next.Type == first.Type)
                 {
-                    token.RightQuotation = new QuotationToken(next);
+                    token.Close = new RawIntermediateToken(next);
 
                     return token.AsComplete();
                 }
             }
             else
             {
-                var escapeContent = new AnyToken(escapeToken);
+                var escapeContent = new RawIntermediateToken(escapeToken);
             
                 token.Content.Add(escapeContent);
             }
 
             escapeToken = null;
             
-            var content = new AnyToken(next);
+            var content = new RawIntermediateToken(next);
             
             if (next.Type == TextualTokenType.Backslash)
             {

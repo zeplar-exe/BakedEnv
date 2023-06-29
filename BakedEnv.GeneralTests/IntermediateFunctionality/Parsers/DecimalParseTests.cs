@@ -1,5 +1,5 @@
 using BakedEnv.GeneralTests.IntermediateParserTests;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
+using BakedEnv.Interpreter.IntermediateTokens;
 
 using NUnit.Framework;
 

@@ -1,7 +1,5 @@
 using BakedEnv.Interpreter.IntermediateParsers.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-using BakedEnv.Interpreter.IntermediateTokens.Pure;
-using BakedEnv.Interpreter.IntermediateTokens.Raw;
 using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers;
@@ -27,8 +25,8 @@ public class CommentIntermediateParser : MatchIntermediateParser
                     {
                         Start = new MultiLineCommentDelimiterToken
                         {
-                            FirstHash = new HashToken(first),
-                            SecondHash = new HashToken(next)
+                            FirstHash = new RawIntermediateToken(first),
+                            SecondHash = new RawIntermediateToken(next)
                         }
                     };
 
@@ -36,9 +34,9 @@ public class CommentIntermediateParser : MatchIntermediateParser
                 }
             }
             
-            var any = new AnyToken(next);
+            var content = new RawIntermediateToken(next);
             
-            token.Content.Add(any);
+            token.Content.Add(content);
             
             if (next.Type == TextualTokenType.NewLine)
                 break;
@@ -51,9 +49,9 @@ public class CommentIntermediateParser : MatchIntermediateParser
     {
         void AppendContent(TextualToken token)
         {
-            var any = new AnyToken(token);
+            var content = new RawIntermediateToken(token);
             
-            target.Content.Add(any);
+            target.Content.Add(content);
         }
         
         while (iterator.TryMoveNext(out var next))
@@ -68,8 +66,8 @@ public class CommentIntermediateParser : MatchIntermediateParser
                     {
                         target.End = new MultiLineCommentDelimiterToken
                         {
-                            FirstHash = new HashToken(next),
-                            SecondHash = new HashToken(afterNext)
+                            FirstHash = new RawIntermediateToken(next),
+                            SecondHash = new RawIntermediateToken(afterNext)
                         };
 
                         return target.AsComplete();
@@ -88,5 +86,20 @@ public class CommentIntermediateParser : MatchIntermediateParser
         }
 
         return target.AsIncomplete();
+    }
+    
+    private class MultiLineCommentDelimiterToken : IntermediateToken
+    {
+        public ILowLevelToken? FirstHash { get; set; }
+        public ILowLevelToken? SecondHash { get; set; }
+
+        public override long StartIndex => FirstHash!.StartIndex;
+        public override long Length => FirstHash!.Length + SecondHash!.Length;
+        public override long EndIndex => SecondHash!.EndIndex;
+    
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
