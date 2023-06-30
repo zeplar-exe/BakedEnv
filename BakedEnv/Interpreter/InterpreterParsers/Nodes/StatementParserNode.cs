@@ -16,19 +16,18 @@ public class StatementParserNode : InterpreterParserNode
     {
         var expressionParser = new ExpressionParser();
         var expression = expressionParser.Parse(first, iterator, context);
-
-        var next = iterator.MoveNextOrThrow();
-
         var continuation = new StatementContinuationNode(expression, first);
-        var descend = continuation.Descend(next!);
+        
+        var next = iterator.MoveNextOrThrow();
+        var descend = continuation.Descend(next);
 
         if (descend.IsSuccess)
-            return descend.Parser.Parse(next!, iterator, context);
+            return descend.Parser.Parse(next, iterator, context);
 
         if (expression is InvocationExpression invocation)
             return new ObjectInvocationInstruction(invocation.Expression, invocation.Parameters, first.StartIndex);
         
-        BakedError.EUnknownStatement(next!.StartIndex).Throw();
+        BakedError.EUnknownStatement(next.StartIndex).Throw();
 
         return new EmptyInstruction(0);
     }

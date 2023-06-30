@@ -18,10 +18,8 @@ public class StatementContinuationNode : BranchParser
     public override DescendResult Descend(IntermediateToken token)
     {
         if (token.IsRawType(TextualTokenType.Equals))
-        {
             return DescendResult.Success(new VariableAssignmentParserNode(Expression, ExpressionFirstToken));
-        }
-        
+
         return DescendResult.Failure();
     }
 }
