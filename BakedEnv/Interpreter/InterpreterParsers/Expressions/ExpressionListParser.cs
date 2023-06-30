@@ -1,4 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
@@ -19,7 +21,7 @@ public class ExpressionListParser
                 BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex).Throw();
             }
 
-            if (next is RightParenthesisToken)
+            if (next.IsRawType(TextualTokenType.RightParenthesis))
             {
                 if (expressions.Count == 0) // If no params, we don't need a null fill-in
                     break;
@@ -29,7 +31,7 @@ public class ExpressionListParser
                 
                 break;
             }
-            else if (next is CommaToken)
+            else if (next.IsRawType(TextualTokenType.Comma))
             {
                 if (expectComma)
                 {

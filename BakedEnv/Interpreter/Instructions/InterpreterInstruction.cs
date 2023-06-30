@@ -10,10 +10,10 @@ public abstract class InterpreterInstruction
     /// <summary>
     /// Helper value to determine this instruction's location within an IBakedSource.
     /// </summary>
-    public ulong SourceIndex { get; }
+    public long SourceIndex { get; }
 
     /// <param name="sourceIndex">The source index of this instruction.</param>
-    protected InterpreterInstruction(ulong sourceIndex)
+    protected InterpreterInstruction(long sourceIndex)
     {
         SourceIndex = sourceIndex;
     }

@@ -6,7 +6,6 @@ namespace BakedEnv.Keywords;
 
 public class ReturnKeywordDefinition : KeywordDefinition
 {
-
     public override bool Match(string name, int parameterCount)
     {
         return name == "return" && parameterCount == 1;

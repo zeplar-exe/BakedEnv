@@ -15,7 +15,7 @@ public class IndexAssignmentInstruction : InterpreterInstruction
         BakedExpression target, 
         BakedExpression[] indexValues,
         BakedExpression value,
-        ulong sourceIndex) : base(sourceIndex)
+        long sourceIndex) : base(sourceIndex)
     {
         Target = target;
         IndexValues = indexValues;

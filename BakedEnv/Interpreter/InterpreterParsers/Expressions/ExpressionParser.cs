@@ -15,6 +15,6 @@ internal class ExpressionParser
             BakedError.EUnknownExpression(first.GetType().Name, first.StartIndex).Throw();
         }
 
-        return parser.Parse(first, iterator, context);
+        return parser!.Parse(first, iterator, context);
     }
 }

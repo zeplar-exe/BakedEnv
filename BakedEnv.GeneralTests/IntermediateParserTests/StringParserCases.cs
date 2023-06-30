@@ -51,7 +51,7 @@ public class StringParserCases
     private void AssertStringTokenIsEqual(string content)
     {
         var token = ParserHelper.AssertFirstIs<StringToken>($"\"{content}\"");
-        var join = string.Concat(token.Content.Select(t => t.RawToken.ToString()));
+        var join = string.Concat(token.Content.Select(t => t.ToString()));
         
         Assert.That(join, Is.EqualTo(content));
     }

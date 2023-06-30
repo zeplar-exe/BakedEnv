@@ -151,7 +151,6 @@ public sealed class BakedInterpreter : IDisposable
             
             Iterator.Ignore<SingleLineCommentToken>();
             Iterator.Ignore<MultiLineCommentToken>();
-            Iterator.Ignore<MultiLineCommentDelimiterToken>();
         }
 
         Context ??= new InterpreterContext();

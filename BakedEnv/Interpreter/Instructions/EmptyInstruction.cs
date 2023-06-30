@@ -4,7 +4,7 @@ namespace BakedEnv.Interpreter.Instructions;
 
 public class EmptyInstruction : InterpreterInstruction
 {
-    public EmptyInstruction(ulong sourceIndex) : base(sourceIndex)
+    public EmptyInstruction(long sourceIndex) : base(sourceIndex)
     {
         
     }

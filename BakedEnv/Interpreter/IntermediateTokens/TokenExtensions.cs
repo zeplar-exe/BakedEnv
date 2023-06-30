@@ -1,3 +1,5 @@
+using BakedEnv.Interpreter.Lexer;
+
 namespace BakedEnv.Interpreter.IntermediateTokens;
 
 internal static class TokenExtensions
@@ -14,5 +16,10 @@ internal static class TokenExtensions
         token.IsComplete = false;
 
         return token;
+    }
+
+    public static bool IsRawType(this IntermediateToken token, TextualTokenType type)
+    {
+        return token is RawIntermediateToken raw && raw.Type == type;
     }
 }

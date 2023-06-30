@@ -1,4 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
+using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
@@ -8,23 +10,17 @@ internal class ExpressionContinuationParser
     {
         if (iterator.TryMoveNext(out var next))
         {
-            switch (next)
+            if (next.IsRawType(TextualTokenType.LeftParenthesis))
             {
-                case LeftParenthesisToken:
-                {
-                    var tupleParser = new ExpressionListParser();
-                    var parameters = tupleParser.Parse(iterator, context);
+                var tupleParser = new ExpressionListParser();
+                var parameters = tupleParser.Parse(iterator, context);
 
-                    return new InvocationExpression(initial, parameters);
-                }
-                // what about chained continuations?
-                default:
-                {
-                    iterator.Reserve();
-                    BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex).Throw();  
-                    
-                    break;
-                }
+                return new InvocationExpression(initial, parameters);
+            } // what about chained continuations?
+            else
+            {
+                iterator.Reserve();
+                BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex).Throw();
             }
         }
         

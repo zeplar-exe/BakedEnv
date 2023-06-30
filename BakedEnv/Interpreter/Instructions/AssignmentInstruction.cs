@@ -23,7 +23,7 @@ public class AssignmentInstruction : InterpreterInstruction
     /// <param name="reference">Reference object for accessing the variable.</param>
     /// <param name="expression">The expression to assign.a</param>
     /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public AssignmentInstruction(IAssignableExpression assignable, BakedExpression expression, ulong sourceIndex) : base(sourceIndex)
+    public AssignmentInstruction(IAssignableExpression assignable, BakedExpression expression, long sourceIndex) : base(sourceIndex)
     {
         Assignable = assignable;
         Expression = expression;

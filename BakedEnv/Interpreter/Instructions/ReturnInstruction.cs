@@ -7,7 +7,7 @@ public class ReturnInstruction : InterpreterInstruction
 {
     public BakedExpression ReturnValue { get; }
 
-    public ReturnInstruction(ulong sourceIndex, BakedExpression expression) : base(sourceIndex)
+    public ReturnInstruction(long sourceIndex, BakedExpression expression) : base(sourceIndex)
     {
         ReturnValue = expression;
     }

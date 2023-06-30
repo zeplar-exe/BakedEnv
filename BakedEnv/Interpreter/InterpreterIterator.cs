@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using BakedEnv.Common;
 using BakedEnv.Interpreter.IntermediateTokens;
-
+using BakedEnv.Interpreter.Lexer;
 
 
 namespace BakedEnv.Interpreter;
@@ -44,9 +44,10 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
         return false;
     }
 
-    public bool TryTakeNextOfType<T>(
-        [NotNullWhen(true)] out T? token, 
-        out BakedError error) where T : IntermediateToken
+    public bool TryTakeNextRaw(
+        TextualTokenType type,
+        [NotNullWhen(true)] out RawIntermediateToken? token, 
+        out BakedError error)
     {
         token = null;
         error = default;
@@ -63,10 +64,10 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
             
             return false;
         }
-        else if (peekToken is not T)
+        else if (!peekToken.IsRawType(type))
         {
             error = BakedError.EUnexpectedTokenType(
-                typeof(T).Name, 
+                type.ToString(), 
                 peekToken.GetType().Name,
                 peekToken.StartIndex);
 
@@ -75,7 +76,7 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
 
         TryMoveNext(out _);
         
-        token = (T)peekToken!;
+        token = (RawIntermediateToken)peekToken;
 
         return true;
     }

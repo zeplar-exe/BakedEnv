@@ -11,9 +11,9 @@ public class WhitespaceTests
     {
         new object[] { " ", TextualTokenType.Space },
         new object[] { "\t", TextualTokenType.Tab },
-        new object[] { "\r", TextualTokenType.CarriageReturn },
-        new object[] { "\n", TextualTokenType.LineFeed },
-        new object[] { "\r\n", TextualTokenType.CarriageReturnLineFeed }
+        new object[] { "\r", TextualTokenType.NewLine },
+        new object[] { "\n", TextualTokenType.NewLine },
+        new object[] { "\r\n", TextualTokenType.NewLine }
     };
     
     [TestCaseSource(nameof(Cases))]

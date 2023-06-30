@@ -24,7 +24,7 @@ public class ObjectInvocationInstruction : InterpreterInstruction
     /// <param name="callable">Callable object to invoke.</param>
     /// <param name="parameters">NameList to use during invocation.</param>
     /// /// <param name="sourceIndex">Source index used internally. Defaults to -1.</param>
-    public ObjectInvocationInstruction(BakedExpression expression, BakedExpression[] parameters, ulong sourceIndex) : base(sourceIndex)
+    public ObjectInvocationInstruction(BakedExpression expression, BakedExpression[] parameters, long sourceIndex) : base(sourceIndex)
     {
         Expression = expression;
         Parameters = parameters;

@@ -58,7 +58,7 @@ namespace BakedEnv
         var builder = new MethodBuilder()
             .WithName($"E{contract.Value.Name}")
             .WithParameters(shortFormatParams.Concat(longFormatParams))
-            .WithParameter("sourceIndex", "ulong")
+            .WithParameter("sourceIndex", "long")
             .AsStatic()
             .WithAccessibility(Accessibility.Public)
             .WithReturnType("BakedError");

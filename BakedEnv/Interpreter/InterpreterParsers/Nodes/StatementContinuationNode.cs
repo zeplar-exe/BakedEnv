@@ -1,5 +1,6 @@
 using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.IntermediateTokens;
+using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Nodes;
 
@@ -16,12 +17,9 @@ public class StatementContinuationNode : BranchParser
 
     public override DescendResult Descend(IntermediateToken token)
     {
-        switch (token)
+        if (token.IsRawType(TextualTokenType.Equals))
         {
-            case EqualsToken:
-                return DescendResult.Success(new VariableAssignmentParserNode(Expression, ExpressionFirstToken));
-            //default:
-            //    return DescendResult.Success(new ExpressionContinuationParserNode(Expression));
+            return DescendResult.Success(new VariableAssignmentParserNode(Expression, ExpressionFirstToken));
         }
         
         return DescendResult.Failure();

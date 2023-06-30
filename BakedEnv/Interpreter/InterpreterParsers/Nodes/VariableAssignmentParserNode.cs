@@ -2,6 +2,7 @@ using BakedEnv.Interpreter.Expressions;
 using BakedEnv.Interpreter.Instructions;
 using BakedEnv.Interpreter.IntermediateTokens;
 using BakedEnv.Interpreter.InterpreterParsers.Expressions;
+using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.InterpreterParsers.Nodes;
 
@@ -18,7 +19,7 @@ public class VariableAssignmentParserNode : InterpreterParserNode
 
     public override DescendResult Descend(IntermediateToken token)
     {
-        return DescendResult.SuccessIf(this, () => token is EqualsToken);
+        return DescendResult.SuccessIf(this, () => token.IsRawType(TextualTokenType.Equals));
     }
 
     public override InterpreterInstruction Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
@@ -34,7 +35,7 @@ public class VariableAssignmentParserNode : InterpreterParserNode
             nextError.Throw();
 
         var expressionParser = new FullExpressionParser();
-        var valueExpression = expressionParser.Parse(next, iterator, context);
+        var valueExpression = expressionParser.Parse(next!, iterator, context);
         
         return new AssignmentInstruction(assignable, valueExpression, next.StartIndex);
     }
