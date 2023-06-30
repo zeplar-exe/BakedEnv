@@ -22,6 +22,14 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
         IgnoreTokens.Add<T>();
     }
 
+    public IntermediateToken MoveNextOrThrow()
+    {
+        if (!TryMoveNext(out var next))
+            BakedError.EEarlyEndOfFile(Current!.EndIndex).Throw();
+
+        return next!;
+    }
+
     public override bool TryMoveNext([NotNullWhen(true)] out IntermediateToken? next)
     {
         next = null;

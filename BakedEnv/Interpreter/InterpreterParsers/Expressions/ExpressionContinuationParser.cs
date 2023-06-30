@@ -8,24 +8,21 @@ internal class ExpressionContinuationParser
 {
     public BakedExpression Parse(BakedExpression initial, InterpreterIterator iterator, ParserContext context)
     {
-        if (iterator.TryMoveNext(out var next))
+        var next = iterator.MoveNextOrThrow();
+    
+        if (next.IsRawType(TextualTokenType.LeftParenthesis))
         {
-            if (next.IsRawType(TextualTokenType.LeftParenthesis))
-            {
-                var tupleParser = new ExpressionListParser();
-                var parameters = tupleParser.Parse(iterator, context);
+            var tupleParser = new ExpressionListParser();
+            var parameters = tupleParser.Parse(iterator, context);
 
-                return new InvocationExpression(initial, parameters);
-            } // what about chained continuations?
-            else
-            {
-                iterator.Reserve();
-                BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex).Throw();
-            }
+            return new InvocationExpression(initial, parameters);
+        } // what about chained continuations?
+        else
+        {
+            iterator.Reserve();
+            BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex).Throw();
+            
+            return new NullExpression();
         }
-        
-        BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex).Throw();
-
-        return new NullExpression();
     }
 }

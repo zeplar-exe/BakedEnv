@@ -17,8 +17,7 @@ public class StatementParserNode : InterpreterParserNode
         var expressionParser = new ExpressionParser();
         var expression = expressionParser.Parse(first, iterator, context);
 
-        if (!TryMoveNext(iterator, out var next, out var nextError))
-            nextError.Throw();
+        var next = iterator.MoveNextOrThrow();
 
         var continuation = new StatementContinuationNode(expression, first);
         var descend = continuation.Descend(next!);

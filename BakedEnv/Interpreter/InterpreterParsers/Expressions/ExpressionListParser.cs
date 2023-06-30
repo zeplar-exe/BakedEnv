@@ -16,10 +16,7 @@ public class ExpressionListParser
 
         while (true)
         {
-            if (!iterator.TryMoveNext(out var next))
-            {
-                BakedError.EEarlyEndOfFile(iterator.Current!.EndIndex).Throw();
-            }
+            var next = iterator.MoveNextOrThrow();
 
             if (next.IsRawType(TextualTokenType.RightParenthesis))
             {

@@ -31,8 +31,7 @@ public class VariableAssignmentParserNode : InterpreterParserNode
             return new EmptyInstruction(0);
         }
 
-        if (!TryMoveNext(iterator, out var next, out var nextError))
-            nextError.Throw();
+        var next = iterator.MoveNextOrThrow();
 
         var expressionParser = new FullExpressionParser();
         var valueExpression = expressionParser.Parse(next!, iterator, context);

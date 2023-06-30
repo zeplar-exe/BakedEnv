@@ -13,10 +13,7 @@ public class ParenthesisExpressionParser : SingleExpressionParser
 
     public override BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
-        if (!iterator.TryMoveNext(out var next))
-        {
-            BakedError.EEarlyEndOfFile(first.EndIndex).Throw();
-        }
+        var next = iterator.MoveNextOrThrow();
         
         var expressionParser = new ExpressionParser();
         var expression = expressionParser.Parse(next!, iterator, context);

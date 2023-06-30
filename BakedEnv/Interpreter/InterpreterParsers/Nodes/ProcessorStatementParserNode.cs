@@ -16,16 +16,14 @@ public class ProcessorStatementParserNode : InterpreterParserNode
     {
         var expressionParser = new ExpressionParser();
 
-        if (!iterator.TryMoveNext(out var next))
-            BakedError.EEarlyEndOfFile(first.EndIndex).Throw();
+        var next = iterator.MoveNextOrThrow();
         
         var keyExpression = expressionParser.Parse(next, iterator, context);
 
         if (!iterator.TryTakeNextRaw(TextualTokenType.Colon, out _, out var invalid))
             invalid.Throw();
-        
-        if (!iterator.TryMoveNext(out next))
-            BakedError.EEarlyEndOfFile(first.EndIndex).Throw();
+
+        next = iterator.MoveNextOrThrow();
 
         var valueExpression = expressionParser.Parse(next, iterator, context);
 
