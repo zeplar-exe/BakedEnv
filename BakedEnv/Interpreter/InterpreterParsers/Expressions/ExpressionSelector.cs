@@ -33,6 +33,6 @@ public class ExpressionSelector
     
     public SingleExpressionParser? SelectParser(IntermediateToken token)
     {
-        return ExpressionParsers.FirstOrDefault(parser => parser.AllowToken(token));
+        return ExpressionParsers.FirstOrDefault(parser => parser.AllowStartToken(token));
     }
 }

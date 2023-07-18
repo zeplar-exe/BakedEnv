@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 public class DecimalExpressionParser : SingleExpressionParser
 {
-    public override bool AllowToken(IntermediateToken token)
+    public override bool AllowStartToken(IntermediateToken token)
     {
         return token is DecimalToken;
     }

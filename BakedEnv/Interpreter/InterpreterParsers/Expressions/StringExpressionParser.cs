@@ -6,7 +6,7 @@ namespace BakedEnv.Interpreter.InterpreterParsers.Expressions;
 
 public class StringExpressionParser : SingleExpressionParser
 {
-    public override bool AllowToken(IntermediateToken token)
+    public override bool AllowStartToken(IntermediateToken token)
     {
         return token is StringToken;
     }
