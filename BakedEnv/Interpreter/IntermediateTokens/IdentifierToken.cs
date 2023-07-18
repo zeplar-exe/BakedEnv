@@ -15,8 +15,6 @@ public class IdentifierToken : IntermediateToken
         Tokens = new List<ILowLevelToken>();
     }
     
-    public BigInteger AsBigInteger() => BigInteger.Parse(ToString());
-    
     public override string ToString()
     {
         return string.Concat(Tokens);
