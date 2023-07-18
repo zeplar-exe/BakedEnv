@@ -6,14 +6,17 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter;
 
-public class InterpreterIterator : EnumerableIterator<IntermediateToken>
+public class InterpreterIterator : IDisposable
 {
-    private BacklogEnumerable<IntermediateToken> Backlog { get; }
+    private IEnumerator<IntermediateToken> Enumerator { get; }
     private TypeList<IntermediateToken> IgnoreTokens { get; }
+    private IteratorLinkedListNode? TokensLinkedList { get; set; }
+    
+    private bool ReserveCurrent { get; set; }
 
-    public InterpreterIterator(IEnumerable<IntermediateToken> enumerable) : base(enumerable)
+    public InterpreterIterator(IEnumerable<IntermediateToken> enumerable)
     {
-        Backlog = enumerable as BacklogEnumerable<IntermediateToken> ?? new BacklogEnumerable<IntermediateToken>(enumerable);
+        Enumerator = enumerable.GetEnumerator();
         IgnoreTokens = new TypeList<IntermediateToken>();
     }
 
@@ -25,20 +28,46 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
     public IntermediateToken MoveNextOrThrow()
     {
         if (!TryMoveNext(out var next))
-            BakedError.EEarlyEndOfFile(Current!.EndIndex).Throw();
+            BakedError.EEarlyEndOfFile(Enumerator.Current.EndIndex).Throw();
 
         return next!;
     }
 
-    public override bool TryMoveNext([NotNullWhen(true)] out IntermediateToken? next)
+    public bool TryMoveNext([NotNullWhen(true)] out IntermediateToken? next)
     {
         next = null;
-        
-        while (base.TryMoveNext(out var nextTemp))
+
+        if (ReserveCurrent)
         {
+            ReserveCurrent = false;
+            next = Enumerator.Current;
+            
+            return true;
+        }
+        
+        if (TokensLinkedList?.Next is {} node)
+        {
+            next = node.Value;
+            
+            return true;
+        }
+        
+        while (Enumerator.MoveNext())
+        {
+            var nextTemp = Enumerator.Current;
+            
             if (IgnoreTokens.Any(t => t == nextTemp.GetType()))
                 continue;
 
+            if (TokensLinkedList == null)
+            {
+                TokensLinkedList = new IteratorLinkedListNode(nextTemp);
+            }
+            else
+            {
+                TokensLinkedList = TokensLinkedList.Next = new IteratorLinkedListNode(nextTemp);
+            }
+            
             next = nextTemp;
             
             if (!next.IsComplete)
@@ -62,7 +91,7 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
         
         if (!TryPeekNext(out var peekToken))
         {
-            error = BakedError.EEarlyEndOfFile(Current?.EndIndex ?? 0);
+            error = BakedError.EEarlyEndOfFile(Enumerator.Current?.EndIndex ?? 0);
             
             return false;
         } 
@@ -93,8 +122,8 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
     {
         if (!TryMoveNext(out token))
             return false;
-        
-        Backlog.Push(token);
+
+        ReserveCurrent = true;
         
         return true;
     }
@@ -111,18 +140,40 @@ public class InterpreterIterator : EnumerableIterator<IntermediateToken>
         return true;
     }
 
-    public IEnumerable<IntermediateToken> PeekTakeWhile(Func<IntermediateToken, bool> predicate)
+    public class Marker
     {
-        while (TryMoveNext(out var token))
-        {
-            if (!predicate.Invoke(token))
-            {
-                Backlog.Push(token);
-                
-                yield break;
-            }
+        private InterpreterIterator Iterator { get; }
+        
+        internal IteratorLinkedListNode Node { get; }
 
-            yield return token;
+        internal Marker(InterpreterIterator iterator, IteratorLinkedListNode node)
+        {
+            Iterator = iterator;
+            Node = node;
         }
+
+        public bool Restore()
+        {
+            Iterator.TokensLinkedList = Node;
+
+            return true;
+        }
+    }
+
+    internal class IteratorLinkedListNode
+    {
+        public IntermediateToken Value { get; }
+        public IteratorLinkedListNode? Next { get; set; }
+        public IteratorLinkedListNode? Previous { get; set; }
+
+        public IteratorLinkedListNode(IntermediateToken value)
+        {
+            Value = value;
+        }
+    }
+
+    public void Dispose()
+    {
+        Enumerator.Dispose();
     }
 }

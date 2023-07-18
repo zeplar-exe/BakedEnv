@@ -19,7 +19,6 @@ internal class ExpressionContinuationParser
         } // what about chained continuations?
         else
         {
-            iterator.Reserve();
             BakedError.EUnknownExpression(next.GetType().Name, next.StartIndex).Throw();
             
             return new NullExpression();

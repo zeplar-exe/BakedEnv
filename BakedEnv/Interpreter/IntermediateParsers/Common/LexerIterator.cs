@@ -7,11 +7,44 @@ using BakedEnv.Interpreter.Lexer;
 
 namespace BakedEnv.Interpreter.IntermediateParsers.Common;
 
-public class LexerIterator : EnumerableIterator<TextualToken>
+public class LexerIterator
 {
-    public LexerIterator(IEnumerable<TextualToken> enumerable) : base(enumerable)
+    private IEnumerator<TextualToken> Enumerator { get; }
+    private bool ReserveCurrent { get; set; }
+    
+    public bool Ended { get; private set; }
+    
+    public TextualToken? Current => Enumerator.Current;
+    
+    public LexerIterator(IEnumerable<TextualToken> enumerable)
     {
-        
+        Enumerator = enumerable.GetEnumerator();
+    }
+    
+    public virtual bool TryMoveNext(out TextualToken next)
+    {
+        next = default;
+
+        if (ReserveCurrent)
+        {
+            next = Enumerator.Current;
+            ReserveCurrent = false;
+            
+            return true;
+        }
+
+        if (Enumerator.MoveNext())
+        {
+            Ended = false;
+
+            next = Enumerator.Current;
+        }
+        else
+        {
+            Ended = true;
+        }
+
+        return !Ended;
     }
     
     public bool NextIs(TextualTokenType type, [NotNullWhen(true)] out TextualToken? token)
@@ -66,5 +99,15 @@ public class LexerIterator : EnumerableIterator<TextualToken>
         }
 
         return true;
+    }
+    
+    public void Reserve()
+    {
+        ReserveCurrent = true;
+    }
+
+    public void Dispose()
+    {
+        Enumerator.Dispose();
     }
 }
