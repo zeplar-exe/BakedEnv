@@ -132,7 +132,7 @@ public sealed class BakedInterpreter : IDisposable
         }
         catch (InterpreterInternalException e)
         {
-            instruction = new InvalidInstruction(e.Error);
+            instruction = new InvalidInstruction(e.Errors);
 
             return false;
         }

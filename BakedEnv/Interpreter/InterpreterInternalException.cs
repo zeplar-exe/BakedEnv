@@ -2,10 +2,15 @@ namespace BakedEnv.Interpreter;
 
 internal class InterpreterInternalException : Exception
 {
-    public BakedError Error { get; }
+    public BakedError[] Errors { get; }
 
     public InterpreterInternalException(BakedError error)
     {
-        Error = error;
+        Errors = new[] { error };
+    }
+    
+    public InterpreterInternalException(BakedError[] errors)
+    {
+        Errors = errors;
     }
 }

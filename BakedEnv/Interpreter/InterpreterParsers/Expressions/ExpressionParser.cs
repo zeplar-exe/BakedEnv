@@ -7,14 +7,29 @@ internal class ExpressionParser
 {
     public BakedExpression Parse(IntermediateToken first, InterpreterIterator iterator, ParserContext context)
     {
+        using var reporter = context.CreateReporter();
+        
         var selector = new ExpressionSelector(context.Interpreter.Environment);
-        var parser = selector.SelectParser(first);
+        var parsers = selector.SelectParsers(first);
 
-        if (parser == null)
+        var marker = iterator.CreateMarker();
+        
+        foreach (var parser in parsers)
         {
-            BakedError.EUnknownExpression(first.GetType().Name, first.StartIndex).Throw();
+            try
+            {
+                return parser.Parse(first, iterator, context);
+            }
+            catch (InterpreterInternalException e)
+            {
+                reporter.Report(e.Errors);
+                
+                marker.Restore();
+            }
         }
+        
+        reporter.Report(BakedError.EUnknownExpression(first.GetType().Name, first.StartIndex));
 
-        return parser!.Parse(first, iterator, context);
+        return new NullExpression();
     }
 }

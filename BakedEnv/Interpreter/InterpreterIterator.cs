@@ -20,6 +20,11 @@ public class InterpreterIterator : IDisposable
         IgnoreTokens = new TypeList<IntermediateToken>();
     }
 
+    public Marker CreateMarker()
+    {
+        return new Marker(this, TokensLinkedList);
+    }
+
     public void Ignore<T>() where T : IntermediateToken
     {
         IgnoreTokens.Add<T>();
@@ -144,9 +149,16 @@ public class InterpreterIterator : IDisposable
     {
         private InterpreterIterator Iterator { get; }
         
-        internal IteratorLinkedListNode Node { get; }
+        /// <summary>
+        /// The node to revert to upon calling <see cref="Restore"/>.
+        /// </summary>
+        /// <remarks>This value is permitted to be null, wherein the iterator
+        /// will be restored to a state which only pulls from the normal
+        /// iteration procedure. It is expected that this is only null when
+        /// being created at the beginning of an <see cref="InterpreterIterator"/>'s lifetime.</remarks>
+        internal IteratorLinkedListNode? Node { get; }
 
-        internal Marker(InterpreterIterator iterator, IteratorLinkedListNode node)
+        internal Marker(InterpreterIterator iterator, IteratorLinkedListNode? node)
         {
             Iterator = iterator;
             Node = node;

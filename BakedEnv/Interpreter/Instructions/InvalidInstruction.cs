@@ -10,20 +10,28 @@ public class InvalidInstruction : InterpreterInstruction
     /// <summary>
     /// Error associated with this invalid instruction.
     /// </summary>
-    public BakedError AssociatedError { get; }
+    public BakedError[] AssociatedErrors { get; }
 
-    /// <summary>
-    /// Initialize an InvalidInstruction with its associated error.
-    /// </summary>
-    /// <param name="error"></param>
     public InvalidInstruction(BakedError error) : base(error.SourceIndex)
     {
-        AssociatedError = error;
+        AssociatedErrors = new[] { error };
+    }
+    
+    /// <summary>
+    /// Initialize an InvalidInstruction with its associated errors.
+    /// </summary>
+    /// <param name="errors"></param>
+    public InvalidInstruction(BakedError[] errors) : base(errors.Min(e => e.SourceIndex))
+    {
+        AssociatedErrors = errors;
     }
     
     /// <inheritdoc />
     public override void Execute(InvocationContext context)
     {
-        context.Interpreter.Error.Report(AssociatedError);
+        foreach (var error in AssociatedErrors)
+        {
+            context.Interpreter.Error.Report(error);
+        }
     }
 }

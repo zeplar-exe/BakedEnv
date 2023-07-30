@@ -31,8 +31,8 @@ public class ExpressionSelector
         }
     }
     
-    public SingleExpressionParser? SelectParser(IntermediateToken token)
+    public SingleExpressionParser[] SelectParsers(IntermediateToken token)
     {
-        return ExpressionParsers.FirstOrDefault(parser => parser.AllowStartToken(token));
+        return ExpressionParsers.Where(parser => parser.AllowStartToken(token)).ToArray();
     }
 }
