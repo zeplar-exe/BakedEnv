@@ -1,5 +1,15 @@
 # BakedEnv
 
+## This project is discontinued
+
+It was a fun ride, but this idea is both poorly thought out and largely unnecessary. One, scripting languages for C# already 
+contain many of the qualities I was looking to make available in this project. Namely, sandoxing and custom functions/variables.
+Two, I envisioned to be a "fully customizable programming language" turned out to be a parser generator. The conflict between
+this misattribution and reality severely damaged the underlying structure of the library from the beginning. Those two 
+realizations killed my interest some year and a half ago, and that interest remains dispersed in the void.
+
+---
+
 Compatible with .NET 6 or higher.
 
 ![license](https://img.shields.io/github/license/zeplar-exe/BakedEnv)
